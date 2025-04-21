@@ -8,7 +8,7 @@ function toggleDarkMode() {
 
 <template>
   <header>
-    <nav class="col-12 flex justify-content-end align-items-center bg-primary border-round my-1">
+    <nav class="col-12 flex justify-content-end align-items-center bg-primary border-round-top-lg my-0">
       <div class="flex gap-3 align-items-center m-0">
         <RouterLink to="/" class="text-white no-underline">Inicio</RouterLink>
         <RouterLink to="/services" class="text-white no-underline">Servicios</RouterLink>

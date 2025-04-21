@@ -13,6 +13,8 @@ import '/node_modules/primeflex/primeflex.css'
 import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
 import OverlayBadge from 'primevue/overlaybadge'
+import InputText from 'primevue/inputtext'
+import Card from 'primevue/card'
 
 import App from './App.vue'
 import router from './router'
@@ -30,6 +32,8 @@ const app = createApp(App)
 app.component('Button', Button)
 app.component('Avatar', Avatar)
 app.component('OverlayBadge', OverlayBadge)
+app.component('InputText', InputText)
+app.component('Card', Card)
 
 // ** PrimeVue Config **//
 // ** Customized Preset **//
