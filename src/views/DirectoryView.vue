@@ -12,7 +12,7 @@ onMounted(async () => {
 
 <template>
     <h1>
-        Directory Page
+        DIRECTORIO MEDICO
     </h1>
 
     {{ doctors }}

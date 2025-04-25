@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { auth } from '../firebase/init'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +7,8 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: () => import('../views/HomeView.vue'),
+
     },
     {
       path: '/services',
@@ -39,7 +40,31 @@ const router = createRouter({
       name: 'about',
       component: () => import('../views/AboutView.vue'),
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+    },
+    {
+      path: '/doctors',
+      name: 'doctors',
+      component: () => import('../views/DoctorsView.vue'),
+      meta: {
+        authenticated: true,
+      }
+    },
   ],
 })
+
+router.beforeEach(( to, from, next) => {
+  console.log('<<',auth.currentUser)
+  if (to.path === '/login' && auth.currentUser ){
+    next('/doctors')
+  }else if (to.matched.some((record) => record.meta.authenticated) && !auth.currentUser){
+    next('/login')
+  }else{
+    next()
+  }
+});
 
 export default router
