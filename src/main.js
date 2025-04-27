@@ -15,6 +15,8 @@ import Avatar from 'primevue/avatar'
 import OverlayBadge from 'primevue/overlaybadge'
 import InputText from 'primevue/inputtext'
 import Card from 'primevue/card'
+import Checkbox from 'primevue/checkbox'
+import Password from 'primevue/password'
 
 import App from './App.vue'
 import router from './router'
@@ -32,8 +34,8 @@ library.add(fas)
 const app = createApp(App)
 const pinia = createPinia()
 
-pinia.use(({ store}) => {
-  store.$router = markRaw(router);
+pinia.use(({ store }) => {
+  store.$router = markRaw(router)
 })
 
 // ** PrimeVue Components **//
@@ -42,6 +44,8 @@ app.component('Avatar', Avatar)
 app.component('OverlayBadge', OverlayBadge)
 app.component('InputText', InputText)
 app.component('Card', Card)
+app.component('Checkbox', Checkbox)
+app.component('Password', Password)
 
 // ** PrimeVue Config **//
 // ** Customized Preset **//
@@ -80,7 +84,7 @@ const MyPreset = definePreset(Material, {
     button: {
       colorScheme: {
         light: {
-          primaryBackground: vitality,
+          primaryBackground: hope,
           primaryHoverBackground: vitality,
           outlinedPrimaryBorderColor: welfare,
           // outlinedPrimaryHoverBackground: vitality,
