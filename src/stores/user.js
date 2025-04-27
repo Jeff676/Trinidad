@@ -12,23 +12,6 @@ export const useUserStore = defineStore("user", {
   },
 
   actions: {
-    // async register(email, password){
-    //   try{
-    //     await createUserWithEmailAndPassword(auth, email, password)
-    //   }catch(error){
-    //     switch (error.code){
-    //       case "auth/email-already-in-use":
-    //         alert("El email ya esta siendo usado");
-    //         break;
-    //       case "auth/invalid-email":
-    //         alert("El email es invalido");
-    //         break;
-    //     }
-    //     return;
-    //   }
-
-    //   this.user = auth.currentUser;
-    // },
 
     async login(email, password){
       try{
@@ -53,3 +36,14 @@ export const useUserStore = defineStore("user", {
 
   },
 });
+  
+
+export const useCounterStore = defineStore('counter', () => {
+  const count = ref(0)
+  const doubleCount = computed(() => count.value * 2)
+  function increment() {
+    count.value++
+  }
+
+  return { count, doubleCount, increment }
+})

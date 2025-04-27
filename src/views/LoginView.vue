@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { useUserStore } from '../stores/counter';
+import { useUserStore } from '../stores/user';
 import { auth } from '../firebase/init'
 
 
