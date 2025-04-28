@@ -4,6 +4,8 @@ import { auth } from "../firebase/init";
 
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
+const error = ref('');
+
 export const useUserStore = defineStore("user", {
   state: () => {
     return {
@@ -12,27 +14,45 @@ export const useUserStore = defineStore("user", {
   },
 
   actions: {
-
     async login(email, password){
-      try{
-        await signInWithEmailAndPassword(auth, email, password)
-      }catch(error){
-        switch (error.code){
-          case "auth/user-not-found":
+      error.value = '';
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        console.log('Usuario autenticado');
+        this.$router.push('/doctors')
+        this.user = email;
+      } catch (err) {
+        if(err.message == "auth/user-not-found"){
             alert("El email es invalido");
-            break;
-          case "auth/wrong-password":
+        }else if(err.message == "auth/wrong-password"){
             alert("El password es invalido");
-            break;
+        }else{
+          alert("Error al iniciar sesión");
         }
-
-        return;
+        console.error('Error al iniciar sesión:', err.message);
+        error.value = 'Correo electrónico o contraseña incorrectos.';
       }
-      this.user = auth.currentUser;
-      this.$router.push('/doctors')
-      console.log('usuario logeado.!')
-      console.log(auth.currentUser.email)
-    },
+    }
+    // async login(email, password){
+    //   try{
+    //     await signInWithEmailAndPassword(auth, email, password)
+    //   }catch(error){
+    //     switch (error.code){
+    //       case "auth/user-not-found":
+    //         alert("El email es invalido");
+    //         break;
+    //       case "auth/wrong-password":
+    //         alert("El password es invalido");
+    //         break;
+    //     }
+
+    //     return;
+    //   }
+    //   this.user = auth.currentUser;
+    //   this.$router.push('/doctors')
+    //   console.log('usuario logeado.!')
+    //   console.log(auth.currentUser.email)
+    // },    
 
   },
 });

@@ -8,7 +8,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('../views/HomeView.vue'),
-
     },
     {
       path: '/services',
@@ -57,7 +56,7 @@ const router = createRouter({
 })
 
 router.beforeEach(( to, from, next) => {
-  console.log('<<',auth.currentUser)
+  console.log('<<',auth.AuthImp)
   if (to.path === '/login' && auth.currentUser ){
     next('/doctors')
   }else if (to.matched.some((record) => record.meta.authenticated) && !auth.currentUser){
