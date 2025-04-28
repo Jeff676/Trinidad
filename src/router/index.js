@@ -8,7 +8,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('../views/HomeView.vue'),
-
     },
     {
       path: '/services',
@@ -51,20 +50,28 @@ const router = createRouter({
       component: () => import('../views/DoctorsView.vue'),
       meta: {
         authenticated: true,
-      }
+      },
+    },
+    {
+      path: '/panel',
+      name: 'panel',
+      component: () => import('../views/PanelView.vue'),
+      meta: {
+        authenticated: true,
+      },
     },
   ],
 })
 
-router.beforeEach(( to, from, next) => {
-  console.log('<<',auth.currentUser)
-  if (to.path === '/login' && auth.currentUser ){
-    next('/doctors')
-  }else if (to.matched.some((record) => record.meta.authenticated) && !auth.currentUser){
+router.beforeEach((to, from, next) => {
+  console.log('<<', auth.currentUser)
+  if (to.path === '/login' && auth.currentUser) {
+    next('/panel')
+  } else if (to.matched.some((record) => record.meta.authenticated) && !auth.currentUser) {
     next('/login')
-  }else{
+  } else {
     next()
   }
-});
+})
 
 export default router

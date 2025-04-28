@@ -19,13 +19,13 @@ console.log(userStore.user)
 
 <template>
   <div class="grid surface-100 col-6 mx-auto my-8 border-round-lg shadow-2xl ">
-    <div class="col-5 bg-primary border-round-lg">
+    <div class="col-5 bg-welfare border-round-lg">
       <img src="../assets/logo-md.svg" alt="Logo" class="w-full mt-5 p-5">
     </div>
 
     <div class="col-7  mt-5 p-5 ">
       <div class="text-center">
-        <font-awesome-icon icon="fa-regular fa-circle-user" class="text-vitality" size="6x" />
+        <font-awesome-icon icon="fa-regular fa-circle-user" class="text-welfare" size="6x" />
       </div>
       <form @submit.prevent="login">
         <InputText id="email" class="w-full mt-5 mb-2" autofocus placeholder="Nombre de Usuario" v-model="email"

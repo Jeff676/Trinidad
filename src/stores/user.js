@@ -1,14 +1,14 @@
-import { ref, computed } from 'vue';
-import { defineStore } from 'pinia';
-import { auth } from "../firebase/init";
+import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+import { auth } from '../firebase/init'
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 
-export const useUserStore = defineStore("user", {
+export const useUserStore = defineStore('user', {
   state: () => {
     return {
       user: null,
-    };
+    }
   },
 
   actions: {
@@ -30,26 +30,25 @@ export const useUserStore = defineStore("user", {
     //   this.user = auth.currentUser;
     // },
 
-    async login(email, password){
-      try{
+    async login(email, password) {
+      try {
         await signInWithEmailAndPassword(auth, email, password)
-      }catch(error){
-        switch (error.code){
-          case "auth/user-not-found":
-            alert("El email es invalido");
-            break;
-          case "auth/wrong-password":
-            alert("El password es invalido");
-            break;
+      } catch (error) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+            alert('El email es invalido')
+            break
+          case 'auth/wrong-password':
+            alert('El password es invalido')
+            break
         }
 
-        return;
+        return
       }
-      this.user = auth.currentUser;
-      this.$router.push('/doctors')
+      this.user = auth.currentUser
+      this.$router.push('/panel')
       console.log('usuario logeado.!')
       console.log(auth.currentUser.email)
     },
-
   },
-});
+})
