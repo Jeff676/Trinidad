@@ -1,62 +1,48 @@
-import { ref, computed } from 'vue';
-import { defineStore } from 'pinia';
-import { auth } from "../firebase/init";
+import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+import { auth } from '../firebase/init'
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 
-const error = ref('');
-
-export const useUserStore = defineStore("user", {
+export const useUserStore = defineStore('user', {
   state: () => {
     return {
       user: null,
-    };
+      isLoggedIn: true,
+    }
   },
 
   actions: {
-    async login(email, password){
-      error.value = '';
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        console.log('Usuario autenticado');
-        this.$router.push('/doctors')
-        this.user = email;
-      } catch (err) {
-        if(err.message == "auth/user-not-found"){
-            alert("El email es invalido");
-        }else if(err.message == "auth/wrong-password"){
-            alert("El password es invalido");
-        }else{
-          alert("Error al iniciar sesión");
-        }
-        console.error('Error al iniciar sesión:', err.message);
-        error.value = 'Correo electrónico o contraseña incorrectos.';
-      }
-    }
-    // async login(email, password){
-    //   try{
-    //     await signInWithEmailAndPassword(auth, email, password)
-    //   }catch(error){
-    //     switch (error.code){
-    //       case "auth/user-not-found":
-    //         alert("El email es invalido");
-    //         break;
-    //       case "auth/wrong-password":
-    //         alert("El password es invalido");
-    //         break;
-    //     }
 
-    //     return;
-    //   }
-    //   this.user = auth.currentUser;
-    //   this.$router.push('/doctors')
-    //   console.log('usuario logeado.!')
-    //   console.log(auth.currentUser.email)
-    // },    
+    async login(email, password){
+      try{
+        await signInWithEmailAndPassword(auth, email, password)
+      }catch(error){
+        alert("El email o el password es invalido");
+        return;
+      }
+      this.$router.push('/panel')
+      console.log('usuario logeado.!')
+    },
+
+    logout() {
+      signOut(auth)
+        .then(() => {
+          alert("¡Sesión finalizada!");
+          useUserStore.isLoggedIn = false;
+          console.log('-->',useUserStore.isLoggedIn)
+          this.$router.push('/')
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          this.errorMessage = error.message;
+          alert(this.errorMessage);
+        });
+    },
 
   },
 });
-  
+
 
 export const useCounterStore = defineStore('counter', () => {
   const count = ref(0)
@@ -66,4 +52,5 @@ export const useCounterStore = defineStore('counter', () => {
   }
 
   return { count, doubleCount, increment }
+
 })
