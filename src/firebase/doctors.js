@@ -10,3 +10,10 @@ export const getDoctors = async () => {
 
   return doctors
 }
+
+export const getSpecialities = async () => {
+  const specialitiesSnapShop = await getDocs(collection(db, 'specialities')) // Devuelve un Objeto Firebase , dentro estan todos los documentos
+  const specialities = specialitiesSnapShop.docs.map((doc) => doc.data()) // Devuelve un array con los documentos
+
+  return specialities
+}
