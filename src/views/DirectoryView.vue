@@ -1,12 +1,14 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 
-import { getDoctors } from '../firebase/doctors'
+import { getDoctors, getSpecialities } from '../firebase/doctors'
 
 var doctors = ref([])
+var specialities = ref([])
 
 onMounted(async () => {
     doctors.value = await getDoctors()
+    specialities.value = await getSpecialities()
 })
 </script>
 

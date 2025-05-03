@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { auth } from '../firebase/init'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,7 +49,7 @@ const router = createRouter({
       name: 'doctors',
       component: () => import('../views/DoctorsView.vue'),
       meta: {
-        authenticated: true,
+        requiresAuth: true,
       },
     },
     {
@@ -57,21 +57,36 @@ const router = createRouter({
       name: 'panel',
       component: () => import('../views/PanelView.vue'),
       meta: {
-        authenticated: true,
+        requiresAuth: true,
       },
     },
   ],
 })
 
-router.beforeEach((to, from, next) => {
-  console.log('<<', auth.currentUser)
-  if (to.path === '/login' && auth.currentUser) {
-    next('/panel')
-  } else if (to.matched.some((record) => record.meta.authenticated) && !auth.currentUser) {
-    next('/login')
+const getCurrentUser = () => {
+  return new Promise(( resolve, reject ) =>{
+    const removeListener = onAuthStateChanged(
+      getAuth(),
+      (user) => {
+        removeListener();
+        resolve(user)
+      },
+      reject
+    )
+  })
+}
+
+router.beforeEach( async (to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)){
+    if (await getCurrentUser()){
+      next();
+    } else {
+      alert("No tienes acceso");
+      next('/');
+    }
   } else {
-    next()
+    next();
   }
-})
+});
 
 export default router

@@ -2,53 +2,55 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { auth } from '../firebase/init'
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 
 export const useUserStore = defineStore('user', {
   state: () => {
     return {
       user: null,
+      isLoggedIn: true,
     }
   },
 
   actions: {
-    // async register(email, password){
-    //   try{
-    //     await createUserWithEmailAndPassword(auth, email, password)
-    //   }catch(error){
-    //     switch (error.code){
-    //       case "auth/email-already-in-use":
-    //         alert("El email ya esta siendo usado");
-    //         break;
-    //       case "auth/invalid-email":
-    //         alert("El email es invalido");
-    //         break;
-    //     }
-    //     return;
-    //   }
 
-    //   this.user = auth.currentUser;
-    // },
-
-    async login(email, password) {
-      try {
+    async login(email, password){
+      try{
         await signInWithEmailAndPassword(auth, email, password)
-      } catch (error) {
-        switch (error.code) {
-          case 'auth/user-not-found':
-            alert('El email es invalido')
-            break
-          case 'auth/wrong-password':
-            alert('El password es invalido')
-            break
-        }
-
-        return
+      }catch(error){
+        alert("El email o el password es invalido");
+        return;
       }
-      this.user = auth.currentUser
       this.$router.push('/panel')
       console.log('usuario logeado.!')
-      console.log(auth.currentUser.email)
     },
+
+    logout() {
+      signOut(auth)
+        .then(() => {
+          alert("¡Sesión finalizada!");
+          useUserStore.isLoggedIn = false;
+          console.log('-->',useUserStore.isLoggedIn)
+          this.$router.push('/')
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          this.errorMessage = error.message;
+          alert(this.errorMessage);
+        });
+    },
+
   },
+});
+
+
+export const useCounterStore = defineStore('counter', () => {
+  const count = ref(0)
+  const doubleCount = computed(() => count.value * 2)
+  function increment() {
+    count.value++
+  }
+
+  return { count, doubleCount, increment }
+
 })
