@@ -1,5 +1,14 @@
+<script setup>
+import LaTrinidadBanner from '@/components/LaTrinidadBanner.vue';
+
+</script>
+
 <template>
+  <LaTrinidadBanner>
+  </LaTrinidadBanner>
+
   <div class="about">
+
     <h1>This is an about page</h1>
   </div>
 </template>
