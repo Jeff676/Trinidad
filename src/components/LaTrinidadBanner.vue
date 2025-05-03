@@ -1,9 +1,38 @@
-<!-- coigo generado por deepseek revisr -->
+<script setup>
+const doctorsBanner = [
+    {
+        name: 'Dra. Yelitza Rondon',
+        specialty: 'Medicina General',
+        image: '../assets/Dra-Yelitza-Rondon.png',
+        socialMedia: '@DraYelitzaRondon'
+    },
+    {
+        name: 'Dra. Efigenia Farias',
+        specialty: 'Otorrinolaringología',
+        image: '../assets/Dra-Efigenia-Farias.png',
+        socialMedia: '@DraEfigeniaFarias'
+    },
+    {
+        name: 'Dra. Genesis Rivero',
+        specialty: 'Medicina General',
+        image: '../assets/Dra-Genesis-Rivero.png',
+        socialMedia: '@DraGenesisRivero'
+    },
+    {
+        name: 'Dra. Marielbys Guerra',
+        specialty: 'Medicina General',
+        image: '../assets/Dra-Marielbys-Guerra.png',
+        socialMedia: '@DraMarielbysGuerra'
+    },
+]
+
+</script>
+
 <template>
     <div class="la-trinidad-background">
         <div class="la-trinidad-content">
             <slot></slot> <!-- Para el contenido interno -->
-            <img src="../assets/logo-large.svg" alt="La Trinidad" style="width: 100%; height: auto;" />
+            <img src="../assets/logo-large.svg" alt="La Trinidad" style="width: 70%; height: auto;" />
             <div class="text-white flex align-items-start flex-column gap-2 mt-4 ml-8">
                 <div>DESCUBRE NUESTRO PLAN DE AFILIACION</div>
                 <div>Recibe multiples beneficios</div>
@@ -11,12 +40,20 @@
             </div>
             <div class="flex mt-4">
                 <Button severity="success" class="ml-8">Whatsapp</Button>
-                <InputText class="mx-2" placeholder="Escribe tu numeo de Whatsapp" />
+                <InputText class="mx-2" placeholder="+58 424 000 0000" />
                 <Button severity="success">Enviar</Button>
             </div>
         </div>
-        <div class="doctor-image">
-            <img src="../assets/doctor-1.png" alt="Doctor" style="height: 100%;" />
+        <div class="doctor-image fadeinright animation-duration-1000">
+            <img src="../assets/Dra-Genesis-Rivero.png" alt="Doctor" style="height: 100%;" />
+        </div>
+        <div class="directory-link fadeinright animation-duration-1000">
+            <span>@DraYelitzaRondon</span>
+        </div>
+        <div class="slogan">
+            <span>
+                Somos Tu Aliado en Salud!
+            </span>
         </div>
         <div class="semi-rombo"></div>
     </div>
@@ -29,7 +66,6 @@ export default {
 </script>
 
 <style scoped>
-/* En tu archivo de componentes o App.vue */
 .la-trinidad-background {
     background: linear-gradient(135deg, #1a3a8f 0%, #0d6e6e 100%);
     color: white;
@@ -43,6 +79,7 @@ export default {
     text-align: center;
     position: relative;
     overflow: hidden;
+    border-radius: 0 0 15px 15px;
 }
 
 .la-trinidad-background::before {
@@ -63,6 +100,31 @@ export default {
     width: auto;
     height: 95%;
     z-index: 1;
+}
+
+.directory-link {
+    position: absolute;
+    bottom: 10vh;
+    right: 5vw;
+    text-align: center;
+    font-size: 1.5rem;
+    color: white;
+    z-index: 2;
+    background-color: #1f993d;
+    border-radius: 15px;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+}
+
+.slogan {
+    position: absolute;
+    bottom: 5vh;
+    left: 5vw;
+    font-size: 2rem;
+    color: white;
+    z-index: 2;
+    border-radius: 15px;
+    padding: 1rem 1.5rem;
 }
 
 .semi-rombo {
@@ -89,7 +151,7 @@ export default {
 .la-trinidad-content {
     position: relative;
     z-index: 1;
-    max-width: 600px;
+    max-width: 50vw;
     padding: 2rem;
     border-radius: 15px;
     background-color: rgba(255, 255, 255, 0.1);
