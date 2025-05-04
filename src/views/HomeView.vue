@@ -27,37 +27,9 @@ const cards = [
 </script>
 
 <template>
-  <LaTrinidad-banner></LaTrinidad-banner>
+
   <div class="grid grid-nogutter">
-    <!-- <div class="col-12 grid grid-nogutter banner-ppl border-round-bottom-lg">
-      <div class="col-8">
-        <div class="text-start p-3">
-          <img src="../assets/logo-large.svg" alt="Logo" class="w-8">
-        </div>
-        <div class="ml-8 text-white">
-          <h2>DESCUBRE NUESTRO PLAN DE AFILIACION</h2>
-          <h3>Recibe multiples beneficios</h3>
-          <h3>Totalmente GRATIS!</h3>
-        </div>
-        <div class="flex">
-          <Button severity="success" class="ml-8">Whatsapp</Button>
-          <InputText class="mx-2" placeholder="Escribe tu numeo de Whatsapp" />
-          <Button severity="success">Enviar</Button>
-        </div>
-        <div class="polig">
-          <div class="m-5">
-            <h1>Somos su aliado en</h1>
-            <h1>el cuidado de la salud</h1> 
-          </div>
-        </div>
-      </div>
-      <div class="col-4 ">
-         <div class="bg-blue-300 h-full">3</div> 
-        <div class="p-0 flex align-items-end min-h-full">
-          <img src="../assets/doctor-1.png" alt="Logo" class="w-full">
-        </div>
-      </div>
-    </div> -->
+    <LaTrinidad-banner />
 
     <div class="col-12 p-8 text-center somos">
       <h2>En La Unidad Quirúrgica La Trinidad nos dedicamos a brindar servicios de </h2></br>
@@ -67,18 +39,8 @@ const cards = [
     </div>
 
     <div class="col-12 flex justify-content-center">
-      <!-- <Card v-for="(card, index) in cards" :key="index" class="m-2">
-        <template #content class="flex flex-column align-items-center">
-          <font-awesome-icon :icon="card.icon" size="2xl" />
-          <p>{{ card.content }}</p>
-          <button class="button-ppl">{{ card.buttonLabel }}</button>
-          <Button severity="success">{{ card.buttonLabel }}</Button>
-        </template>
-</Card> -->
-
       <div v-for="(card, index) in cards" :key="index" class="col-3 somos p-6">
         <font-awesome-icon :icon="card.icon" size="2xl" />
-        <!-- <font-awesome-icon :icon="['fas', 'comment-dollar']" /> -->
         <h3>{{ card.content }}</h3>
         <button class="button-ppl">{{ card.buttonLabel }}</button>
       </div>

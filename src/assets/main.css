@@ -123,7 +123,7 @@
   cursor: pointer;
 }
 
-a.WhatsApp {
+/* a.WhatsApp {
   display: block;
   position: fixed;
   z-index: 1000;
@@ -132,16 +132,17 @@ a.WhatsApp {
   border-radius: 50%;
 
   text-decoration: none;
-  background: #f9fcff;
+  background: var(--life);
+  color: #25d366;
   padding: 22px;
-}
+} */
 
-a.WhatsApp img {
+/* a.WhatsApp img {
   display: block;
   width: 100px;
   height: 100px;
   margin: auto;
-}
+} */
 
 /* PALETA DE COLORES PARA BACKGROUNDS EN DIVS Y OTROS COMPONENTES FUERA DE PRIMEVUE */
 .bg-vitality {
