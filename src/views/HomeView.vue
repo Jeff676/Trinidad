@@ -65,15 +65,6 @@ const cards = [
     </div>
 
     <div class="col-12 flex justify-content-center">
-      <!-- <Card v-for="(card, index) in cards" :key="index" class="m-2">
-        <template #content class="flex flex-column align-items-center">
-          <font-awesome-icon :icon="card.icon" size="2xl" />
-          <p>{{ card.content }}</p>
-          <button class="button-ppl">{{ card.buttonLabel }}</button>
-          <Button severity="success">{{ card.buttonLabel }}</Button>
-        </template>
-      </Card> -->
-
         <div v-for="(card, index) in cards" :key="index" class="col-3 somos p-6">
           <font-awesome-icon :icon="card.icon" size="2xl" />
           <!-- <font-awesome-icon :icon="['fas', 'comment-dollar']" /> -->
