@@ -97,3 +97,5 @@ const allDoctorsParam = async (speciality) => {
     </div>
 
 </template>
+
+    
