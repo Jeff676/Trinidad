@@ -9,7 +9,14 @@
 }
 
 .nav-ppl {
-  background: #0a2e4c;
+  background: #0a2e4c !important;
+  button{
+    color: #fff;
+  }
+  ul{
+    background: #0a2e4c !important;
+    color: #fff;
+  }
 }
 
 .somos {

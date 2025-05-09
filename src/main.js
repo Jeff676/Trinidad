@@ -17,10 +17,12 @@ import InputText from 'primevue/inputtext'
 import Card from 'primevue/card'
 import Checkbox from 'primevue/checkbox'
 import Password from 'primevue/password'
-import ToastService from 'primevue/toastservice';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
-
+import ProgressSpinner from 'primevue/progressspinner';
+import Menubar from 'primevue/menubar';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 
 import App from './App.vue'
 import router from './router'
@@ -46,13 +48,16 @@ pinia.use(({ store }) => {
 app.component('Button', Button)
 app.component('Avatar', Avatar)
 app.component('OverlayBadge', OverlayBadge)
+app.component('IconField', IconField)
+app.component('InputIcon', InputIcon)
 app.component('InputText', InputText)
 app.component('Card', Card)
 app.component('Checkbox', Checkbox)
 app.component('Password', Password)
-app.component('IconField', IconField)
-app.component('InputIcon', InputIcon)
-app.component('ToastService', ToastService)
+app.component('ProgressSpinner', ProgressSpinner)
+app.component('Menubar', Menubar)
+app.component('DataTable', DataTable)
+app.component('Column', Column)
 
 // ** PrimeVue Config **//
 // ** Customized Preset **//
