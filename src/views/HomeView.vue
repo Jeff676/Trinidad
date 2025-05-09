@@ -1,4 +1,5 @@
 <script setup>
+import LaTrinidadBanner from '@/components/LaTrinidadBanner.vue';
 
 const cards = [
   {
@@ -26,36 +27,9 @@ const cards = [
 </script>
 
 <template>
+
   <div class="grid grid-nogutter">
-    <div class="col-12 grid grid-nogutter banner-ppl border-round-bottom-lg">
-      <div class="col-8">
-        <div class="text-start p-3">
-          <img src="../assets/logo-large.svg" alt="Logo" class="w-8">
-        </div>
-        <div class="ml-8 text-white">
-          <h2>DESCUBRE NUESTRO PLAN DE AFILIACION</h2>
-          <h3>Recibe multiples beneficios</h3>
-          <h3>Totalmente GRATIS!</h3>
-        </div>
-        <div class="flex">
-          <Button severity="success" class="ml-8">Whatsapp</Button>
-          <InputText class="mx-2" placeholder="Escribe tu numeo de Whatsapp" />
-          <Button severity="success">Enviar</Button>
-        </div>
-        <div class="polig">
-          <div class="m-5">
-            <h1>Somos su aliado en</h1>
-            <h1>el cuidado de la salud</h1> 
-          </div>
-        </div>
-      </div>
-      <div class="col-4 ">
-        <!-- <div class="bg-blue-300 h-full">3</div> -->
-        <div class="p-0 flex align-items-end min-h-full">
-          <img src="../assets/doctor-1.png" alt="Logo" class="w-full">
-        </div>
-      </div>
-    </div>
+    <LaTrinidad-banner />
 
     <div class="col-12 p-8 text-center somos">
       <h2>En La Unidad Quirúrgica La Trinidad nos dedicamos a brindar servicios de </h2></br>
@@ -65,12 +39,20 @@ const cards = [
     </div>
 
     <div class="col-12 flex justify-content-center">
+<<<<<<< HEAD
         <div v-for="(card, index) in cards" :key="index" class="col-3 somos p-6">
           <font-awesome-icon :icon="card.icon" size="2xl" />
           <!-- <font-awesome-icon :icon="['fas', 'comment-dollar']" /> -->
           <h3>{{ card.content }}</h3>
           <button class="button-ppl">{{ card.buttonLabel }}</button>
         </div>
+=======
+      <div v-for="(card, index) in cards" :key="index" class="col-3 somos p-6">
+        <font-awesome-icon :icon="card.icon" size="2xl" />
+        <h3>{{ card.content }}</h3>
+        <button class="button-ppl">{{ card.buttonLabel }}</button>
+      </div>
+>>>>>>> master
     </div>
 
     <div class="col-12 p-8 text-center somos testimonials">
@@ -85,7 +67,9 @@ const cards = [
       <div class="col-12 text-center somos">
         <img src="../assets/nurse_1.png" alt="" class="w-3">
         <h2>Nuestro Equipo de Medicos Residentes Está Listo para Atenderte</h2>
-        <h2><RouterLink to="/directory" class="text-white no-underline">Conocelos Aqui...</RouterLink></h2>
+        <h2>
+          <RouterLink to="/directory" class="text-white no-underline">Conocelos Aqui...</RouterLink>
+        </h2>
       </div>
     </div>
 
@@ -98,7 +82,7 @@ const cards = [
           <h1>Enfermería</h1>
           <h2>Contamos con un selecto equipo </h2>
           <h2>de enfermería, siempre dispuesto </h2>
-          <h2>a atenderte con la atención que</h2> 
+          <h2>a atenderte con la atención que</h2>
           <h2>siempre nos ha caracterizado.</h2>
           <br>
           <h2>¿Quieres ser parte del equipo? </h2>
@@ -108,6 +92,6 @@ const cards = [
 
     </div>
 
-    
+
   </div>
 </template>

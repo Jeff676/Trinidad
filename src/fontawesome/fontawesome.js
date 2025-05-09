@@ -29,6 +29,8 @@ import {
 
 import { faCircleUser, faBell, faClock } from '@fortawesome/free-regular-svg-icons'
 
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+
 library.add(
   faHospitalUser,
   faClipboardList,
@@ -57,4 +59,5 @@ library.add(
   faMagnifyingGlass,
   faBell,
   faClock,
+  faWhatsapp,
 )
