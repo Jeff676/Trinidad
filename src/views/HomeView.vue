@@ -39,20 +39,11 @@ const cards = [
     </div>
 
     <div class="col-12 flex justify-content-center">
-<<<<<<< HEAD
-        <div v-for="(card, index) in cards" :key="index" class="col-3 somos p-6">
-          <font-awesome-icon :icon="card.icon" size="2xl" />
-          <!-- <font-awesome-icon :icon="['fas', 'comment-dollar']" /> -->
-          <h3>{{ card.content }}</h3>
-          <button class="button-ppl">{{ card.buttonLabel }}</button>
-        </div>
-=======
       <div v-for="(card, index) in cards" :key="index" class="col-3 somos p-6">
         <font-awesome-icon :icon="card.icon" size="2xl" />
         <h3>{{ card.content }}</h3>
         <button class="button-ppl">{{ card.buttonLabel }}</button>
       </div>
->>>>>>> master
     </div>
 
     <div class="col-12 p-8 text-center somos testimonials">
