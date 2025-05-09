@@ -18,6 +18,8 @@ import Card from 'primevue/card'
 import Checkbox from 'primevue/checkbox'
 import Password from 'primevue/password'
 import ToastService from 'primevue/toastservice';
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
 
 
 import App from './App.vue'
@@ -48,7 +50,9 @@ app.component('InputText', InputText)
 app.component('Card', Card)
 app.component('Checkbox', Checkbox)
 app.component('Password', Password)
-
+app.component('IconField', IconField)
+app.component('InputIcon', InputIcon)
+app.component('ToastService', ToastService)
 
 // ** PrimeVue Config **//
 // ** Customized Preset **//
@@ -119,7 +123,6 @@ app.use(PrimeVue, {
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('fa ', FontAwesomeIcon)
 
-app.use(ToastService);
 app.use(pinia)
 app.use(router)
 app.mount('#app')
