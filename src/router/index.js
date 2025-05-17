@@ -56,37 +56,49 @@ const router = createRouter({
       path: '/panel',
       name: 'panel',
       component: () => import('../views/PanelView.vue'),
-      meta: {
-        requiresAuth: true,
-      },
+      children: [
+        {
+          path: '/patients',
+          name: 'patients',
+          component: () => import('../views/panel/Patients.vue'),
+        },
+        {
+          path: '/doctors',
+          name: 'doctors',
+          component: () => import('../views/panel/Doctors.vue'),
+        },
+      ],
+      // meta: {
+      //   requiresAuth: true,
+      // },
     },
   ],
 })
 
 const getCurrentUser = () => {
-  return new Promise(( resolve, reject ) =>{
+  return new Promise((resolve, reject) => {
     const removeListener = onAuthStateChanged(
       getAuth(),
       (user) => {
-        removeListener();
+        removeListener()
         resolve(user)
       },
-      reject
+      reject,
     )
   })
 }
 
-router.beforeEach( async (to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth)){
-    if (await getCurrentUser()){
-      next();
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (await getCurrentUser()) {
+      next()
     } else {
-      alert("No tienes acceso");
-      next('/');
+      alert('No tienes acceso')
+      next('/')
     }
   } else {
-    next();
+    next()
   }
-});
+})
 
 export default router
