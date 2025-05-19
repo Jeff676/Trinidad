@@ -13,12 +13,31 @@ import '/node_modules/primeflex/primeflex.css'
 import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
 import OverlayBadge from 'primevue/overlaybadge'
+import { Form, FormField } from '@primevue/forms'
 import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
+import SelectButton from 'primevue/selectbutton'
+import InputGroup from 'primevue/inputgroup'
+import InputGroupAddon from 'primevue/inputgroupaddon'
+import FloatLabel from 'primevue/floatlabel'
+import Divider from 'primevue/divider'
+import DatePicker from 'primevue/datepicker'
+import ToggleButton from 'primevue/togglebutton'
 import Card from 'primevue/card'
 import Checkbox from 'primevue/checkbox'
 import Password from 'primevue/password'
-import ToastService from 'primevue/toastservice';
-
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import ProgressSpinner from 'primevue/progressspinner'
+import Menubar from 'primevue/menubar'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import MultiSelect from 'primevue/multiselect'
+import Tag from 'primevue/tag'
+import Select from 'primevue/select'
+import Dialog from 'primevue/dialog'
+import Message from 'primevue/message'
+import Badge from 'primevue/badge'
 
 import App from './App.vue'
 import router from './router'
@@ -44,20 +63,42 @@ pinia.use(({ store }) => {
 app.component('Button', Button)
 app.component('Avatar', Avatar)
 app.component('OverlayBadge', OverlayBadge)
+app.component('IconField', IconField)
+app.component('InputIcon', InputIcon)
 app.component('InputText', InputText)
 app.component('Card', Card)
 app.component('Checkbox', Checkbox)
 app.component('Password', Password)
-
+app.component('ProgressSpinner', ProgressSpinner)
+app.component('Menubar', Menubar)
+app.component('DataTable', DataTable)
+app.component('Column', Column)
+app.component('MultiSelect', MultiSelect)
+app.component('Tag', Tag)
+app.component('Select', Select)
+app.component('Dialog', Dialog)
+app.component('Message', Message)
+app.component('Form', Form)
+app.component('FormField', FormField)
+app.component('InputNumber', InputNumber)
+app.component('SelectButton', SelectButton)
+app.component('InputGroup', InputGroup)
+app.component('InputGroupAddon', InputGroupAddon)
+app.component('FloatLabel', FloatLabel)
+app.component('Divider', Divider)
+app.component('DatePicker', DatePicker)
+app.component('ToggleButton', ToggleButton)
+app.component('Badge', Badge)
 
 // ** PrimeVue Config **//
 // ** Customized Preset **//
 const vitality = '#0A2E4C'
-const hope = '#004A87'
-const welfare = '#03A5A5'
+const welfare = '#004a87'
+const hope = '#03a5a5'
 const health = '#01B0FE'
 const life = '#ffffff'
 const shadow = '#CBCBCB'
+const danger = '#ff0000'
 
 // ** Dark Mode Preset **//
 const vitalityDark = '#71D49E'
@@ -87,10 +128,13 @@ const MyPreset = definePreset(Material, {
     button: {
       colorScheme: {
         light: {
-          primaryBackground: hope,
-          primaryHoverBackground: vitality,
+          primaryBackground: welfare,
+          primaryHoverBackground: shadow,
           outlinedPrimaryBorderColor: welfare,
           // outlinedPrimaryHoverBackground: vitality,
+          secondaryBackground: hope,
+          secondaryHoverBackground: shadow,
+          secondaryColor: life,
         },
         dark: {
           primaryBackground: vitalityDark,
@@ -119,7 +163,6 @@ app.use(PrimeVue, {
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('fa ', FontAwesomeIcon)
 
-app.use(ToastService);
 app.use(pinia)
 app.use(router)
 app.mount('#app')

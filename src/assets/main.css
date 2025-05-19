@@ -1,4 +1,4 @@
-#app {
+* {
   font-family: 'alibaba-sans', sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -9,7 +9,14 @@
 }
 
 .nav-ppl {
-  background: #0a2e4c;
+  background: #0a2e4c !important;
+  button {
+    color: #fff;
+  }
+  ul {
+    background: #0a2e4c !important;
+    color: #fff;
+  }
 }
 
 .somos {
@@ -188,6 +195,7 @@
   --health: #01b0fe; /* soft color backgrounds */
   --life: #ffffff; /* white */
   --shadow: #cbcbcb; /* dark color for text or contrast */
+  --danger: #ff0000; /* red */
 
   --body-bg: var(--health);
   --card-bg: var(--p-surface-50);
