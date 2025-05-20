@@ -17,6 +17,18 @@
     background: #0a2e4c !important;
     color: #fff;
   }
+  a:hover {
+      background-color: #0a2e4c !important;
+  }
+  .p-menubar-item:hover {
+    background-color: #0a2e4c !important;
+  }
+  .p-menubar-item-content:hover {
+    background-color: #0a2e4c !important;
+  }
+  span:hover {
+    background-color: #0a2e4c !important;
+  }
 }
 
 .somos {
@@ -28,6 +40,12 @@
   }
   svg {
     height: 4em;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .somos {
+    text-align: center !important;
   }
 }
 

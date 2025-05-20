@@ -6,6 +6,8 @@ import { getDoctors, getSpecialities, getDoctorsFind } from '../firebase/doctors
 var doctors = ref([])
 var specialities = ref([])
 const search = ref(null);
+const loadDoctors = ref(false);
+const error = ref(null);
 
 onMounted(async () => {
     doctors.value = await getDoctors()
@@ -13,12 +15,33 @@ onMounted(async () => {
 })
 
 const all = async () => {
-    doctors.value = await getDoctors()
-}
+    loadDoctors.value = true;
+      try {
+        doctors.value = await getDoctors()
+        if (!doctors.ok) {
+          throw new Error('Network response was not ok');
+        }
+      } catch (err) {
+        error.value = err.message;
+      } finally {
+        loadDoctors.value = false;
+      }
+};
+
+
 const allDoctorsParam = async (speciality) => {
-    console.log(speciality)
-    doctors.value = await getDoctorsFind(speciality)
-}
+      loadDoctors.value = true;
+      try {
+        doctors.value = await getDoctorsFind(speciality)
+        if (!doctors.ok) {
+          throw new Error('Network response was not ok');
+        }
+      } catch (err) {
+        error.value = err.message;
+      } finally {
+        loadDoctors.value = false;
+      }
+    };
 </script>
 
 <template>
@@ -30,7 +53,7 @@ const allDoctorsParam = async (speciality) => {
             </div>
         </div>
         <div class="col-12 md:col-4 lg:col-4">
-            <div class="text-center p-3 ">
+            <div class="p-3 ">
                 <IconField class="p-1">
                     <InputIcon class="pi pi-search" />
                     <InputText v-model="search" placeholder="Buscar..." autocomplete="off" style="width: 90%;"/>
@@ -40,12 +63,10 @@ const allDoctorsParam = async (speciality) => {
         
     </div>
 
-    <div class="grid">
-        <div class="col-12 md:col-4 lg:col-1 somos text-center">
-            <Button severity="secondary" v-on:click="all" style="width: 90%;">TODAS</Button>
-        </div>
-        <div v-for="(speciality, index) in specialities" :key="index" class="col-12 md:col-4 lg:col-1 somos text-center">
-            <Button severity="secondary" v-on:click="allDoctorsParam( speciality.name )" style="width: 90%;">{{ speciality.name.toUpperCase() }}</Button>
+    <div class="">
+        <div class="flex somos text-center">
+            <Button v-if="specialities.length != 0"severity="secondary" v-on:click="all" style="width: 60%; margin-left: 10px; margin-right: 10px;">TODAS</Button>
+            <Button v-for="(speciality, index) in specialities" :key="index" severity="secondary" v-on:click="allDoctorsParam( speciality.name )" style="width: 60%; margin-left: 10px; margin-right: 10px;">{{ speciality.name.toUpperCase() }}</Button>
         </div>
     </div>
     
@@ -60,7 +81,7 @@ const allDoctorsParam = async (speciality) => {
 
     <div class="grid">
         <div class="col-12 p-3 text-center somos">
-            <ProgressSpinner v-if="doctors.length == 0"/>
+            <ProgressSpinner v-if="loadDoctors"/>
         </div>
     </div>
 
@@ -74,21 +95,22 @@ const allDoctorsParam = async (speciality) => {
         <div v-for="(doctor, index) in doctors" :key="index" class="col-12 md:col-6 lg:col-3 somos">
             <Card style="overflow: hidden; background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto;">
                 <template #content class="flex flex-column align-items-center">
-                    <!-- <img :src="`../../public/Dra-Marielbys-Guerra.png`" alt="" style="width: 50px; height: 60px;"> -->
                     <div class="flex">
                         <div>
                             <h3>DR. {{ doctor.name.toUpperCase() }}</h3>
                             <h3>{{ doctor.lastname.toUpperCase() }}</h3>
                             <p>{{ doctor.speciality.toUpperCase() }}</p>
-                            <p><font-awesome-icon :icon="['fas', 'clock']" style="width: 20px;"/>{{ doctor.experience.toUpperCase() }}</p>
+                            <p class="experiencia">
+                                <font-awesome-icon :icon="['fas', 'clock']" style="width: 30px;"/>{{ doctor.experience.toUpperCase() }}
+                            </p>
                         </div>
                         <div>
                             <img :src="`../../public/Dra-Marielbys-Guerra.png`" alt="" style="width: 100%; height: 100%;">
                         </div>
                     </div>
-                    <div class="text-center">
-                        <Button class="p-3" label="Ver más" icon="pi pi-user" severity="secondary"></Button>
-                        <Button class="p-3" label="Agendar" icon="pi pi-check" iconPos="right" severity="success"></Button>
+                    <div class="text-center content-buttons">
+                        <Button class="p-3" label="Ver más" icon="pi pi-video" severity="secondary" style="margin-right: 10px;"></Button>
+                        <Button class="p-3" label="Agendar" icon="pi pi-calendar" iconPos="right" severity="success"></Button>
                     </div>
                     
                 </template>
@@ -98,4 +120,26 @@ const allDoctorsParam = async (speciality) => {
 
 </template>
 
-    
+<style>
+.content-buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:80px;
+    border: 1px solid white;
+    position: relative;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.experiencia{
+    display: flex;
+    align-items: center;
+}
+</style>

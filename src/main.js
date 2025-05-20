@@ -23,6 +23,7 @@ import ProgressSpinner from 'primevue/progressspinner';
 import Menubar from 'primevue/menubar';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import 'primeicons/primeicons.css'
 
 import App from './App.vue'
 import router from './router'
