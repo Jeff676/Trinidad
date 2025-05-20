@@ -7,7 +7,6 @@ import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
 import Material from '@primeuix/themes/material'
 import { definePreset } from '@primeuix/themes'
-import '/node_modules/primeflex/primeflex.css'
 
 //** PrimeVue Components **//
 import Button from 'primevue/button'

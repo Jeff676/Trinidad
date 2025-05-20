@@ -6,6 +6,7 @@ import { auth } from './firebase/init'
 import FloatingElement from './components/FloatingElement.vue'
 import Footer from './components/Footer.vue'
 import NavMenu from './components/NavMenu.vue'
+import "tailwindcss";
 
 const userStore = useUserStore();
 

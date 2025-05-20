@@ -111,6 +111,8 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+@import "tailwindcss";
+
 .la-trinidad-background {
     background: linear-gradient(135deg, #1a3a8f 0%, #0d6e6e 100%);
     color: white;
