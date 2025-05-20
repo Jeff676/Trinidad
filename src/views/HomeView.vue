@@ -30,31 +30,6 @@ const cards = [
   <div class="grid grid-nogutter">
     <LaTrinidad-banner />
 
-    <!-- <div class="col-12 p-8 text-center somos">
-      <h2>En La Unidad Quirúrgica La Trinidad nos dedicamos a brindar servicios de </h2></br>
-      <h2>salud integrales con los más altos estándares de calidad. Contamos con </h2></br>
-      <h2>tecnología de vanguardia, un equipo médico altamente calificado y un </h2></br>
-      <h2>enfoque centrado en el bienestar del paciente</h2>
-    </div>
-
-    <div class="p-grid flex justify-content-center">
-      <div v-for="(card, index) in cards" :key="index" class="col-3 somos p-6">
-        <font-awesome-icon :icon="card.icon" size="2xl" />
-        <h3>{{ card.content }}</h3>
-        <button class="button-ppl">{{ card.buttonLabel }}</button>
-      </div>
-    </div>
-
-    <div class="col-12 p-8 text-center somos testimonials">
-      <h2>Excelente Servicio, muy buena atencion, todo el personal fue muy amable en mi </h2>
-      <h2>estadia, desde el vigilante hasta el especialista...</h2>
-      <br>
-      <h2 class="text-right">Paciente Feliz</h2>
-
-    </div>
-
-    -->
-
     <div class="grid w-full mx-1 p-0">
       <div class="col-12 md:col-12 lg:col-12 p-8 text-center somos">
         <h2>En La Unidad Quirúrgica La Trinidad nos dedicamos a brindar servicios de </h2></br>
