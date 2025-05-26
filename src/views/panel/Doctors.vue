@@ -168,7 +168,7 @@ const onFormSubmit = ({ valid, values }) => {
             v-model:selection="selectedDoctor" @row-select="onRowSelect" :sortOrder="1"
             :globalFilterFields="['name', 'specialty', 'phone', 'email']">
             <template #header>
-                <div class="flex justify-content-between">
+                <div class=" justify-content-between">
                     <div class="flex align-items-center gap-2">
                         <div
                             class="bg-vitality text-white border-circle w-4rem h-4rem flex align-items-center justify-content-center">

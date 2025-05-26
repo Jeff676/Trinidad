@@ -225,3 +225,8 @@
   --body-bg: var(--shadow);
   --card-bg: var(--vitality);
 }
+
+h1{
+  font-size: 30px;
+  font-weight: bold;
+}
