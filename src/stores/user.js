@@ -22,7 +22,8 @@ export const useUserStore = defineStore('user', {
         return;
       }
       this.$router.push('/panel')
-      console.log('usuario logeado.!')
+      useUserStore.user = email
+      console.log('usuario logeado.!', useUserStore.user)
     },
 
     logout() {

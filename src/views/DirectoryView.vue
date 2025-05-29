@@ -42,25 +42,23 @@ const allDoctorsParam = async (speciality) => {
         loadDoctors.value = false;
       }
     };
+
 </script>
 
 <template>
 
-    <div class="grid">
-        <div class="col-12 md:col-8 lg:col-8">
-            <div class="">
-                <h1>DIRECTORIO MEDICO</h1>
-            </div>
+    <div class="p-4 flex justify-content-between">
+        <div class="flex align-items-center gap-2 somos">
+            <h1>DIRECTORIO MEDICO</h1>
         </div>
-        <div class="col-12 md:col-4 lg:col-4">
-            <div class="p-3 ">
-                <IconField class="p-1">
-                    <InputIcon class="pi pi-search" />
-                    <InputText v-model="search" placeholder="Buscar..." autocomplete="off" style="width: 90%;"/>
-                </IconField>
-            </div>
+        <div class="flex align-items-center gap-2">
+            <IconField>
+                <InputIcon>
+                    <font-awesome-icon icon="magnifying-glass" />
+                </InputIcon>
+                <InputText  placeholder="Buscar" />
+            </IconField>
         </div>
-        
     </div>
 
     <div class="">
@@ -70,7 +68,7 @@ const allDoctorsParam = async (speciality) => {
         </div>
     </div>
     
-    <div class="grid">
+    <div class="">
         <div class="col-12 p-3 text-center somos">
             <h2>Los médicos de La Unidad Quirúrgica La Trinidad son profesionales confiables </h2></br>
             <h2>con experiencia certificada que estan dispuesto para su mejor atención </h2></br>
@@ -79,19 +77,44 @@ const allDoctorsParam = async (speciality) => {
         </div>
     </div>
 
-    <div class="grid">
+    <div class="">
         <div class="col-12 p-3 text-center somos">
             <ProgressSpinner v-if="loadDoctors"/>
         </div>
     </div>
 
-    <div class="grid">
+    <div class="">
         <div class="col-12 p-3 text-center somos" v-if="doctors.length == 0">
             <h2><i>No hay resultados para mostrar.</i></h2>
         </div>
     </div>
 
-    <div class="grid p-4">
+    <div  class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card v-for="(doctor, index) in doctors" :key="index" style="overflow: hidden; background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto;">
+            <template #content class="">
+                <div class="flex">
+                    <div>
+                        <h3>DR. {{ doctor.name.toUpperCase() }}</h3>
+                        <h3>{{ doctor.lastname.toUpperCase() }}</h3>
+                        <p>{{ doctor.speciality.toUpperCase() }}</p>
+                        <p class="experiencia">
+                            <font-awesome-icon :icon="['fas', 'clock']" style="width: 30px;"/>{{ doctor.experience.toUpperCase() }}
+                        </p>
+                    </div>
+                    <div>
+                        <img :src="`../../public/Dra-Marielbys-Guerra.png`" alt="" style="width: 100%; height: 100%;">
+                    </div>
+                </div>
+                <div class="text-center content-buttons">
+                    <Button class="p-3" label="Ver más" icon="pi pi-video" severity="secondary" style="margin-right: 10px;"></Button>
+                    <Button class="p-3" label="Agendar" icon="pi pi-calendar" iconPos="right" severity="success"></Button>
+                </div>
+                
+            </template>
+        </Card>
+    </div>
+
+    <!-- <div class="p-4">
         <div v-for="(doctor, index) in doctors" :key="index" class="col-12 md:col-6 lg:col-3 somos">
             <Card style="overflow: hidden; background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto;">
                 <template #content class="flex flex-column align-items-center">
@@ -116,7 +139,7 @@ const allDoctorsParam = async (speciality) => {
                 </template>
             </Card>
         </div>        
-    </div>
+    </div> -->
 
 </template>
 

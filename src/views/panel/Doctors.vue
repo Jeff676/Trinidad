@@ -168,7 +168,7 @@ const onFormSubmit = ({ valid, values }) => {
             v-model:selection="selectedDoctor" @row-select="onRowSelect" :sortOrder="1"
             :globalFilterFields="['name', 'specialty', 'phone', 'email']">
             <template #header>
-                <div class=" justify-content-between">
+                <div class="flex justify-content-between">
                     <div class="flex align-items-center gap-2">
                         <div
                             class="bg-vitality text-white border-circle w-4rem h-4rem flex align-items-center justify-content-center">
@@ -238,7 +238,7 @@ const onFormSubmit = ({ valid, values }) => {
                 </FormField>
 
                 <FormField v-slot="$field" name="patientId" initialValue="">
-                    <InputText placeholder="Cedula del Medico" type="text" />
+                    <InputText placeholder="Cédula del Médico" type="text" />
                     <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
                         {{ $field.error.message }}
                     </Message>
@@ -270,7 +270,7 @@ const onFormSubmit = ({ valid, values }) => {
                 </FormField>
             </div>
 
-            <div class="flex gap-2">
+            <!-- <div class="flex gap-2">
                 <FormField class="flex-1" v-slot="$field" name="cmv" initialValue="">
                     <FloatLabel>
                         <label for="cmvInput">CMV</label>
@@ -421,7 +421,7 @@ const onFormSubmit = ({ valid, values }) => {
                     </FloatLabel>
 
                 </FormField>
-            </div>
+            </div> -->
 
             <div class="flex justify-content-end gap-2">
                 <Button type="submit" label="Guardar" :disabled="blockInputs" class="w-full" />

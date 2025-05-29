@@ -49,11 +49,9 @@ const items = ref([
 
     <nav v-if="userStore.isLoggedIn"
         class="col-12 flex justify-content-end align-items-center nav-ppl border-round-top-lg my-0">
-        <div class="flex gap-3 align-items-center m-0">
-            <RouterLink to="/panel" class="text-white no-underline" style="margin-left: 20px; font-size: 24px;">Panel
-            </RouterLink>
-            <RouterLink to="/doctors" class="text-white no-underline" style="margin-left: 20px; font-size: 24px;">
-                Doctores
+        <div class="flex gap-3 align-items-center m-1">
+            <RouterLink to="" class="text-white no-underline" style="margin-left: 20px; font-size: 24px;">
+                {{ userStore.user }}
             </RouterLink>
             <RouterLink to="#" class="text-white no-underline" style="margin-left: 20px; font-size: 24px;">
                 <span @click="userStore.logout">Salir</span>
