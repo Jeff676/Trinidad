@@ -1,5 +1,8 @@
+<script setup>
+import PageUnderConstruction from '@/components/PageUnderConstruction.vue'
+
+</script>
+
 <template>
-    <h1>
-        Contac Page
-    </h1>
+    <PageUnderConstruction title="Contactos" />
 </template>
