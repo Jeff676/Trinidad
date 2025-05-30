@@ -152,6 +152,7 @@ const MyPreset = definePreset(Material, {
           itemFocusBackground: welfare,
           borderColor: '#AARRGGBB',
           borderRadius: '0px',
+          submenuBackground: vitality,
         },
         dark: {
           background: vitalityDark,

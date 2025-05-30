@@ -6,7 +6,7 @@ const props = defineProps(['title'])
     <div class="w-full p-5 text-center text-lg/8 md:text-2xl pt-20 relative overflow-hidden mt-5">
         <img src="../assets/logo-large-blue.svg" alt="La Trinidad Logo" class="mx-auto w-3/5 md:w-1/5 mb-1" />
         <div class="bg-hope w-70 h-2 mx-auto mb-4"></div>
-        <div class="text-white bg-hope rounded w-1/4 m-auto p-5 my-5 text-6xl">{{ props.title }}</div>
+        <div class="text-white bg-hope rounded w-1/4 m-auto p-5 my-5 text-3xl md:text-6xl">{{ props.title }}</div>
         <div class="border-4 border-sky-800 mx-2 md:mx-60 rounded-4xl p-5">
             Pagina en Construcción
             <div class="text-white bg-vitality rounded w-1/4 m-auto my-2">Muy PRONTO</div>
