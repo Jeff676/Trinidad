@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
+import { getDoctors, getSpecialities, getDoctorsFind, searchDirectory } from '../firebase/doctors'
 
-import { getDoctors, getSpecialities, getDoctorsFind } from '../firebase/doctors'
 
 var doctors = ref([])
 var specialities = ref([])
@@ -16,37 +16,54 @@ onMounted(async () => {
 
 const all = async () => {
     loadDoctors.value = true;
-      try {
-        doctors.value = await getDoctors()
-        if (!doctors.ok) {
-          throw new Error('Network response was not ok');
-        }
-      } catch (err) {
+    try {
+    doctors.value = await getDoctors()
+    if (!doctors.ok) {
+        throw new Error('Network response was not ok');
+    }
+    } catch (err) {
         error.value = err.message;
-      } finally {
+    } finally {
         loadDoctors.value = false;
-      }
+    }
 };
 
 
 const allDoctorsParam = async (speciality) => {
-      loadDoctors.value = true;
-      try {
-        doctors.value = await getDoctorsFind(speciality)
-        if (!doctors.ok) {
-          throw new Error('Network response was not ok');
-        }
-      } catch (err) {
+    loadDoctors.value = true;
+    try {
+    doctors.value = await getDoctorsFind(speciality)
+    if (!doctors.ok) {
+        throw new Error('Network response was not ok');
+    }
+    } catch (err) {
         error.value = err.message;
-      } finally {
+    } finally {
         loadDoctors.value = false;
-      }
-    };
+    }
+};
+
+const searchFilter = async () => {
+    loadDoctors.value = true;
+    try {
+        if(search.value == ''){
+            doctors.value = await getDoctors()
+        }else{
+            doctors.value = await searchDirectory(search.value)
+        }
+        if (!doctors.ok) {
+            throw new Error('Network response was not ok');
+        }
+    } catch (err) {
+        error.value = err.message;
+    } finally {
+        loadDoctors.value = false;
+    }
+};
 
 </script>
 
 <template>
-
     <div class="p-4 flex justify-content-between">
         <div class="flex align-items-center gap-2 somos">
             <h1>DIRECTORIO MEDICO</h1>
@@ -56,15 +73,15 @@ const allDoctorsParam = async (speciality) => {
                 <InputIcon>
                     <font-awesome-icon icon="magnifying-glass" />
                 </InputIcon>
-                <InputText  placeholder="Buscar" />
+                <InputText placeholder="Buscar" v-on:keyup="searchFilter()" v-model="search"/>
             </IconField>
         </div>
     </div>
 
     <div class="">
         <div class="flex somos text-center">
-            <Button v-if="specialities.length != 0"severity="secondary" v-on:click="all" style="width: 60%; margin-left: 10px; margin-right: 10px;">TODAS</Button>
-            <Button v-for="(speciality, index) in specialities" :key="index" severity="secondary" v-on:click="allDoctorsParam( speciality.name )" style="width: 60%; margin-left: 10px; margin-right: 10px;">{{ speciality.name.toUpperCase() }}</Button>
+            <Button v-if="specialities.length != 0"severity="secondary" v-on:click="all" style="width: 60%; margin-left: 10px; margin-right: 10px;" class="specialities">TODAS</Button>
+            <Button v-for="(speciality, index) in specialities" :key="index" severity="secondary" v-on:click="allDoctorsParam( speciality.name )" style="width: 60%; margin-left: 10px; margin-right: 10px;" class="specialities">{{ speciality.name.toUpperCase() }}</Button>
         </div>
     </div>
     
@@ -72,7 +89,7 @@ const allDoctorsParam = async (speciality) => {
         <div class="col-12 p-3 text-center somos">
             <h2>Los médicos de La Unidad Quirúrgica La Trinidad son profesionales confiables </h2></br>
             <h2>con experiencia certificada que estan dispuesto para su mejor atención </h2></br>
-            <h1>AGENDA UNA CONSULTA </h1></br>
+            <div><h1><label style="border-bottom: 6px solid green;">AGENDA UNA CONSULTA</label></h1></div></br>
             <h2>Haciendo click en el Icono <font-awesome-icon :icon="['fas', 'calendar-check']" style="height: 30px;"/></h2>
         </div>
     </div>
@@ -89,7 +106,7 @@ const allDoctorsParam = async (speciality) => {
         </div>
     </div>
 
-    <div  class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div  class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
         <Card v-for="(doctor, index) in doctors" :key="index" style="overflow: hidden; background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto;">
             <template #content class="">
                 <div class="flex">
@@ -113,33 +130,6 @@ const allDoctorsParam = async (speciality) => {
             </template>
         </Card>
     </div>
-
-    <!-- <div class="p-4">
-        <div v-for="(doctor, index) in doctors" :key="index" class="col-12 md:col-6 lg:col-3 somos">
-            <Card style="overflow: hidden; background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto;">
-                <template #content class="flex flex-column align-items-center">
-                    <div class="flex">
-                        <div>
-                            <h3>DR. {{ doctor.name.toUpperCase() }}</h3>
-                            <h3>{{ doctor.lastname.toUpperCase() }}</h3>
-                            <p>{{ doctor.speciality.toUpperCase() }}</p>
-                            <p class="experiencia">
-                                <font-awesome-icon :icon="['fas', 'clock']" style="width: 30px;"/>{{ doctor.experience.toUpperCase() }}
-                            </p>
-                        </div>
-                        <div>
-                            <img :src="`../../public/Dra-Marielbys-Guerra.png`" alt="" style="width: 100%; height: 100%;">
-                        </div>
-                    </div>
-                    <div class="text-center content-buttons">
-                        <Button class="p-3" label="Ver más" icon="pi pi-video" severity="secondary" style="margin-right: 10px;"></Button>
-                        <Button class="p-3" label="Agendar" icon="pi pi-calendar" iconPos="right" severity="success"></Button>
-                    </div>
-                    
-                </template>
-            </Card>
-        </div>        
-    </div> -->
 
 </template>
 

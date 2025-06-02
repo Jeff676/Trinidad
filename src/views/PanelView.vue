@@ -34,7 +34,7 @@ const setActive = (index) => {
 
 <template>
     <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-2 h-screen-left">
+        <div class="col-span-1 h-screen-left">
             <div class="bg-vitality h-full">
                 <div v-for="(item, index) in items" :key="index" @click="setActive(index)"
                     :class="{ 'active-menu-item': item.active }" class="cursor-pointer">
@@ -46,32 +46,13 @@ const setActive = (index) => {
                 </div>
             </div>
         </div>
-        <div class="col-span-10 h-screen-left">
+        <div class="col-span-11 h-screen-left">
             <div class="bg-life shadow-5 h-full">
                 <RouterView />
             </div>
         </div>       
     </div>
-
-    <!-- <div class="grid grid-nogutter">
-        <div class="col-1 h-screen-left">
-            <div class="bg-vitality h-full">
-                <div v-for="(item, index) in items" :key="index" @click="setActive(index)"
-                    :class="{ 'active-menu-item': item.active }" class="cursor-pointer">
-                    <RouterLink :to="`/${item.to}`"
-                        class="flex flex-column align-items-center justify-content-start p-3 text-white ">
-                        <font-awesome-icon :icon="item.icon" size="2xl" class="mb-2" />
-                        <span>{{ item.label }}</span>
-                    </RouterLink>
-                </div>
-            </div>
-        </div>
-        <div class="col-11 pt-1 pl-1 h-screen-left">
-            <div class="bg-life shadow-5 h-full">
-                <RouterView />
-            </div>
-        </div>
-    </div> -->
+    
 </template>
 
 <style>

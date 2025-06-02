@@ -39,7 +39,7 @@ const items = ref([
         class="justify-content-end align-items-center nav-ppl border-round-top-lg my-0">
         <template #item="{ item }">
             <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom
-                class="text-white no-underline" style="margin-left: 20px; font-size: 24px;">
+                class="text-white no-underline" style="margin-left: 10px; margin-right: 10px; font-size: 24px;">
                 <a v-ripple :href="href" @click="navigate">
                     <span>{{ item.label }}</span>
                 </a>
@@ -50,10 +50,10 @@ const items = ref([
     <nav v-if="userStore.isLoggedIn"
         class="col-12 flex justify-content-end align-items-center nav-ppl border-round-top-lg my-0">
         <div class="flex gap-3 align-items-center m-1">
-            <RouterLink to="" class="text-white no-underline" style="margin-left: 20px; font-size: 24px;">
+            <RouterLink to="" class="text-white no-underline" style="margin-left: 10px; margin-right: 10px; font-size: 24px;">
                 {{ userStore.user }}
             </RouterLink>
-            <RouterLink to="#" class="text-white no-underline" style="margin-left: 20px; font-size: 24px;">
+            <RouterLink to="#" class="text-white no-underline" style="margin-left: 10px; margin-right: 10px; font-size: 24px;">
                 <span @click="userStore.logout">Salir</span>
             </RouterLink>
         </div>

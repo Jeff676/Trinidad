@@ -11,7 +11,6 @@ const userStore = useUserStore();
 const login = () => {
   userStore.login(email.value, password.value);
 }
-console.log('***', auth)
 
 </script>
 
