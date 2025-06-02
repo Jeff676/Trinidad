@@ -1,6 +1,8 @@
+<script setup>
+import PageUnderConstruction from '@/components/PageUnderConstruction.vue'
+
+</script>
+
 <template>
-    <h1>
-        <font-awesome-icon icon="user-injured" size="2xl" />
-        Services Page
-    </h1>
+    <PageUnderConstruction title="Servicios" />
 </template>

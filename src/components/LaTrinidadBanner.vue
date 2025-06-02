@@ -69,44 +69,40 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="la-trinidad-background grid mx-1 w-full">
-        <div class="col-12 md:col-8 grid grid-nogutter p-0">
-            <div class="col-12">
-                <div class="la-trinidad-content max-w-max m-5 flex align-items-center flex-column">
+    <div class="la-trinidad-background grid w-full">
+        <div class="grid p-0">
+            <div class="grid grid-cols-1 md:grid-cols-3">
+                <div class="la-trinidad-content flex flex-col col-span-2 mx-4 md:mx-10 mt-10 mb-30">
                     <!-- <slot></slot>
                     Para el contenido interno -->
-                    <img src="../assets/logo-large.svg" alt="La Trinidad" style="width: 60%; height: auto;" />
-                    <div class="text-white flex align-items-start flex-column gap-2 mt-4 ml-8 w-full">
+                    <img src="../assets/logo-large.svg" alt="La Trinidad Logo" style="width: 70%; height: auto;" />
+                    <div class="flex flex-col mt-4 pl-10 w-full justify-start text-white">
                         <div>DESCUBRE NUESTRO PLAN DE AFILIACION</div>
                         <div>Recibe multiples beneficios</div>
                         <div>Totalmente GRATIS!</div>
-                        <div class="flex my-4">
-                            <Button severity="success" class="hidden md:block">Whatsapp</Button>
-                            <InputText class="mx-2" placeholder="+58 424 000 0000" />
-                            <Button severity="success">Enviar</Button>
+                    </div>
+                    <div class="flex justify-start my-4 pl-10">
+                        <Button severity="success" class="hidden md:block">Whatsapp</Button>
+                    </div>
+                </div>
+                <div class="p-0" style="min-height: 500px;">
+                    <div class="doctor-image fadeinright animation-duration-1000 flex flex-column justify-center"
+                        v-if="show">
+                        <img :src="`../../public/${currentItem.image}`" alt="Doctor"
+                            style="position:absolute; bottom: 0; max-height: 100%;" />
+                        <div class="directory-link">
+                            <a href="#">{{ currentItem.name }}</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12" style="min-height: 200px; position: relative;">
-                <div class="slogan">
-                    <span>
-                        Somos Tu Aliado en Salud!
-                    </span>
-                    <div class="semi-rombo"></div>
-                </div>
-            </div>
         </div>
-        <div class="col-12 md:col-4 p-0" style="min-height: 500px;">
-            <div class="doctor-image fadeinright animation-duration-1000 flex flex-column" v-if="show">
-                <img :src="`../../public/${currentItem.image}`" alt="Doctor"
-                    style="position:absolute; bottom: 0; max-height: 100%;" />
-                <div class="directory-link">
-                    <a href="#">{{ currentItem.name }}</a>
-                </div>
-            </div>
+        <div class="slogan ml-10">
+            <span>
+                Somos Tu Aliado en Salud!
+            </span>
+            <div class="semi-rombo"></div>
         </div>
-
     </div>
 </template>
 
@@ -116,7 +112,6 @@ onBeforeUnmount(() => {
 .la-trinidad-background {
     background: linear-gradient(135deg, #1a3a8f 0%, #0d6e6e 100%);
     color: white;
-    text-align: center;
     position: relative;
     overflow: hidden;
     border-radius: 0 0 15px 15px;
@@ -141,7 +136,7 @@ onBeforeUnmount(() => {
 
 .directory-link {
     position: absolute;
-    bottom: 15vh;
+    bottom: 10vh;
     right: 5vw;
     text-align: center;
     font-size: 1.5rem;
@@ -164,7 +159,7 @@ onBeforeUnmount(() => {
     left: 0;
     font-size: 2rem;
     color: white;
-    z-index: 2;
+    z-index: 5;
     border-radius: 15px;
     padding: 2rem 1.5rem;
 }
@@ -172,12 +167,11 @@ onBeforeUnmount(() => {
 .semi-rombo {
     width: 50vw;
     height: 0;
-    border-right: 100px solid transparent;
-    border-bottom: 150px solid rgba(255, 255, 255, 0.1);
+    border-right: 75px solid transparent;
+    border-bottom: 100px solid rgba(255, 255, 255, 0.1);
     position: absolute;
     bottom: 0;
     left: 0;
-
 }
 
 @keyframes rotate {
