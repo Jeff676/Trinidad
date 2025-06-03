@@ -52,6 +52,7 @@ const items = ref([
         </template>
     </Menubar>
 
+
     <Menubar v-if="userStore.isLoggedIn" class="flex-1">
         <template #end>
             <RouterLink to="#" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">

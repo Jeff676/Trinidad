@@ -18,7 +18,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     const uid = user.uid;
     userStore.isLoggedIn = true;
-    console.log('verdadero')
+    // console.log('verdadero')
   } else {
     userStore.isLoggedIn = false;
     // console.log('falso')

@@ -22,7 +22,8 @@ export const useUserStore = defineStore('user', {
         return;
       }
       this.$router.push('/panel')
-      console.log('usuario logeado.!')
+      useUserStore.user = email
+      //console.log('usuario logeado.!', useUserStore.user)
     },
 
     logout() {
@@ -30,7 +31,7 @@ export const useUserStore = defineStore('user', {
         .then(() => {
           alert("¡Sesión finalizada!");
           useUserStore.isLoggedIn = false;
-          console.log('-->',useUserStore.isLoggedIn)
+          //console.log('-->',useUserStore.isLoggedIn)
           this.$router.push('/')
         })
         .catch((error) => {
