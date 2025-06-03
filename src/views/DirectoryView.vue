@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import { getDoctors, getSpecialities, getDoctorsFind, searchDirectory } from '../firebase/doctors'
+import PageUnderConstruction from '@/components/PageUnderConstruction.vue'
 
 
 var doctors = ref([])
@@ -8,12 +9,16 @@ var specialities = ref([])
 const search = ref(null);
 const loadDoctors = ref(false);
 const error = ref(null);
+const visibleShow = ref(false)
 
 onMounted(async () => {
     doctors.value = await getDoctors()
     specialities.value = await getSpecialities()
 })
 
+const showDialog = () => {
+    visibleShow.value = true
+}
 const all = async () => {
     loadDoctors.value = true;
     try {
@@ -28,6 +33,19 @@ const all = async () => {
     }
 };
 
+const schedule = async () => {
+    window.open('https://wa.link/daxgms','_blank');
+};
+
+const auxDoctor = (value) => {
+    switch (value) {
+        case 'Femenino':
+            return 'DRA. '
+        default:
+            return 'DR. '
+    }
+    
+}
 
 const allDoctorsParam = async (speciality) => {
     loadDoctors.value = true;
@@ -80,8 +98,8 @@ const searchFilter = async () => {
 
     <div class="">
         <div class="flex somos text-center">
-            <Button v-if="specialities.length != 0"severity="secondary" v-on:click="all" style="width: 60%; margin-left: 10px; margin-right: 10px;" class="specialities">TODAS</Button>
-            <Button v-for="(speciality, index) in specialities" :key="index" severity="secondary" v-on:click="allDoctorsParam( speciality.name )" style="width: 60%; margin-left: 10px; margin-right: 10px;" class="specialities">{{ speciality.name.toUpperCase() }}</Button>
+            <Button v-if="specialities.length != 0"severity="" v-on:click="all" style="background: #fbfbfb; color: #004A87; border: #cbcbcb; width: 15%; margin-left: 5px; margin-right: 5px; font-size:12px; box-shadow: 3px 3px rgba(0,0,0,0.2);">TODAS</Button>
+            <Button v-for="(speciality, index) in specialities" :key="index" severity="" v-on:click="allDoctorsParam( speciality.name )" style="    background: #fbfbfb; color: #004A87; border: #cbcbcb; width: 15%; margin-left: 5px; margin-right: 5px; font-size:12px; box-shadow: 3px 3px rgba(0,0,0,0.2);">{{ speciality.name.toUpperCase() }}</Button>
         </div>
     </div>
     
@@ -89,7 +107,7 @@ const searchFilter = async () => {
         <div class="col-12 p-3 text-center somos">
             <h2>Los médicos de La Unidad Quirúrgica La Trinidad son profesionales confiables </h2></br>
             <h2>con experiencia certificada que estan dispuesto para su mejor atención </h2></br>
-            <div><h1><label style="border-bottom: 6px solid green;">AGENDA UNA CONSULTA</label></h1></div></br>
+            <div class="p-3"><h1><label style="border-bottom: 6px solid green;">AGENDA UNA CONSULTA</label></h1></div></br></br>
             <h2>Haciendo click en el Icono <font-awesome-icon :icon="['fas', 'calendar-check']" style="height: 30px;"/></h2>
         </div>
     </div>
@@ -110,26 +128,37 @@ const searchFilter = async () => {
         <Card v-for="(doctor, index) in doctors" :key="index" style="overflow: hidden; background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto;">
             <template #content class="">
                 <div class="flex">
-                    <div>
-                        <h3>DR. {{ doctor.name.toUpperCase() }}</h3>
-                        <h3>{{ doctor.lastname.toUpperCase() }}</h3>
-                        <p>{{ doctor.speciality.toUpperCase() }}</p>
+                    <div style="position: absolute;">
+                        <h2> {{ auxDoctor(doctor.gender) + doctor.name.toUpperCase() }}</h2>
+                        <h2>{{ doctor.lastname.toUpperCase() }}</h2>
+                        <p>{{ doctor.speciality }}</p>
                         <p class="experiencia">
-                            <font-awesome-icon :icon="['fas', 'clock']" style="width: 30px;"/>{{ doctor.experience.toUpperCase() }}
+                            <font-awesome-icon :icon="['fas', 'clock']" style="width: 30px;"/>{{ doctor.experience ?  doctor.experience : 1}} años+
                         </p>
                     </div>
                     <div>
-                        <img :src="`../../public/Dra-Marielbys-Guerra.png`" alt="" style="width: 100%; height: 100%;">
+                        <img :src="`${doctor.profilePhoto}`" alt="Doctor" style="width: 75%; height: 100%; float: right;">
+                        
                     </div>
                 </div>
                 <div class="text-center content-buttons">
-                    <Button class="p-3" label="Ver más" icon="pi pi-video" severity="secondary" style="margin-right: 10px;"></Button>
-                    <Button class="p-3" label="Agendar" icon="pi pi-calendar" iconPos="right" severity="success"></Button>
+                    <Button class="p-3" label="Ver más" icon="pi pi-video" severity="secondary" style="margin-right: 10px;" @click="showDialog"></Button>
+                    <Button class="p-3" label="Agendar" icon="pi pi-calendar" iconPos="right" severity="success" v-on:click="schedule"></Button>
                 </div>
                 
             </template>
         </Card>
     </div>
+
+    <Dialog v-model:visible="visibleShow" modal style="width: 70%" maximizable>
+         <template #header>
+            <div class=" align-items-center gap-2">
+                <img src="../assets/logo-large-blue.svg" alt="La Trinidad Logo" class="mx-auto w-3/5 md:w-1/5 mb-1" />
+                <h1 style="display: inline;" class="ml-2">Sección en construccion</h1>
+
+            </div>
+        </template> 
+    </Dialog>
 
 </template>
 
@@ -155,4 +184,5 @@ const searchFilter = async () => {
     display: flex;
     align-items: center;
 }
+
 </style>

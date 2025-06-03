@@ -18,10 +18,10 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     const uid = user.uid;
     userStore.isLoggedIn = true;
-    console.log('verdadero')
+    // console.log('verdadero')
   } else {
     userStore.isLoggedIn = false;
-    console.log('falso')
+    // console.log('falso')
   }
 })
 
@@ -29,13 +29,13 @@ onAuthStateChanged(auth, (user) => {
 
 <template>
   <header>
-    <NavMenu />  
+    <NavMenu />
   </header>
 
   <main>
     <RouterView />
   </main>
-  
+
   <FloatingElement v-if="!userStore.isLoggedIn">
     <a v-if="!userStore.isLoggedIn" class="WhatsApp" href="https://wa.link/daxgms" target="_blank">
       <font-awesome-icon icon="fa-brands fa-whatsapp" transform="grow-50" shake
@@ -44,7 +44,7 @@ onAuthStateChanged(auth, (user) => {
   </FloatingElement>
 
   <!-- COMPONENTE FOOTER  -->
-  <Footer v-if="!userStore.isLoggedIn"/>
+  <Footer v-if="!userStore.isLoggedIn" />
 
 </template>
 

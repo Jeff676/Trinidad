@@ -34,7 +34,7 @@ const setActive = (index) => {
 
 <template>
     <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-1 h-screen-left">
+        <div class="col-span-2 h-screen-left">
             <div class="bg-vitality h-full">
                 <div v-for="(item, index) in items" :key="index" @click="setActive(index)"
                     :class="{ 'active-menu-item': item.active }" class="cursor-pointer">
@@ -46,7 +46,7 @@ const setActive = (index) => {
                 </div>
             </div>
         </div>
-        <div class="col-span-11 h-screen-left">
+        <div class="col-span-10 h-screen-left">
             <div class="bg-life shadow-5 h-full">
                 <RouterView />
             </div>

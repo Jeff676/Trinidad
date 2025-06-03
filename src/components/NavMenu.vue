@@ -35,27 +35,29 @@ const items = ref([
 </script>
 
 <template>
-    <Menubar v-if="!userStore.isLoggedIn" :model="items"
-        class="justify-content-end align-items-center nav-ppl border-round-top-lg my-0">
+
+    <Menubar v-if="!userStore.isLoggedIn" :model="items" class="flex-1">
         <template #item="{ item }">
-            <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom
-                class="text-white no-underline" style="margin-left: 10px; margin-right: 10px; font-size: 24px;">
-                <a v-ripple :href="href" @click="navigate">
+            <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom class="no-underline">
+                <a v-ripple :href="href" @click="navigate"
+                    class="hover:underline decoration-emerald-500 p-2 text-white">
                     <span>{{ item.label }}</span>
                 </a>
             </router-link>
         </template>
+        <template #end>
+            <RouterLink to="/login" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">
+                Iniciar Sesión
+            </RouterLink>
+        </template>
     </Menubar>
 
-    <nav v-if="userStore.isLoggedIn"
-        class="col-12 flex justify-content-end align-items-center nav-ppl border-round-top-lg my-0">
-        <div class="flex gap-3 align-items-center m-1">
-            <RouterLink to="" class="text-white no-underline" style="margin-left: 10px; margin-right: 10px; font-size: 24px;">
-                {{ userStore.user }}
-            </RouterLink>
-            <RouterLink to="#" class="text-white no-underline" style="margin-left: 10px; margin-right: 10px; font-size: 24px;">
+
+    <Menubar v-if="userStore.isLoggedIn" class="flex-1">
+        <template #end>
+            <RouterLink to="#" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">
                 <span @click="userStore.logout">Salir</span>
             </RouterLink>
-        </div>
-    </nav>
+        </template>
+    </Menubar>
 </template>

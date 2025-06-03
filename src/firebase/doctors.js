@@ -1,11 +1,23 @@
 import { firebaseApp } from './init'
-import { getFirestore, getDocs, collection, query, where, or, and } from 'firebase/firestore'
+import { getFirestore, getDocs, collection, query, where, or, and, addDoc } from 'firebase/firestore'
 
 const db = getFirestore(firebaseApp)
 
-// Get all patients
+// Get all doctors with state == Activo
 export const getDoctors = async () => {
-  const q = query(collection(db, "doctors"), where("state", "==", "activo")); // Devuelve un Objeto Firebase , dentro estan todos los documentos
+  const q = query(collection(db, "doctors"),
+            where("status", "==", "Activo"),
+            where("directory", "==", "Publicado")
+          ); // Devuelve un Objeto Firebase , dentro estan todos los documentos
+  const querySnapshot = await getDocs(q);
+  console.log('q', q)
+  const doctors = querySnapshot.docs.map((doc) => doc.data()) // Devuelve un array con los documentos
+
+  return doctors
+}
+
+export const getAllDoctors = async () => {
+  const q = query(collection(db, "doctors")); // Devuelve un Objeto Firebase , dentro estan todos los documentos
   const querySnapshot = await getDocs(q);
   const doctors = querySnapshot.docs.map((doc) => doc.data()) // Devuelve un array con los documentos
 
@@ -48,11 +60,29 @@ export const searchDirectory = async (filter) =>{
 }
 
 // Find by identification 
-export const findByDoctorId = async (nationalityType, doctorId) =>{
-  const identification = nationalityType + doctorId;
-  const q = query(collection(db, "doctors"), where("doctorId", "==", identification));
+export const findByDoctorId = async (nationalityType, identification) =>{
+  const q = query(collection(db, "doctors"), 
+            where("nationalityType", "==", nationalityType),
+            where("identification", "==", identification),
+          );
   const querySnapshot = await getDocs(q);
   const doctors = querySnapshot.docs.map((doc) => doc.data())
   
+  console.log(doctors)
   return doctors.length > 0 ? doctors : false
+}
+
+// Save doctors
+export const saveDoctor = async (data) =>{
+  var save = false;
+    try {
+       const docRef = await addDoc(collection(db, "doctors"), data);
+       console.log("Documento escrito con ID: ", docRef.id);
+       save = true;
+     } catch (e) {
+       console.error("Error agregando documento: ", e);
+     }
+    
+  return save;
+
 }

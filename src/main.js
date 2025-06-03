@@ -37,6 +37,8 @@ import Select from 'primevue/select'
 import Dialog from 'primevue/dialog'
 import Message from 'primevue/message'
 import Badge from 'primevue/badge'
+import Carousel from 'primevue/carousel'
+import FileUpload from 'primevue/fileupload';
 
 import App from './App.vue'
 import router from './router'
@@ -88,6 +90,8 @@ app.component('Divider', Divider)
 app.component('DatePicker', DatePicker)
 app.component('ToggleButton', ToggleButton)
 app.component('Badge', Badge)
+app.component('Carousel', Carousel)
+app.component('FileUpload', FileUpload)
 
 // ** PrimeVue Config **//
 // ** Customized Preset **//
@@ -140,6 +144,20 @@ const MyPreset = definePreset(Material, {
           primaryHoverBackground: hopeDark,
           outlinedPrimaryBorderColor: welfareDark,
           outlinedPrimaryHoverBackground: vitalityDark,
+        },
+      },
+    },
+    menubar: {
+      colorScheme: {
+        light: {
+          background: vitality,
+          itemFocusBackground: welfare,
+          borderColor: '#AARRGGBB',
+          borderRadius: '0px',
+          submenuBackground: vitality,
+        },
+        dark: {
+          background: vitalityDark,
         },
       },
     },

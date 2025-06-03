@@ -3,52 +3,23 @@ import { ref, reactive, onMounted } from 'vue'
 import { FilterMatchMode } from '@primevue/core/api'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { z } from 'zod'
-import { getSpecialities, findByDoctorId } from '/src/firebase/doctors'
+import { getSpecialities, getAllDoctors, findByDoctorId, saveDoctor } from '/src/firebase/doctors'
 
 var doctorFind = ref([])
 var specialities = ref([])
+var doctors = ref([])
 const error = ref(null);
 const idInput = ref('')
 const nationalityType = ref()
-
-// Estos datos deben ser reemplazados por una llamada a la API
-const doctors = ref([
-    {
-        name: 'Dr. Juan Pérez',
-        specialty: 'Cardiología',
-        email: 'juanperez@mail.com',
-        phone: '123456789',
-        directory: false,
-        record: 8,
-        status: 'pendiente',
-    },
-    {
-        name: 'Dra. María López',
-        specialty: 'Pediatría',
-        email: 'marialopez@mail.com',
-        phone: '987654321',
-        directory: false,
-        record: 5,
-        status: 'inactivo',
-    },
-    {
-        name: 'Dr. Carlos García',
-        specialty: 'Dermatología',
-        email: 'cgarcia@mail.com',
-        phone: '456789123',
-        directory: true,
-        record: 10,
-        status: 'activo',
-    }
-])
-
+const status = ref()
 
 // Reglas de filtrado en la tabla
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    specialty: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    phone: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    lastname: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    speciality: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    phone01: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     email: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 })
 
@@ -60,15 +31,17 @@ const showDialog = () => {
 const hideDialog = () => {
     visible.value = false
     blockInputs.value = true
-}
+    blockVerify.value = false
+    idInput.value = ''
+}   
 
 const activeDoctor = (value) => {
     switch (value) {
-        case 'activo':
+        case 'Activo':
             return 'active'
-        case 'inactivo':
+        case 'Inactivo':
             return 'inactive'
-        case 'suspendido':
+        case 'Suspendido':
             return 'suspended'
         default:
             return 'pending'
@@ -87,13 +60,13 @@ const onRowSelect = (event) => {
 
 const initialValues = reactive({
     id: '',
-    idInput: '',
+    identification: '',
     nationalityType: 'V',
     name: '',
     lastName: '',
     cmv: '',
     mpps: '',
-    specialty: {},
+    speciality: '',
     phone01: '',
     phone02: '',
     address: '',
@@ -103,20 +76,16 @@ const initialValues = reactive({
     profilePhoto: '',
     introduceVideo: '',
     status: 'pendiente',
-    bankAcount: [
-        {
-            bank: '',
-            accountNumber: '',
-            accountType: '',
-            accountHolder: '',
-        }
-    ],
+    bank: '',
+    bankAcount: '',
+    bankpm: '',
     birthday: null,
-    gender: 'Fem',
-    country: '',
-    state: '',
-    city: '',
+    gender: '',
+    courtesy: '',
+    status: 'Pendiente',
     details: '',
+    directory: 'No publicado',
+    verify: 'No verificado'
 })
 
 const doctorsStatus = [
@@ -135,6 +104,24 @@ const genderOptions = ref([
     { letter: 'Femenino' },
     { letter: 'Masculino' },
 ])
+
+const statusOptions = ref([
+    { letter: 'Pendiente' },
+    { letter: 'Activo' },
+    { letter: 'Inactivo' },
+    { letter: 'Suspendido' },
+])
+
+const publicOptions = ref([
+    { letter: 'No publicado' },
+    { letter: 'Publicado' },
+])
+
+const verificatedOptions = ref([
+    { letter: 'No verificado' },
+    { letter: 'Verificado' },
+])
+
 const selectValue = ref(null)
 
 
@@ -143,10 +130,34 @@ const selectValue = ref(null)
 // ** Reglas de validacion para el formulario de nuevo medico ** //
 const resolver = zodResolver(
     z.object({
+        
         nationalityType: z.string().length(1, { message: "Debe ser exactamente un caracter" }),
-        idInput: z.string().min(8, { message: 'La cedula es requerida' }),
+        identification: z.string().min(8, { message: 'La cedula es requerida' }),
         name: z.string().min(1, { message: 'El nombre es requerido' }),
         lastname: z.string().min(1, { message: 'El apellido es requerido' }),
+        speciality: z.string().min(1, { message: "Seleccione una especialidad" }),
+        cmv: z.string(),
+        mpps: z.string(),
+        experience: z.string(),
+        phone01: z.string(),
+        phone02: z.string(),
+        record: z.string(),
+        address: z.string(),
+        email: z.string(),
+        instagram: z.string(),
+        otherRRSS: z.string(),
+        profilePhoto: z.string(),
+        introduceVideo: z.string(),
+        bank: z.string(),
+        bankAcount: z.string(),
+        bankpm: z.string(),
+        birthday: z.string(),
+        gender: z.string().min(1, { message: "Seleccione una género" }),
+        courtesy: z.string(),
+
+        status: z.literal('Pendiente').optional(),
+        directory: z.string(),
+        verify: z.string(),
     })
 );
 
@@ -156,39 +167,33 @@ let blockVerify = ref(false)
 // Desbloquear inputs al verificar la cedula
 const checkDoctor = async () => {
     var nationality = nationalityType.value ? nationalityType.value : 'V'
-    try {
-        doctorFind.value = await findByDoctorId(nationality, idInput.value)
-        console.log(doctorFind.value)
-        if (doctorFind.value == 0) {
-            blockInputs.value = false
-            blockVerify.value = true
+        if(idInput.value.length >= 8){
+            try {
+                doctorFind.value = await findByDoctorId(nationality, idInput.value)
+                console.log(doctorFind.value)
+                if (doctorFind.value == 0) {
+                    blockInputs.value = false
+                    blockVerify.value = true
+                }
+            } catch (err) {
+                error.value = err.message;
+            } 
         }
-    } catch (err) {
-        error.value = err.message;
-    } 
-
 }
-const all = async () => {
-    loadDoctors.value = true;
-      try {
-        doctors.value = await getDoctors()
-        if (!doctors.ok) {
-          throw new Error('Network response was not ok');
-        }
-      } catch (err) {
-        error.value = err.message;
-      } finally {
-        loadDoctors.value = false;
-      }
-};
+
 
 // Manejar el evento de submit del formulario
-const onFormSubmit = ({ valid, values }) => {
+const onFormSubmit = async ({ valid, values }) => {
     if (valid) {
         console.log('Form submitted with values:', values)
         // Aquí puedes manejar el envío del formulario, como hacer una solicitud a la API
         visible.value = false
         blockInputs.value = true
+        console.log("guardar")
+        saveDoctor(values);
+        doctors.value = await getAllDoctors();
+        blockVerify.value = false
+        idInput.value = ''
 
     } else {
         console.log('Form is invalid')
@@ -197,18 +202,18 @@ const onFormSubmit = ({ valid, values }) => {
 
 onMounted(async () => {
     specialities.value = await getSpecialities()
+    doctors.value = await getAllDoctors()
+
 })
- 
 
 </script>
-
 
 <template>
     <div>
         <DataTable v-model:filters="filters" filterDisplay="row" :value="doctors" paginator
             :rows-per-page-options="[5, 10, 25]" :rows="10" stripedRows sortField="name" selectionMode="single"
             v-model:selection="selectedDoctor" @row-select="onRowSelect" :sortOrder="1"
-            :globalFilterFields="['name', 'specialty', 'phone', 'email']">
+            :globalFilterFields="['name', 'lastname', 'specialty', 'phone', 'email']">
             <template #header>
                 <div class="flex justify-content-between">
                     <div class="flex align-items-center gap-2">
@@ -234,19 +239,20 @@ onMounted(async () => {
                 </div>
             </template>
             <Column field="name" header="Nombre" sortable></Column>
-            <Column field="specialty" header="Especialidad" sortable></Column>
-            <Column field="phone" header="Teléfono"></Column>
+            <Column field="lastname" header="Apellido" sortable></Column>
+            <Column field="speciality" header="Especialidad" sortable></Column>
+            <Column field="phone01" header="Teléfono"></Column>
             <Column field="email" header="Email" sortable></Column>
             <Column field="record" header="Record" sortable>
                 <template #body="{ data }">
-                    <Badge :value="data.record" size="large" class="bg-vitality" />
+                    <Badge :value="data.experience ? data.experience : 0" size="large" class="bg-vitality" />
                 </template>
             </Column>
             <Column field="directory" header="Directorio" sortable>
                 <template #body="{ data }">
                     <div class="card flex justify-center">
-                        <Badge value="Publicado" v-if="data.directory" size="large" class="active w-full" />
-                        <Badge value="No Publicado" v-else size="large" class="inactive w-full" />
+                        <Badge :value="data.directory" v-if="data.directory=='Publicado'" size="large" class="active w-full" />
+                        <Badge :value="data.directory" v-else size="large" class="inactive w-full" />
                     </div>
                 </template>
             </Column>
@@ -271,17 +277,18 @@ onMounted(async () => {
         </template>
 
         <Form :initialValues @submit="onFormSubmit" class="" :resolver>
-            <div class="flex gap-2 align-items-center">
-                <FormField v-slot="$field" name="nationalityType" v-model="nationalityType">
+            <div class="flex gap-2 align-items-center">            
+
+                <FormField v-slot="$field" name="nationalityType">
                     <Select :options="nationalityOptions" optionLabel="letter" optionValue="letter" v-model="nationalityType" :disabled="blockVerify"/>
                     <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
                         {{ $field.error.message }}
                     </Message>
                 </FormField>
 
-                <FormField v-slot="$field" name="idInput" initialValue="">
+                <FormField v-slot="$field" name="identification" initialValue="">
                     <FloatLabel>
-                        <InputText id="idInput" placeholder="Cédula del Médico" type="text" v-model="idInput" :disabled="blockVerify"/>
+                        <InputText id="identification" placeholder="Cédula del Médico" type="text" v-model="idInput" :disabled="blockVerify"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
                             {{ $field.error.message }}
                         </Message>
@@ -314,7 +321,7 @@ onMounted(async () => {
                     </FloatLabel>
                 </FormField>
 
-                <FormField class="flex-1" v-slot="$field" name="specialty" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="speciality" initialValue="">
                     <FloatLabel>
                         <label for="specialtyInput">Especialidad</label>
                         <Select id="specialtyInput" :options="specialities" optionLabel="name" optionValue="name" placeholder="Especialidad" class="w-full" :disabled="blockInputs" />
@@ -398,7 +405,7 @@ onMounted(async () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="instagramInput" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="instagram" initialValue="">
                     <FloatLabel>
                         <label for="instagramInput">Instagram</label>
                         <InputText id="instagramInput" type="text" class="w-full" :disabled="blockInputs" />
@@ -406,7 +413,7 @@ onMounted(async () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="rrssInput" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="otherRRSS" initialValue="">
                     <FloatLabel>
                         <label for="rrssInput">Otras Redes Sociales</label>
                         <InputText id="rrssInput" type="text" class="w-full" :disabled="blockInputs" />
@@ -416,7 +423,7 @@ onMounted(async () => {
                 </FormField>
             </div>
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="perfilInput" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="profilePhoto" initialValue="">
                     <FloatLabel>
                         <label for="perfilInput">Foto de Perfil</label>
                         <InputText id="perfilInput" type="text" class="w-full" :disabled="blockInputs" />
@@ -424,7 +431,7 @@ onMounted(async () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="videoInput" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="introduceVideo" initialValue="">
                     <FloatLabel>
                         <label for="videoInput">Video de Presentación</label>
                         <InputText id="videoInput" type="text" class="w-full" :disabled="blockInputs" />
@@ -435,7 +442,7 @@ onMounted(async () => {
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="bankInput" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="bank" initialValue="">
                     <FloatLabel>
                         <label for="bankInput">Banco</label>
                         <InputText id="bancoInput" type="text" class="w-full" :disabled="blockInputs" />
@@ -443,7 +450,7 @@ onMounted(async () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="acountInput" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="bankAcount" initialValue="">
                     <FloatLabel>
                         <label for="acountInput">Número de Cuenta</label>
                         <InputText id="acountInput" type="text" class="w-full" :disabled="blockInputs" />
@@ -451,7 +458,7 @@ onMounted(async () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="pmInput" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="bankpm" initialValue="">
                     <FloatLabel>
                         <label for="pmInput">Pago Movil</label>
                         <InputText id="pmInput" type="text" class="w-full" :disabled="blockInputs" />
@@ -462,7 +469,7 @@ onMounted(async () => {
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="birthInput" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="birthday" initialValue="">
                     <FloatLabel>
                         <label for="birthInput">Fecha de Nacimiento</label>
                         <DatePicker id="birthInput" name="birthInput" fluid :disabled="blockInputs" />
@@ -470,7 +477,7 @@ onMounted(async () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="genderInput" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="gender" initialValue="">
                     <FloatLabel>
                         <label for="genderInput">Género</label>
                         <Select :options="genderOptions" optionLabel="letter" optionValue="letter" placeholder="Género" class="w-full" :disabled="blockInputs"/>
@@ -478,7 +485,7 @@ onMounted(async () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="courtesyInput" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="courtesy" initialValue="">
                     <FloatLabel>
                         <label for="courtesyInput">Cortesia</label>
                         <InputText id="courtesyInput" type="text" class="w-full" :disabled="blockInputs" />
@@ -489,8 +496,36 @@ onMounted(async () => {
                 </FormField>
             </div>
 
+            <div class="flex gap-2 mt-5" style="display:none;">
+                <FormField class="flex-1" v-slot="$field" name="status">
+                    <FloatLabel>
+                        <label for="estatusInput">Estatus</label>
+                        <Select :options="statusOptions" optionLabel="letter" optionValue="letter" v-model="status" value="Pendiente" placeholder="" class="w-full" :disabled="blockInputs"/>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
+                    </FloatLabel>
+                </FormField>
+                <FormField class="flex-1" v-slot="$field" name="directory">
+                    <FloatLabel>
+                        <label for="genderInput">Directorio</label>
+                        <Select :options="publicOptions" optionLabel="letter" optionValue="letter" placeholder="Directorio" class="w-full" :disabled="blockInputs"/>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
+                    </FloatLabel>
+                </FormField>
+                <FormField class="flex-1" v-slot="$field" name="verify" >
+                    <FloatLabel>
+                        <label for="verify">Verificación</label>
+                        <Select :options="verificatedOptions" optionLabel="letter" optionValue="letter" placeholder="Verificado" class="w-full" :disabled="blockInputs"/>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
+                    </FloatLabel>
+                </FormField>
+                
+            </div>
+
             <div class="flex justify-content-end gap-2 mt-5">
-                <Button type="submit" label="Guardar" :disabled="blockInputs" class="w-full" />
+                <Button type="submit" label="Guardar" :disabled="blockInputs" class="w-full"/>
             </div>
         </Form>
 
