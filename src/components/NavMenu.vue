@@ -45,11 +45,11 @@ const items = ref([
                 </a>
             </router-link>
         </template>
-        <template #end>
+        <!-- <template #end>
             <RouterLink to="/login" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">
                 Iniciar Sesión
             </RouterLink>
-        </template>
+        </template> -->
     </Menubar>
 
 

@@ -256,4 +256,32 @@ h2{
   justify-content: end;
 }
 
+.search-directory {
+  display: block;
+}
+.search-movil{
+  display: none;
+}
+
+.img-doctor{
+  img{
+    width: 75%;
+    height: 100%;
+    float: right;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .search-directory {
+    display: none;
+  }
+  .search-movil{
+    display: block;
+  }
+  .img-doctor{
+    img{
+      width: 60%;
+    }
+  }
+}
 

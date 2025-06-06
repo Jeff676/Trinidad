@@ -10,10 +10,18 @@ const search = ref(null);
 const loadDoctors = ref(false);
 const error = ref(null);
 const visibleShow = ref(false)
+const selectSpeciality = ref()
+var arrSpeciality = ref([])
 
 onMounted(async () => {
     doctors.value = await getDoctors()
     specialities.value = await getSpecialities()
+
+    arrSpeciality.value.push( {name: 'Todas'})
+    specialities.value.forEach((speciality, index) => {
+        arrSpeciality.value.push({name: speciality.name})
+
+    });
 })
 
 const showDialog = () => {
@@ -79,6 +87,18 @@ const searchFilter = async () => {
     }
 };
 
+const allDoctorsParamMovil = async (event) => {
+    // selectSpeciality.value = event;
+    console.log(selectSpeciality.value)
+    loadDoctors.value = true;
+    if(selectSpeciality.value == 'Todas'){
+        all();
+    }else{
+        allDoctorsParam(selectSpeciality.value)
+    }
+    
+};
+
 </script>
 
 <template>
@@ -86,7 +106,7 @@ const searchFilter = async () => {
         <div class="flex align-items-center gap-2 somos">
             <h1>DIRECTORIO MEDICO</h1>
         </div>
-        <div class="flex align-items-center gap-2">
+        <div class="flex align-items-center gap-2 search-directory">
             <IconField>
                 <InputIcon>
                     <font-awesome-icon icon="magnifying-glass" />
@@ -96,13 +116,35 @@ const searchFilter = async () => {
         </div>
     </div>
 
-    <div class="">
+    <div class="flex align-items-center gap-2 flex search-movil mr-4 ml-4">
+        <IconField style="width: 100%;">
+            <InputIcon>
+                <font-awesome-icon icon="magnifying-glass" />
+            </InputIcon>
+            <InputText placeholder="Buscar" v-on:keyup="searchFilter()" v-model="search" style="width: 100%;"/>
+        </IconField>
+    </div>
+
+    <div class="search-directory">
         <div class="flex somos text-center">
             <Button v-if="specialities.length != 0"severity="" v-on:click="all" style="background: #fbfbfb; color: #004A87; border: #cbcbcb; width: 15%; margin-left: 5px; margin-right: 5px; font-size:12px; box-shadow: 3px 3px rgba(0,0,0,0.2);">TODAS</Button>
             <Button v-for="(speciality, index) in specialities" :key="index" severity="" v-on:click="allDoctorsParam( speciality.name )" style="    background: #fbfbfb; color: #004A87; border: #cbcbcb; width: 15%; margin-left: 5px; margin-right: 5px; font-size:12px; box-shadow: 3px 3px rgba(0,0,0,0.2);">{{ speciality.name.toUpperCase() }}</Button>
         </div>
     </div>
     
+    <div class="search-movil m-4">
+        <div class="flex somos text-center">
+            <FormField v-slot="$field" name="" style="width: 100%;">
+                <IconField >
+                    <InputIcon>
+                        <font-awesome-icon icon="filter" />
+                    </InputIcon>
+                    <Select :options="arrSpeciality" checkmark :highlightOnSelect="false" optionLabel="name" optionValue="name" style="width: 100%;" @change="allDoctorsParamMovil($event)" v-model="selectSpeciality"/>
+                </IconField>
+            </FormField>
+        </div>
+    </div>
+
     <div class="">
         <div class="col-12 p-3 text-center somos">
             <h2>Los médicos de La Unidad Quirúrgica La Trinidad son profesionales confiables </h2></br>
@@ -124,7 +166,7 @@ const searchFilter = async () => {
         </div>
     </div>
 
-    <div  class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
         <Card v-for="(doctor, index) in doctors" :key="index" style="overflow: hidden; background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto;">
             <template #content class="">
                 <div class="flex">
@@ -136,9 +178,8 @@ const searchFilter = async () => {
                             <font-awesome-icon :icon="['fas', 'clock']" style="width: 30px;"/>{{ doctor.experience ?  doctor.experience : 1}} años+
                         </p>
                     </div>
-                    <div>
-                        <img :src="`${doctor.profilePhoto}`" alt="Doctor" style="width: 75%; height: 100%; float: right;">
-                        
+                    <div class="img-doctor">
+                        <img :src="`${doctor.profilePhoto}`" alt="Doctor">
                     </div>
                 </div>
                 <div class="text-center content-buttons">

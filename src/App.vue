@@ -36,12 +36,12 @@ onAuthStateChanged(auth, (user) => {
     <RouterView />
   </main>
 
-  <FloatingElement v-if="!userStore.isLoggedIn">
-    <a v-if="!userStore.isLoggedIn" class="WhatsApp" href="https://wa.link/daxgms" target="_blank">
+  <!-- <FloatingElement v-if="!userStore.isLoggedIn">
+    <a v-if="!userStore.isLoggedIn" class="WhatsApp" href="https://wa.link/lw2t0b" target="_blank">
       <font-awesome-icon icon="fa-brands fa-whatsapp" transform="grow-50" shake
         style="--fa-animation-delay: 15s; --fa-animation-iteration-count: 3; " />
     </a>
-  </FloatingElement>
+  </FloatingElement> -->
 
   <!-- COMPONENTE FOOTER  -->
   <Footer v-if="!userStore.isLoggedIn" />
