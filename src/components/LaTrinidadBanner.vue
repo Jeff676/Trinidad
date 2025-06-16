@@ -75,11 +75,12 @@ onBeforeUnmount(() => {
                 <div class="la-trinidad-content flex flex-col col-span-2 mx-4 md:mx-10 mt-10 mb-30">
                     <!-- <slot></slot>
                     Para el contenido interno -->
-                    <img src="../assets/logo-large.svg" alt="La Trinidad Logo" style="width: 70%; height: auto;" />
+                    <img src="../assets/logo-large.svg" alt="La Trinidad Logo" class="size-fit" />
+                    <!-- <img src="../assets/logo-large.svg" alt="La Trinidad Logo" style="width: 70%; height: auto;" /> -->
                     <div class="flex flex-col mt-4 pl-10 w-full justify-start text-white">
-                        <div>DESCUBRE NUESTRO PLAN DE AFILIACION</div>
-                        <div>Recibe multiples beneficios</div>
-                        <div>Totalmente GRATIS!</div>
+                        <div class="text-2xl">AGENDA TU CONSULTA CON NUESTROS ESPECIALISTAS</div>
+                        <div>EN NUESTRA UNIDAD DE APS</div>
+                        <div>Escribenos a traves de Whatsapp y Recibe la mejor atencion!</div>
                     </div>
                     <div class="flex justify-start my-4 pl-10">
                         <Button severity="success" class="hidden md:block">Whatsapp</Button>
