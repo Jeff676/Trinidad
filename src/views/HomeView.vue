@@ -52,35 +52,38 @@ const responsiveOptions = ref([
 
 const testimonials = [
   {
-    text: 'Excelente Servicio, muy buena atencion, todo el personal fue muy amable en mi estadia, desde el vigilante hasta el especialista...',
-    patient: 'Paciente Feliz',
+    text: 'Buenas tardes Super espectacular y muy agradecida por su atencion, 100% recomendada...',
+    patient: 'Jennire',
     icon: 'face-smile-beam',
   },
   {
-    text: 'El servicio fue excelente, el personal muy amable y atento a mis necesidades. Me sentí muy bien atendido.',
-    patient: 'Paciente Satisfecho',
+    text: 'Quiero expresar mis mas sincero agradecimiento por el paoyo excepcional que nos brindó su clinica. Realmente Apreciamos la capacidad de respuesta y la voluntad de su equipo de trabajo pa ir mas alla de su labor...',
+    patient: 'Valeria Accettura',
     icon: 'face-smile-beam',
   },
   {
-    text: 'La atención fue excepcional, me hicieron sentir como en casa. Recomiendo este lugar al 100%.',
-    patient: 'Paciente Contento',
+    text: ' mi cesarea fue de lo mejor. Hace pocas horas y aca estoy super feliz y tranquila gracias a todo el equipo.',
+    patient: 'Milita',
     icon: 'face-smile-beam',
   },
   {
-    text: 'El equipo médico es muy profesional y atento. Me sentí seguro durante todo el proceso.',
-    patient: 'Paciente Agradecido',
-    icon: 'face-smile-beam',
+    text: 'Mi cesarea tambien fue en la trinidad y todo fue excelente. La Dra Anahil un 1000/10 y el trato de la enfermeras es una maravilla, todos son muy amables y serviciales',
+    patient: 'mrosales97',
   },
   {
-    text: 'La calidad del servicio es inigualable. Definitivamente volveré para futuras consultas.',
-    patient: 'Paciente Recurrente',
-    icon: 'face-smile-beam',
+    text: 'Muchas Gracias por todo, los medicos y las enfermeras super profesionales y atentos muy buen servicio, agradecida',
+    patient: ''
   },
   {
-    text: 'Me encantó la atención personalizada que recibí. Me hicieron sentir especial.',
-    patient: 'Paciente Especial',
+    text: 'La seguridad la sentí desde que entré a la clínica.. el personal en todos los ámbitos son seres maravillosos que hacen la estadía del paciente como si estuviera en casa.. realmente mil bendiciones a todos y agradecida por la oportunidad de dedicarme esa cirugía tal laboriosa y los más grande mí exitosa..🙌🙌',
+    patient: 'Amarilis Mujica'
+  },
+  {
+    text: 'Su Servicio fue exepcional y merece reconocimiento para todo el equipo medico, administrativo y obrero. Trasnmita mi gratitudpor su arduo trabajo. Saludos Cordiales',
+    patient: 'Valeria Accettura',
     icon: 'face-smile-beam',
   },
+
 ]
 
 
@@ -93,8 +96,8 @@ const testimonials = [
     <!-- <InputNumber v-model="pos" inputId="minmax-buttons" mode="decimal" showButtons :min="-360" :max="0" fluid
     :step="40" /> -->
 
-    <div class="flex justify-around w-full bg-welfare p-5 gap-5 rounded-xl mt-1">
-      <Card class="w-1/3">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 justify-around w-full bg-welfare p-5 rounded-xl mt-1">
+      <Card class="w-full">
         <template #content>
           <div class="flex w-full text-3xl text-vitality justify-center mb-3">
             Cirugias Realizadas
@@ -107,7 +110,7 @@ const testimonials = [
           <!-- ! hltml odometer -->
         </template>
       </Card>
-      <Card class="w-1/3">
+      <Card class="">
         <template #content>
           <div class="flex w-full text-3xl text-vitality justify-center mb-3">
             Medicos de Cortesia
@@ -120,7 +123,7 @@ const testimonials = [
           <!-- ! hltml odometer -->
         </template>
       </Card>
-      <Card class="w-1/3">
+      <Card class="">
         <template #content>
           <div class="flex w-full text-3xl text-vitality justify-center mb-3">
             Años de Servicio
@@ -158,8 +161,9 @@ const testimonials = [
           <div class="h-80 m-10 relative">
             <div class="h-80 w-full bg-hope rounded-3xl outline-2 outline-offset-2 outline-stone-200"></div>
             <div class="flex flex-col h-60 justify-around p-6 text-white absolute top-15">
-              <font-awesome-icon icon="face-smile-beam" size="2xl" />
-              <span class="text-center"> {{ slotProps.data.text }} </span>
+              <!-- <font-awesome-icon icon="face-smile-beam" size="2xl" /> -->
+              <span class="text-center">Testimonio</span>
+              <span class="text-center">"{{ slotProps.data.text }}" </span>
               <div class="text-end w-full">{{ slotProps.data.patient }}.</div>
             </div>
           </div>
