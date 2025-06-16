@@ -7,6 +7,7 @@ import FloatingElement from './components/FloatingElement.vue'
 import Footer from './components/Footer.vue'
 import NavMenu from './components/NavMenu.vue'
 import "tailwindcss";
+import { useConfirm } from "primevue/useconfirm";
 
 const userStore = useUserStore();
 
@@ -37,7 +38,7 @@ onAuthStateChanged(auth, (user) => {
   </main>
 
   <FloatingElement v-if="!userStore.isLoggedIn">
-    <a v-if="!userStore.isLoggedIn" class="WhatsApp" href="https://wa.link/daxgms" target="_blank">
+    <a v-if="!userStore.isLoggedIn" class="WhatsApp" href="https://wa.link/lw2t0b" target="_blank">
       <font-awesome-icon icon="fa-brands fa-whatsapp" transform="grow-50" shake
         style="--fa-animation-delay: 15s; --fa-animation-iteration-count: 3; " />
     </a>
@@ -45,6 +46,8 @@ onAuthStateChanged(auth, (user) => {
 
   <!-- COMPONENTE FOOTER  -->
   <Footer v-if="!userStore.isLoggedIn" />
+
+  <ConfirmDialog></ConfirmDialog>
 
 </template>
 

@@ -66,6 +66,14 @@ onBeforeUnmount(() => {
     clearIntervals()
 })
 
+const schedule = async () => {
+    window.open('https://wa.link/lw2t0b','_blank');
+};
+
+const scheduleDr = async (dr) => {
+    window.open('https://api.whatsapp.com/send?phone=584165017110&text=Quisiera agendar una cita con '+ dr,'_blank');
+};
+
 </script>
 
 <template>
@@ -83,7 +91,7 @@ onBeforeUnmount(() => {
                         <div>Escribenos a traves de Whatsapp y Recibe la mejor atencion!</div>
                     </div>
                     <div class="flex justify-start my-4 pl-10">
-                        <Button severity="success" class="hidden md:block">Whatsapp</Button>
+                        <Button severity="success" class="hidden md:block" v-on:click="schedule">Whatsapp</Button>
                     </div>
                 </div>
                 <div class="p-0" style="min-height: 500px;">
@@ -92,7 +100,10 @@ onBeforeUnmount(() => {
                         <img :src="`../../public/${currentItem.image}`" alt="Doctor"
                             style="position:absolute; bottom: 0; max-height: 100%;" />
                         <div class="directory-link">
-                            <a href="#">{{ currentItem.name }}</a>
+                            
+                            <a href="#" v-on:click="scheduleDr(`${currentItem.name}`)">{{ currentItem.name }}</a>
+                            <!-- <Button severity="success" class="hidden md:block" v-on:click="schedule">Whatsapp</Button> -->
+
                         </div>
                     </div>
                 </div>

@@ -248,6 +248,14 @@ h2{
     align-items: center;
 }
 
+.border-round-lg{
+  border-radius: 5%;
+}
+
+.surface-100-shadow{
+  
+}
+
 .justify-content-between{
   justify-content: space-between;
 }
@@ -256,4 +264,36 @@ h2{
   justify-content: end;
 }
 
+.justify-content-center{
+  justify-content: center;
+}
+
+.search-directory {
+  display: block;
+}
+.search-movil{
+  display: none;
+}
+
+.img-doctor{
+  img{
+    width: 75%;
+    height: 100%;
+    float: right;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .search-directory {
+    display: none;
+  }
+  .search-movil{
+    display: block;
+  }
+  .img-doctor{
+    img{
+      width: 60%;
+    }
+  }
+}
 

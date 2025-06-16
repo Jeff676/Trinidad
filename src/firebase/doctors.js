@@ -1,5 +1,5 @@
 import { firebaseApp } from './init'
-import { getFirestore, getDocs, collection, query, where, or, and, addDoc } from 'firebase/firestore'
+import { getFirestore, getDocs, collection, query, where, or, and, doc, addDoc } from 'firebase/firestore'
 
 const db = getFirestore(firebaseApp)
 
@@ -10,7 +10,6 @@ export const getDoctors = async () => {
             where("directory", "==", "Publicado")
           ); // Devuelve un Objeto Firebase , dentro estan todos los documentos
   const querySnapshot = await getDocs(q);
-  console.log('q', q)
   const doctors = querySnapshot.docs.map((doc) => doc.data()) // Devuelve un array con los documentos
 
   return doctors
@@ -35,7 +34,12 @@ export const getSpecialities = async () => {
 
 // Find by specialities
 export const getDoctorsFind = async (speciality) => {
-  const q = query(collection(db, "doctors"), where("speciality", "==", speciality));
+  const q = query(collection(db, "doctors"),and(
+            where("speciality", "==", speciality),
+            where("status", "==", "Activo"),
+            where("directory", "==", "Publicado")
+          )
+        );
   const querySnapshot = await getDocs(q);
   const doctors = querySnapshot.docs.map((doc) => doc.data())
 
@@ -68,7 +72,6 @@ export const findByDoctorId = async (nationalityType, identification) =>{
   const querySnapshot = await getDocs(q);
   const doctors = querySnapshot.docs.map((doc) => doc.data())
   
-  console.log(doctors)
   return doctors.length > 0 ? doctors : false
 }
 
@@ -84,5 +87,21 @@ export const saveDoctor = async (data) =>{
      }
     
   return save;
+}
+
+// Update doctors
+export const updateDoctor = async (data) =>{
+  var update = false;
+  console.log("--->",data)
+    try {
+      const itemDocRef = doc(db, 'doctors', data.name);
+      //const docRef = await addDoc(collection(db, "doctors"), data.name);
+      console.log("Documento escrito con ID: ", itemDocRef);
+      update = true;
+    }catch (e) {
+      console.error("Error agregando documento: ", e);
+    }
+    
+  return update;
 
 }

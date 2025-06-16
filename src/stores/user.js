@@ -23,15 +23,12 @@ export const useUserStore = defineStore('user', {
       }
       this.$router.push('/panel')
       useUserStore.user = email
-      //console.log('usuario logeado.!', useUserStore.user)
     },
 
     logout() {
       signOut(auth)
         .then(() => {
-          alert("¡Sesión finalizada!");
           useUserStore.isLoggedIn = false;
-          //console.log('-->',useUserStore.isLoggedIn)
           this.$router.push('/')
         })
         .catch((error) => {
