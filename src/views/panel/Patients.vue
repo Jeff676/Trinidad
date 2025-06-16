@@ -195,8 +195,8 @@ const onRowSelect = (event) => {
                 <span class="font-bold whitespace-nowrap text-2xl">Nuevo Paciente</span>
             </div>
         </template>
-        <Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit"
-            class="flex flex-column gap-4 w-full sm:w-56">
+
+        <Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit">
 
             <div class="flex gap-2 align-items-center">
                 <FormField v-slot="$field" name="nationalityType" initialValue="V">
@@ -219,19 +219,19 @@ const onRowSelect = (event) => {
 
             </div>
 
-            <div class="flex">
-                <div class="flex-1">
+            <div class="flex gap-2 mt-5">
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <FloatLabel>
                         <InputText id="nameInput" name="name" type="text" class="w-full" :disabled="blockInputs" />
                         <label for="nameInput">Nombre del Paciente</label>
                         <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
                             {{ $form.name.error?.message }}</Message>
                     </FloatLabel>
-                </div>
+                </FormField>
             </div>
 
-            <div class="flex">
-                <div class="flex flex-column flex-1 gap-1">
+            <div class="flex gap-2 mt-5">
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <FloatLabel>
                         <InputText name="phone" type="text" inputId="phoneInput" class="w-full"
                             :disabled="blockInputs" />
@@ -239,16 +239,16 @@ const onRowSelect = (event) => {
                         <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
                             {{ $form.name.error?.message }}</Message>
                     </FloatLabel>
-                </div>
-                <div class="flex flex-column flex-1 gap-1 ml-2">
+                </FormField>
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <FloatLabel>
                         <label for="phone2Input">Telefono Secundario</label>
                         <InputText name="phone2" type="text" class="w-full" :disabled="blockInputs" />
                         <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
                             {{ $form.name.error?.message }}</Message>
                     </FloatLabel>
-                </div>
-                <div class="flex flex-column flex-1 gap-1 ml-2">
+                </FormField>
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <FloatLabel>
                         <label for="emailInput">Correo Electronico</label>
                         <InputText name="email" type="text" class="w-full" inputId="emailInput"
@@ -256,37 +256,39 @@ const onRowSelect = (event) => {
                         <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
                             {{ $form.name.error?.message }}</Message>
                     </FloatLabel>
-                </div>
+                </FormField>
             </div>
 
 
-            <div class="flex flex-column gap-1">
-                <FloatLabel>
-                    <label for="addressInput">Direccion</label>
-                    <InputText name="address" type="text" inputId="addressInput" fluid :disabled="blockInputs" />
-                    <Message v-if="$form.address?.invalid" severity="error" size="small" variant="simple">
-                        {{ $form.address.error?.message }}</Message>
-                </FloatLabel>
+            <div class="flex gap-2 mt-5">
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                    <FloatLabel>
+                        <label for="addressInput">Direccion</label>
+                        <InputText name="address" type="text" inputId="addressInput" fluid :disabled="blockInputs" />
+                        <Message v-if="$form.address?.invalid" severity="error" size="small" variant="simple">
+                            {{ $form.address.error?.message }}</Message>
+                    </FloatLabel>
+                </FormField>
             </div>
 
-            <div class="flex">
-                <div class="flex flex-column flex-1 gap-1">
+            <div class="flex gap-2 mt-5">
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <FloatLabel>
                         <InputText name="city" type="text" inputId="cityInput" class="w-full" :disabled="blockInputs" />
                         <label for="cityInput">Ciudad</label>
                         <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
                             {{ $form.name.error?.message }}</Message>
                     </FloatLabel>
-                </div>
-                <div class="flex flex-column flex-1 gap-1 ml-2">
+                </FormField>
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <FloatLabel>
                         <label for="stateInput">Estado</label>
                         <InputText name="state" type="text" class="w-full" :disabled="blockInputs" />
                         <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
                             {{ $form.name.error?.message }}</Message>
                     </FloatLabel>
-                </div>
-                <div class="flex flex-column flex-1 gap-1 ml-2">
+                </FormField>
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <FloatLabel>
                         <label for="countryInput">Pais</label>
                         <InputText name="country" type="text" class="w-full" inputId="countryInput"
@@ -294,31 +296,31 @@ const onRowSelect = (event) => {
                         <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
                             {{ $form.name.error?.message }}</Message>
                     </FloatLabel>
-                </div>
+                </FormField>
             </div>
 
-            <div class="flex align-items-center">
-                <div class="flex-col gap-1">
-                    <label for="birthdayInput">Fecha de Nacimiento</label> <!-- Fix text color -->
+            <div class="flex gap-2 mt-5">
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                    <label for="birthdayInput">Fecha de Nacimiento</label> 
                     <DatePicker name="birthday" inputId="birthdayInput" fluid dateFormat="dd/mm/yy"
                         :disabled="blockInputs" />
                     <Message v-if="$form.date?.invalid" severity="error" size="small" variant="simple">{{
                         $form.date.error?.message }}</Message>
-                </div>
+                </FormField>
 
-                <div class="flex-col ml-2">
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <label for="sizeInput" class="block"> Estatura </label>
                     <InputNumber name="size" inputId="sizeInput" mode="decimal" showButtons :min="0.4" :max="2.5"
                         :step="0.1" :disabled="blockInputs" />
-                </div>
+                </FormField>
 
-                <div class="flex-col ml-2">
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <label for="weigthInput" class="block"> Peso </label>
                     <InputNumber name="weigth" inputId="weigthInput" mode="decimal" showButtons :min="1" :max="400"
                         :step="1" :disabled="blockInputs" />
-                </div>
+                </FormField>
 
-                <div class="flex-col ml-2">
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <label for="genderInput" class="block mb-1"> Genero </label>
                     <SelectButton name="gender" :options="genderOptions" optionLabel="value" dataKey="value"
                         aria-labelledby="custom" inputId="genderInput" :disabled="blockInputs">
@@ -326,19 +328,24 @@ const onRowSelect = (event) => {
                             <font-awesome-icon :icon="slotProps.option.icon" />
                         </template>
                     </SelectButton>
-                </div>
+                </FormField>
+            </div> 
+
+            <div class="flex gap-2 mt-5">
+                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                    <FloatLabel>
+                        <label for="profesionInput">Profesion</label>
+                        <InputText name="profesion" type="text" inputId="profesionInput" fluid :disabled="blockInputs" />
+                        <Message v-if="$form.profesion?.invalid" severity="error" size="small" variant="simple">
+                            {{ $form.profesion.error?.message }}</Message>
+                    </FloatLabel>
+                </FormField>
             </div>
 
-            <div class="flex flex-column gap-1">
-                <FloatLabel>
-                    <label for="profesionInput">Profesion</label>
-                    <InputText name="profesion" type="text" inputId="profesionInput" fluid :disabled="blockInputs" />
-                    <Message v-if="$form.profesion?.invalid" severity="error" size="small" variant="simple">
-                        {{ $form.profesion.error?.message }}</Message>
-                </FloatLabel>
+             <div class="flex justify-content-end gap-2 mt-5">
+                <Button type="submit" label="Guardar" :disabled="blockInputs" class="w-full"/>
             </div>
 
-            <Button type="submit" severity="primary" label="Guardar" :disabled="blockInputs" />
         </Form>
 
         <template #footer>

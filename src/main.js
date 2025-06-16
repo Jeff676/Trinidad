@@ -39,6 +39,8 @@ import Message from 'primevue/message'
 import Badge from 'primevue/badge'
 import Carousel from 'primevue/carousel'
 import FileUpload from 'primevue/fileupload';
+import ConfirmDialog from 'primevue/confirmdialog';
+import ConfirmationService from 'primevue/confirmationservice';
 
 import App from './App.vue'
 import router from './router'
@@ -92,6 +94,8 @@ app.component('ToggleButton', ToggleButton)
 app.component('Badge', Badge)
 app.component('Carousel', Carousel)
 app.component('FileUpload', FileUpload)
+app.component('ConfirmDialog', ConfirmDialog)
+app.component('ConfirmationService', ConfirmationService);
 
 // ** PrimeVue Config **//
 // ** Customized Preset **//
@@ -182,4 +186,6 @@ app.component('fa ', FontAwesomeIcon)
 
 app.use(pinia)
 app.use(router)
+app.use(ConfirmationService);
+
 app.mount('#app')

@@ -1,5 +1,5 @@
 import { firebaseApp } from './init'
-import { getFirestore, getDocs, collection, query, where, or, and, addDoc } from 'firebase/firestore'
+import { getFirestore, getDocs, collection, query, where, or, and, doc, addDoc } from 'firebase/firestore'
 
 const db = getFirestore(firebaseApp)
 
@@ -87,5 +87,21 @@ export const saveDoctor = async (data) =>{
      }
     
   return save;
+}
+
+// Update doctors
+export const updateDoctor = async (data) =>{
+  var update = false;
+  console.log("--->",data)
+    try {
+      const itemDocRef = doc(db, 'doctors', data.name);
+      //const docRef = await addDoc(collection(db, "doctors"), data.name);
+      console.log("Documento escrito con ID: ", itemDocRef);
+      update = true;
+    }catch (e) {
+      console.error("Error agregando documento: ", e);
+    }
+    
+  return update;
 
 }

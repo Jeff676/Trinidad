@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from '../stores/user';
+import { useConfirm } from "primevue/useconfirm";
 
 const userStore = useUserStore();
 
@@ -31,7 +32,29 @@ const items = ref([
     }
 ])
 
+const confirmSesion = useConfirm();
+const logOut = () => {
+    confirmSesion.require({
+        message: '¿Desea cerrar la sesión?',
+        header: 'Salir',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'No',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Sí'
+        },
+        accept: () => {
+            console.log('logout')
+            userStore.logout()
+        },
+        reject: () => {
+        }
+    });
 
+}
 </script>
 
 <template>
@@ -56,8 +79,9 @@ const items = ref([
     <Menubar v-if="userStore.isLoggedIn" class="flex-1">
         <template #end>
             <RouterLink to="#" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">
-                <span @click="userStore.logout">Salir</span>
+                <span @click="logOut">Salir</span>
             </RouterLink>
         </template>
-    </Menubar>
+    </Menubar>    
+
 </template>
