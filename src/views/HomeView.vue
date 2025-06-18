@@ -1,28 +1,33 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import LaTrinidadBanner from '@/components/LaTrinidadBanner.vue';
-import Odometer from '@/components/Odometer.vue';
+import Odometer from '@/components/Odometer.vue'
+import Router from '@/router'
 
 const cards = [
   {
     icon: 'comment-dollar',
     content: 'Conoce Nuestros planes de financiamiento y adquiere tu servicio de salud pagando en cuotas y sin interes',
     buttonLabel: 'Planes',
+    to: 'plans',
   },
   {
     icon: 'book-medical',
     content: 'Explora nuestro directorio de medicos Especialistas y selecciona la consulta que se adapte a tu necesidad',
     buttonLabel: 'Directorio',
+    to: 'directory',
   },
   {
     icon: 'calendar-days',
     content: 'Reserva una cita con solo hacer click en el boton, paga tu consulta en linea y evita largas esperas',
     buttonLabel: 'Reservas',
+    to: 'services',
   },
   {
     icon: 'heart-pulse',
     content: 'Nueva Unidad de Cardiologia, Consulta cardiologica especializada, mapa, holter, eco cardiograma',
     buttonLabel: 'Cardiologia',
+    to: 'services',
   },
 ];
 
@@ -86,6 +91,10 @@ const testimonials = [
 
 ]
 
+const goTo = (route) => {
+  Router.push({ name: route })
+}
+
 
 </script>
 
@@ -105,7 +114,7 @@ const testimonials = [
           <div class="w-full h-2 mb-5 bg-hope"></div>
           <!-- ! hltml odometer -->
           <div class="flex w-full justify-center bg-vitality rounded-xl p-5">
-            <Odometer number="1789" class="text-white" />
+            <Odometer number="0014" class="text-white" /><span class="text-white text-3xl ml-1">mil+</span>
           </div>
           <!-- ! hltml odometer -->
         </template>
@@ -175,13 +184,14 @@ const testimonials = [
 
   </div>
 
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 m-5">
-    <div v-for="(card, index) in cards" :key="index" class="my-5 p-10 rounded-lg shadow-lg shadow-indigo-500/50">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-5 m-5">
+    <div v-for="(card, index) in cards" :key="index"
+      class="my-5 p-10 rounded-lg shadow-lg shadow-indigo-500/50 flex flex-col justify-between">
       <div class="text-center mb-5">
         <font-awesome-icon :icon="card.icon" class="text-6xl text-welfare" />
       </div>
       <h3>{{ card.content }}</h3>
-      <button class="button-ppl">{{ card.buttonLabel }}</button>
+      <Button class="bg-vitality w-full" @click="goTo(card.to)">{{ card.buttonLabel }}</Button>
     </div>
   </div>
 
@@ -196,11 +206,11 @@ const testimonials = [
     <div class="md:col-start-2 col-span-3 md:col-span-2 rounded-xl flex flex-col p-10 shadow-lg shadow-indigo-500/50">
       <div class="text-vitality text-2xl">Moderna Area Quirugica</div>
       <div class="w-20 h-2 mb-5 bg-hope"></div>
-      <div class="hidden md:block">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi iure perferendis
-        illum vel ex enim
-        laboriosam
-        natus incidunt deleniti quidem pariatur, iusto architecto asperiores expedita soluta? Magni omnis molestiae
-        voluptatibus.</div>
+      <div class="hidden md:block">Nuestra área quirúrgica posee dos pabellones de 30 m² cada uno, equipados con
+        tecnología de vanguardia para procedimientos seguros y eficientes.
+        Contamos con confortables áreas de recuperación, sistemas de gases medicinales y respaldo eléctrico
+        ininterrumpido.
+        Todo bajo estrictas normativas, asegurando máxima esterilidad y seguridad en cada intervención.</div>
     </div>
     <div class="col-span-3 md:col-span-2 rounded-xl p-2 inset-shadow-sm">
       <img src="../assets/pabellon-1.jpg" alt="" class="rounded-xl">
@@ -211,20 +221,24 @@ const testimonials = [
     <div class="md:col-start-4 col-span-3 md:col-span-2 rounded-xl flex flex-col p-10 shadow-lg shadow-indigo-500/50">
       <div class="text-vitality text-2xl">Unidad de Cuidados Intensivos</div>
       <div class="w-20 h-2 mb-5 bg-hope"></div>
-      <div class="hidden md:block">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi iure perferendis
-        illum vel ex enim
-        laboriosam
-        natus incidunt deleniti quidem pariatur, iusto architecto asperiores expedita soluta? Magni omnis molestiae
-        voluptatibus.</div>
+      <div class="hidden md:block">Nuestra área de Cuidados Intensivos está equipada con tecnología de vanguardia para
+        el
+        monitoreo y soporte de pacientes críticos. Contamos con un equipo de enfermería altamente especializado y
+        médicos
+        especialistas en medicina crítica.
+        Todo bajo el liderazgo del Dr. Eugenio Desaya, un referente con más de 30 años de experiencia en medicina
+        crítica,
+        garantizando la mejor atención para cada paciente.</div>
     </div>
     <div class="md:col-start-2 col-span-3 md:col-span-2 rounded-xl flex flex-col p-10 shadow-lg shadow-indigo-500/50">
       <div class="text-vitality text-2xl">UCI Neonatal</div>
       <div class="w-20 h-2 mb-5 bg-hope"></div>
-      <div class="hidden md:block">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi iure perferendis
-        illum vel ex enim
-        laboriosam
-        natus incidunt deleniti quidem pariatur, iusto architecto asperiores expedita soluta? Magni omnis molestiae
-        voluptatibus.</div>
+      <div class="hidden md:block">Nuestra Unidad de Cuidados Intensivos Neonatales está equipada con tecnología de
+        vanguardia para ofrecer la mejor atención a los recién nacidos que requieren cuidados especiales.
+        Contamos con un talento humano altamente calificado, integrado por médicos y enfermeras especialistas, todos
+        bajo
+        la dirección de la Dra. Alessandra Marotta, garantizando el bienestar y la recuperación de nuestros pequeños
+        pacientes.</div>
     </div>
     <div class="col-span-3 md:col-span-2 rounded-xl p-2 inset-shadow-sm">
       <img src="../assets/UCIN-1.jpg" alt="" class="rounded-xl">
