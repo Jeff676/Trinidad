@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref } from 'vue'
 import LaTrinidadBanner from '@/components/LaTrinidadBanner.vue';
 import Odometer from '@/components/Odometer.vue'
 import Router from '@/router'
@@ -241,7 +241,7 @@ const goTo = (route) => {
         pacientes.</div>
     </div>
     <div class="col-span-3 md:col-span-2 rounded-xl p-2 inset-shadow-sm">
-      <img src="../assets/UCIN-1.jpg" alt="" class="rounded-xl">
+      <img src="../../public/UCIN1.svg" alt="" class="rounded-xl">
     </div>
   </div>
 

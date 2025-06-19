@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-2 bg-vitality justify-start md:justify-around">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-2 bg-vitality justify-start md:justify-around mt-5">
     <div class="flex bg-vitality w-full text-white">
       <div class="p-3 flex flex-col">
         <h2>Conócenos</h2>
