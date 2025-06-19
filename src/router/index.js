@@ -71,6 +71,10 @@ const router = createRouter({
       },
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // Siempre desplazarse a la parte superior al cambiar de ruta
+    return { top: 0 };
+  }
 })
 
 const getCurrentUser = () => {

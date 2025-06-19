@@ -21,7 +21,7 @@ export const useUserStore = defineStore('user', {
         alert("El email o el password es invalido");
         return;
       }
-      this.$router.push('/panel')
+      this.$router.push('/panel/patients')
       useUserStore.user = email
     },
 

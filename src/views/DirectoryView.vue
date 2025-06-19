@@ -14,7 +14,7 @@ const selectSpeciality = ref()
 var arrSpeciality = ref([])
 
 onMounted(async () => {
-    doctors.value = await getDoctors()
+    all()
     specialities.value = await getSpecialities()
 
     arrSpeciality.value.push( {name: 'Todas'})
@@ -41,9 +41,17 @@ const all = async () => {
     }
 };
 
-const schedule = async () => {
-    window.open('https://wa.link/daxgms','_blank');
+const schedule = async (gender, name, lastname, speciality) => {
+    var gen = genDoctor(gender)
+
+    window.open('https://api.whatsapp.com/send?phone=584165017110&text=Hola.! Quisiera agendar una cita de  '
+                + speciality.charAt(0).toUpperCase() + speciality.slice(1) +' con ' 
+                + gen  + ' ' 
+                + name.charAt(0).toUpperCase() + name.slice(1) + ' ' 
+                + lastname.charAt(0).toUpperCase() + lastname.slice(1)
+            ,'_blank');
 };
+
 
 const auxDoctor = (value) => {
     switch (value) {
@@ -51,6 +59,16 @@ const auxDoctor = (value) => {
             return 'DRA. '
         default:
             return 'DR. '
+    }
+    
+}
+
+const genDoctor = (value) => {
+    switch (value) {
+        case 'Femenino':
+            return 'la Dra. '
+        default:
+            return 'el Dr. '
     }
     
 }
@@ -161,7 +179,7 @@ const allDoctorsParamMovil = async (event) => {
     </div>
 
     <div class="">
-        <div class="col-12 p-3 text-center somos" v-if="doctors.length == 0">
+        <div class="col-12 p-3 text-center somos" v-if="doctors.length == 0 && !loadDoctors">
             <h2><i>No hay resultados para mostrar.</i></h2>
         </div>
     </div>
@@ -184,7 +202,7 @@ const allDoctorsParamMovil = async (event) => {
                 </div>
                 <div class="text-center content-buttons">
                     <Button class="p-3" label="Ver más" icon="pi pi-video" severity="secondary" style="margin-right: 10px;" @click="showDialog"></Button>
-                    <Button class="p-3" label="Agendar" icon="pi pi-calendar" iconPos="right" severity="success" v-on:click="schedule"></Button>
+                    <Button class="p-3" label="Agendar" icon="pi pi-calendar" iconPos="right" severity="success" v-on:click="schedule(doctor.gender,doctor.name,doctor.lastname,doctor.speciality)"></Button>
                 </div>
                 
             </template>

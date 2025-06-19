@@ -205,4 +205,27 @@ const scheduleDr = async (dr) => {
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
+
+@media only screen and (max-width: 600px) {
+  .la-trinidad-content {
+        position: relative;
+        z-index: 1;
+        border-radius: 15px;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        margin-bottom: 0px;
+    }
+
+    .slogan {
+        bottom: 0;
+        left: 0;
+        font-size: 2rem;
+        color: white;
+        z-index: 5;
+        border-radius: 15px;
+        padding: 1rem 1rem;
+    }
+}
 </style>

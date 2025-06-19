@@ -2,16 +2,23 @@
 import { ref, reactive, onMounted } from 'vue'
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { zodResolver } from '@primevue/forms/resolvers/zod'
+import { z } from 'zod'
+import { getAllPatients, findByPatientId, savePatient } from '/src/firebase/patients'
+import { useConfirm } from "primevue/useconfirm";
 
+const error = ref(null);
+const idInput = ref('')
+const nationalityType = ref()
 const initialValues = reactive({
     nationality: { letter: 'V' },
-    patientId: '',
+    identification: '',
     name: '',
     nationalityType: 'V',
-    birthday: null,
+    birthday: '',
     size: 1.6,
-    gender: 'Fem',
-    weigth: 0,
+    gender: '',
+    weigth: 1,
     address: '',
     country: '',
     state: '',
@@ -21,51 +28,65 @@ const initialValues = reactive({
     email: '',
     profesion: '',
     waitForAdmitt: false,
-    admitted: false
+    admitted: false,
+    status: 'En Espera'
 })
 
 const blockInputs = ref(true)
 
 // TODO: Define validations
-const resolver = ({ values }) => {
-    const errors = {}
+const resolver = zodResolver(
+    z.object({
+        nationalityType: z.string().length(1, { message: "Debe ser exactamente un caracter" }),
+        identification: z.string().min(8, { message: 'La cedula es requerida' }),
+        name: z.string().min(1, { message: 'El nombre es requerido' }),
+        phone: z.string(),
+        phone2: z.string(),
+        email: z.string(),
+        address: z.string(),
+        city: z.string(),
+        state: z.string(),
+        country: z.string(),
+        birthday: z.string(),
+        size: z.string(), 
+        weigth: z.string(),
+        gender: z.string(), 
+        profesion: z.string(),
+        status: z.literal('En Espera').optional(),
+    })
+)
 
-
-    if (!values.name) {
-        errors.name = [{ message: 'Nombre del Paciente es Requerido' }]
-    }
-
-    return {
-        errors
-    }
-}
-
-const patients = ref([
-    { name: 'Juan Perez', id: '12345678', age: 30, status: 'UCI', country: { name: 'Venezuela', code: 'VE' }, representative: { name: 'Amy Elsner', image: 'amyelsner.png' } },
-    { name: 'Maria Gomez', id: '87654321', age: 25, status: 'Hospitalizado', country: { name: 'Colombia', code: 'CO' }, representative: { name: 'Anna Fali', image: 'annafali.png' } },
-    { name: 'Carlos Sanchez', id: '23456789', age: 40, status: 'En Espera', country: { name: 'Mexico', code: 'MX' }, representative: { name: 'Asiya Javayant', image: 'asiyajavayant.png' } },
-])
+var patients = ref([])
+var patientFind = ref([])
 const selectedPatient = ref()
 const filters = ref(
     {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-        'country.name': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-        representative: { value: null, matchMode: FilterMatchMode.IN },
-        status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] }
+        age: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+        id: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+        status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] }
     }
 );
-const newPatient = ref({
-    name: '',
-    id: '',
-    age: '',
-    status: ''
-})
 
 const statuses = ref(['UCI', 'Hospitalizado', 'En Espera', 'No Ingresado'])
 
-const onFormSubmit = async ({ states }) => {
-    console.log('Form submitted with values:', states);
+
+const onFormSubmit = async ({ valid, values }) => {
+    console.log(values)
+    if (valid) {
+        console.log('Form submitted with values:', values)
+        // Aquí puedes manejar el envío del formulario, como hacer una solicitud a la API
+        visible.value = false
+        blockInputs.value = true
+        savePatient(values);
+        patients.value = await getAllPatients();
+        //blockVerify.value = false
+        idInput.value = ''
+
+    } else {
+        console.log('Form is invalid')
+    }
 }
 
 const nationalityOptions = ref([
@@ -74,31 +95,23 @@ const nationalityOptions = ref([
 ])
 
 const genderOptions = ref([
-    { icon: 'person', value: 'male' },
-    { icon: 'person-dress', value: 'female' },
+    { icon: 'person', value: 'Masculino' },
+    { icon: 'person-dress', value: 'Femenino' },
 ])
 
-const doctors = ref([
-    { name: 'Dra Maria Perez' },
-    { name: 'Dr Jose Gonzalez' },
-])
+onMounted(async () => {
+    patients.value = await getAllPatients()
 
-onMounted(() => {
-    // CustomerService.getCustomersSmall().then((data) => (customers.value = data));
-    console.log('Customers data loaded')
 });
 
 const getSeverity = (status) => {
     switch (status) {
         case 'UCI':
             return 'danger';
-
         case 'Hospitalizado':
             return 'admited';
-
         case 'En Espera':
             return 'waiting';
-
         case 'No ingresado':
             return 'inactive';
     }
@@ -112,9 +125,27 @@ const hideDialog = () => {
     visible.value = false;
 }
 
-const checkPatient = () => {
+const checkPatient = async () => {
     // Esta funcion se encarga de verificar si el paciente ya existe en la base de datos
-    blockInputs.value = false
+    var nationality = nationalityType.value ? nationalityType.value : 'V'
+        console.log('--->',idInput.value.length)
+        if(idInput.value.length > 7){
+            try {
+                patientFind.value = await findByPatientId(nationality, idInput.value)
+                console.log('--->',patientFind.value)
+                if (patientFind.value == false) {
+                    blockInputs.value = false
+                    blockVerify.value = true
+                }
+                if (patientFind.value.length == 1){
+                    //editDoctor = patientFind.value[0]
+                    
+                    msgConfirm()
+                }
+            } catch (err) {
+                error.value = err.message;
+            } 
+        }
 }
 
 var editPatient = reactive([])
@@ -126,13 +157,42 @@ const onRowSelect = (event) => {
     console.log('Selected patient:', editPatient.name) //Eliminar para produccion
 }
 
+const confirm = useConfirm();
+
+const msgConfirm = () => {
+    confirm.require({
+        message: 'La cédula ingresada ya existe para un paciente. ¿Desea editar su información?',
+        header: 'Alerta',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'No',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Sí'
+        },
+        accept: () => {
+            visibleEdit.value = true
+            visible.value = false
+
+        },
+        reject: () => {
+            visible.value = false
+        }
+    });
+};
+
 </script>
 
 <template>
     <div class="card">
-        <DataTable v-model:filters="filters" :value="patients" stateStorage="session" stateKey="dt-state-demo-session"
-            paginator :rows="5" selectionMode="single" v-model:selection="selectedPatient" @row-select="onRowSelect"
-            dataKey="id" :globalFilterFields="['name', 'country.name', 'representative.name', 'status']"
+        <!-- <DataTable v-model:filters="filters" :value="patients" stateStorage="session" stateKey="dt-state-demo-session"
+            paginator :rows="5" selectionMode="single" v-model:selection="selectedPatient" @row-select="onRowSelect" -->
+        <DataTable v-model:filters="filters" filterDisplay="row" :value="patients" paginator
+            :rows-per-page-options="[5, 10, 25]" :rows="10" stripedRows sortField="name" selectionMode="single"
+            v-model:selection="selectedPatient" @row-select="onRowSelect" :sortOrder="1" dataKey="id" 
+            :globalFilterFields="['name', 'identification', 'status']"
             tableStyle="min-width: 50rem">
             <template #header>
                 <div class="flex justify-content-between">
@@ -148,7 +208,7 @@ const onRowSelect = (event) => {
                             <InputIcon>
                                 <FontAwesomeIcon icon="fa-magnifying-glass" />
                             </InputIcon>
-                            <InputText v-model="filters['global'].value" placeholder="Global Search" />
+                            <InputText v-model="filters['global'].value" placeholder="Buscar" />
                         </IconField>
                         <Button rounded @click="showDialog">
                             <font-awesome-icon icon="plus" size="xl" />
@@ -157,7 +217,12 @@ const onRowSelect = (event) => {
                     </div>
                 </div>
             </template>
-            <Column field="id" header="Cedula de Identidad" sortable style="width: 25%">
+            <Column header="Cedula de Identidad" sortable style="width: 25%">
+                <template #body="{ data }">
+                    <div class="flex items-center gap-2">
+                        <span>{{ data.nationalityType + data.identification }}</span>
+                    </div>
+                </template>
             </Column>
             <Column header="Nombre y Apellido" sortable sortField="name" filterField="name" filterMatchMode="contains"
                 style="width: 25%">
@@ -167,20 +232,28 @@ const onRowSelect = (event) => {
                     </div>
                 </template>
             </Column>
-            <Column header="Edad" sortable sortField="representative.name" filterField="representative"
-                :showFilterMatchModes="false" :filterMenuStyle="{ width: '14rem' }" style="width: 25%">
+            <Column header="Teléfono" sortable sortField="name" filterField="name" filterMatchMode="contains"
+                style="width: 20%">
+                <template #body="{ data }">
+                    <div class="flex items-center gap-2">
+                        <span>{{ data.phone }}</span>
+                    </div>
+                </template>
+            </Column>
+            <Column header="Edad" sortable sortField="age" filterField="age"
+                :showFilterMatchModes="false" :filterMenuStyle="{ width: '14rem' }" style="width: 10%">
                 <template #body="{ data }">
                     <div class="flex items-center gap-2">
                         <span>{{ data.age }}</span>
                     </div>
                 </template>
             </Column>
-            <Column field="status" header="Estatus" sortable filterMatchMode="equals" style="width: 25%">
+            <Column field="status" header="Estatus" sortable filterMatchMode="equals" style="width: 20%">
                 <template #body="{ data }">
                     <Tag :value="data.status" :class="getSeverity(data.status)" class="w-full" />
                 </template>
             </Column>
-            <template #empty> Paciente no encontrado </template>
+            <template #empty> No hay resultados para mostrar.</template>
         </DataTable>
     </div>
 
@@ -200,14 +273,14 @@ const onRowSelect = (event) => {
 
             <div class="flex gap-2 align-items-center">
                 <FormField v-slot="$field" name="nationalityType" initialValue="V">
-                    <Select :options="nationalityOptions" optionLabel="letter" optionValue="letter" />
+                    <Select :options="nationalityOptions" optionLabel="letter" optionValue="letter" v-model="nationalityType"/>
                     <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
                         {{ $field.error.message }}
                     </Message>
                 </FormField>
 
-                <FormField v-slot="$field" name="patientId" initialValue="">
-                    <InputText placeholder="Cedula del Paciente" type="text" />
+                <FormField v-slot="$field" name="identification" initialValue="">
+                    <InputText placeholder="Cedula del Paciente" type="text" v-model="idInput"/>
                     <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
                         {{ $field.error.message }}
                     </Message>
@@ -224,44 +297,43 @@ const onRowSelect = (event) => {
                     <FloatLabel>
                         <InputText id="nameInput" name="name" type="text" class="w-full" :disabled="blockInputs" />
                         <label for="nameInput">Nombre del Paciente</label>
-                        <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.name.error?.message }}</Message>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="phone" initialValue="">
                     <FloatLabel>
                         <InputText name="phone" type="text" inputId="phoneInput" class="w-full"
                             :disabled="blockInputs" />
                         <label for="phoneInput">Telefono Principal</label>
-                        <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.name.error?.message }}</Message>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="phone2" initialValue="">
                     <FloatLabel>
                         <label for="phone2Input">Telefono Secundario</label>
                         <InputText name="phone2" type="text" class="w-full" :disabled="blockInputs" />
-                        <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.name.error?.message }}</Message>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="email" initialValue="">
                     <FloatLabel>
                         <label for="emailInput">Correo Electronico</label>
                         <InputText name="email" type="text" class="w-full" inputId="emailInput"
                             :disabled="blockInputs" />
-                        <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.name.error?.message }}</Message>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
             </div>
 
-
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="address" initialValue="">
                     <FloatLabel>
                         <label for="addressInput">Direccion</label>
                         <InputText name="address" type="text" inputId="addressInput" fluid :disabled="blockInputs" />
@@ -272,58 +344,60 @@ const onRowSelect = (event) => {
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="city" initialValue="">
                     <FloatLabel>
                         <InputText name="city" type="text" inputId="cityInput" class="w-full" :disabled="blockInputs" />
                         <label for="cityInput">Ciudad</label>
-                        <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.name.error?.message }}</Message>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="state" initialValue="">
                     <FloatLabel>
                         <label for="stateInput">Estado</label>
                         <InputText name="state" type="text" class="w-full" :disabled="blockInputs" />
-                        <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.name.error?.message }}</Message>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="country" initialValue="">
                     <FloatLabel>
                         <label for="countryInput">Pais</label>
                         <InputText name="country" type="text" class="w-full" inputId="countryInput"
                             :disabled="blockInputs" />
-                        <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.name.error?.message }}</Message>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
-                    <label for="birthdayInput">Fecha de Nacimiento</label> 
-                    <DatePicker name="birthday" inputId="birthdayInput" fluid dateFormat="dd/mm/yy"
-                        :disabled="blockInputs" />
-                    <Message v-if="$form.date?.invalid" severity="error" size="small" variant="simple">{{
-                        $form.date.error?.message }}</Message>
+                
+                <FormField class="flex-1" v-slot="$field" name="birthday" initialValue="">
+                    <FloatLabel>
+                        <label for="birthInput">Fecha de Nacimiento</label>
+                        <DatePicker id="birthInput" name="birthInput" fluid :disabled="blockInputs" />
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
+                    </FloatLabel>
                 </FormField>
 
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="size" initialValue="">
                     <label for="sizeInput" class="block"> Estatura </label>
                     <InputNumber name="size" inputId="sizeInput" mode="decimal" showButtons :min="0.4" :max="2.5"
                         :step="0.1" :disabled="blockInputs" />
                 </FormField>
 
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="weigth" initialValue="">
                     <label for="weigthInput" class="block"> Peso </label>
                     <InputNumber name="weigth" inputId="weigthInput" mode="decimal" showButtons :min="1" :max="400"
                         :step="1" :disabled="blockInputs" />
                 </FormField>
 
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="gender" initialValue="">
                     <label for="genderInput" class="block mb-1"> Genero </label>
                     <SelectButton name="gender" :options="genderOptions" optionLabel="value" dataKey="value"
-                        aria-labelledby="custom" inputId="genderInput" :disabled="blockInputs">
+                        inputId="genderInput" :disabled="blockInputs">
                         <template #option="slotProps">
                             <font-awesome-icon :icon="slotProps.option.icon" />
                         </template>
@@ -332,7 +406,7 @@ const onRowSelect = (event) => {
             </div> 
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="profesion" initialValue="">
                     <FloatLabel>
                         <label for="profesionInput">Profesion</label>
                         <InputText name="profesion" type="text" inputId="profesionInput" fluid :disabled="blockInputs" />
@@ -373,16 +447,16 @@ const onRowSelect = (event) => {
                     <FloatLabel>
                         <InputText id="nameInput" name="name" type="text" class="w-full" v-model="editPatient.name" />
                         <label for="nameInput">Nombre del Paciente</label>
-                        <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.name.error?.message }}</Message>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
                     </FloatLabel>
                 </div>
                 <div class="flex-1">
                     <FloatLabel>
                         <InputText id="ageInput" name="age" type="text" class="w-full" v-model="editPatient.age" />
                         <label for="ageInput">Edad</label>
-                        <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.name.error?.message }}</Message>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
                     </FloatLabel>
                 </div>
                 <div class="flex-1">
@@ -390,8 +464,8 @@ const onRowSelect = (event) => {
                         <InputText id="statusInput" name="status" type="text" class="w-full"
                             v-model="editPatient.status" />
                         <label for="statusInput">Estatus</label>
-                        <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.name.error?.message }}</Message>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
                     </FloatLabel>
                 </div>
             </div>

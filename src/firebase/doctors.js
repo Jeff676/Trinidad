@@ -93,6 +93,7 @@ export const saveDoctor = async (data) =>{
 export const updateDoctor = async (data) =>{
   var update = false;
   console.log("--->",data)
+  getDocument(data.identification)
     try {
       const itemDocRef = doc(db, 'doctors', data.name);
       //const docRef = await addDoc(collection(db, "doctors"), data.name);
@@ -103,5 +104,17 @@ export const updateDoctor = async (data) =>{
     }
     
   return update;
+
+}
+
+const getDocument = async (identification) =>{
+  const q = query(collection(db, "doctors"), 
+            //where("nationalityType", "==", nationalityType),
+            where("identification", "==", identification),
+          );
+  const querySnapshot = await getDocs(q);
+  const doctor = querySnapshot.docs.map((doc) => doc.id())
+  console.log('===>', doctor)
+  return doctor.length > 0 ? doctors : false
 
 }
