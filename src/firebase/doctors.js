@@ -1,5 +1,5 @@
 import { firebaseApp } from './init'
-import { getFirestore, getDocs, collection, query, where, or, and, doc, addDoc } from 'firebase/firestore'
+import { getFirestore, getDocs, collection, query, where, or, and, doc, addDoc, updateDoc } from 'firebase/firestore'
 
 const db = getFirestore(firebaseApp)
 
@@ -90,15 +90,12 @@ export const saveDoctor = async (data) =>{
 }
 
 // Update doctors
-export const updateDoctor = async (data) =>{
+export const updateDoctor = async (data, documentDoctor) =>{
   var update = false;
-  console.log("--->",data)
-  getDocument(data.identification)
     try {
-      const itemDocRef = doc(db, 'doctors', data.name);
-      //const docRef = await addDoc(collection(db, "doctors"), data.name);
-      console.log("Documento escrito con ID: ", itemDocRef);
-      update = true;
+      const itemDocRef = doc(db, "doctors", documentDoctor)
+      await updateDoc(itemDocRef, data)
+      update = true
     }catch (e) {
       console.error("Error agregando documento: ", e);
     }
@@ -107,14 +104,17 @@ export const updateDoctor = async (data) =>{
 
 }
 
-const getDocument = async (identification) =>{
+export const getDocument = async (nationalityType, identification) =>{
+  var doctor = ''
   const q = query(collection(db, "doctors"), 
-            //where("nationalityType", "==", nationalityType),
+            where("nationalityType", "==", nationalityType),
             where("identification", "==", identification),
           );
   const querySnapshot = await getDocs(q);
-  const doctor = querySnapshot.docs.map((doc) => doc.id())
-  console.log('===>', doctor)
-  return doctor.length > 0 ? doctors : false
+  querySnapshot.forEach((doc) => {
+    doctor = doc.id
+  });
+
+  return doctor
 
 }

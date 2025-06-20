@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { auth } from '../firebase/init'
 
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { endAt } from 'firebase/firestore';
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -18,11 +19,12 @@ export const useUserStore = defineStore('user', {
       try{
         await signInWithEmailAndPassword(auth, email, password)
       }catch(error){
-        alert("El email o el password es invalido");
-        return;
+
+        return '';
       }
-      this.$router.push('/panel/patients')
+      this.$router.push('/patients')
       useUserStore.user = email
+      return email;
     },
 
     logout() {

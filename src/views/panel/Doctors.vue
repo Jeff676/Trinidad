@@ -3,13 +3,16 @@ import { ref, reactive, onMounted } from 'vue'
 import { FilterMatchMode } from '@primevue/core/api'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { z } from 'zod'
-import { getSpecialities, getAllDoctors, findByDoctorId, saveDoctor, updateDoctor } from '/src/firebase/doctors'
+import { getSpecialities, getAllDoctors, findByDoctorId, saveDoctor, updateDoctor, getDocument } from '/src/firebase/doctors'
 import { useConfirm } from "primevue/useconfirm";
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 var doctorFind = ref([])
 var specialities = ref([])
 var doctors = ref([])
-const error = ref(null);
+var document = ref()
+const error = ref(null)
 const idInput = ref('')
 const nationalityType = ref()
 const status = ref()
@@ -35,6 +38,7 @@ const hideDialog = () => {
     blockInputs.value = true
     blockVerify.value = false
     identification.value = ''
+    idInput.value = ''
 }   
 
 const activeDoctor = (value) => {
@@ -58,7 +62,8 @@ const onRowSelect = (event) => {
     console.log('***', event)
     editDoctor = event.data
     visibleEdit.value = true
-    console.log('Selected doctor:', editDoctor.name) //Eliminar para produccion
+    getDocumentDoctor()
+
 }
 
 const initialValues = reactive({
@@ -166,10 +171,11 @@ const resolver = zodResolver(
 // Desactivar inputs al iniciar el formulario
 let blockInputs = ref(true)
 let blockVerify = ref(false)
+
 // Desbloquear inputs al verificar la cedula
 const checkDoctor = async () => {
     var nationality = nationalityType.value ? nationalityType.value : 'V'
-        if(idInput.value.length > 7){
+        // if(idInput.value.length >= 7){
             try {
                 doctorFind.value = await findByDoctorId(nationality, idInput.value)
                 console.log('-->',doctorFind.value.length)
@@ -180,14 +186,13 @@ const checkDoctor = async () => {
                 if (doctorFind.value.length == 1){
                     editDoctor = doctorFind.value[0]
                     
-                    console.log('-->', doctorFind.value[0].value)
-                    console.log('-->>', editDoctor)
+                    getDocumentDoctor()
                     msgConfirm()
                 }
             } catch (err) {
                 error.value = err.message;
             } 
-        }
+        // }
 }
 
 
@@ -199,7 +204,14 @@ const onFormSubmit = async ({ valid, values }) => {
         visible.value = false
         blockInputs.value = true
         console.log("guardar")
-        saveDoctor(values);
+        try{
+            var sv = await saveDoctor(values);
+            if(sv){
+                toast.add({ severity: 'success', summary: '', detail: 'Guardado con éxito.!', life: 3000 });
+            }
+        }catch(e){
+            toast.add({ severity: 'error', summary: 'Error al iniciar sesión', detail: 'Ha ocurrido un error.!', life: 3000 });
+        }
         doctors.value = await getAllDoctors();
         blockVerify.value = false
         idInput.value = ''
@@ -213,10 +225,17 @@ const onFormSubmitUp = async ({ valid, values }) => {
     if (valid) {
         console.log('Form submitted with values:', values)
         // Aquí puedes manejar el envío del formulario, como hacer una solicitud a la API
-        visible.value = false
+        visibleEdit.value = false
         blockInputs.value = true
         console.log("actualizar")
-        updateDoctor(values);
+        try{
+            var up = await updateDoctor(values,document);
+            if(up){
+                toast.add({ severity: 'success', summary: '', detail: 'Actualizado con éxito.!', life: 3000 });
+            }
+        }catch(e){
+            toast.add({ severity: 'error', summary: 'Error al iniciar sesión', detail: 'Ha ocurrido un error.!', life: 3000 });
+        }
         doctors.value = await getAllDoctors();
         blockVerify.value = false
         idInput.value = ''
@@ -231,6 +250,11 @@ onMounted(async () => {
     doctors.value = await getAllDoctors()
 
 })
+
+const getDocumentDoctor = async () => {
+    document = await getDocument(editDoctor.nationalityType, editDoctor.identification)
+
+}
 
 const confirm = useConfirm();
 
@@ -308,7 +332,7 @@ const msgConfirm = () => {
             </Column>
             <Column field="record" header="Record" sortable>
                 <template #body="{ data }">
-                    <Badge :value="data.experience ? data.experience : 0" size="large" class="bg-vitality" />
+                    <Badge :value="data.record ? data.record : 0" size="large" class="bg-vitality" />
                 </template>
             </Column>
             <Column field="directory" header="Directorio" sortable>
@@ -533,8 +557,8 @@ const msgConfirm = () => {
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="birthday" initialValue="">
                     <FloatLabel>
-                        <label for="birthInput">Fecha de Nacimiento</label>
-                        <DatePicker id="birthInput" name="birthInput" fluid :disabled="blockInputs" />
+                        <label for="birthday">Fecha de Nacimiento</label>
+                        <DatePicker  name="birthday" fluid :disabled="blockInputs" dateFormat="dd/mm/yy"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -801,8 +825,8 @@ const msgConfirm = () => {
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="birthday">
                     <FloatLabel>
-                        <label for="birthInput">Fecha de Nacimiento</label>
-                        <DatePicker id="birthInput" name="birthInput" fluid  />
+                        <label for="birthday">Fecha de Nacimiento</label>
+                        <DatePicker id="birthday" name="birthday" fluid  />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>

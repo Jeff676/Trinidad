@@ -295,5 +295,8 @@ h2{
       width: 60%;
     }
   }
+  .testimonial-scll{
+    overflow: auto;
+  }
 }
 

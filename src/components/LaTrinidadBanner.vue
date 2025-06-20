@@ -67,11 +67,11 @@ onBeforeUnmount(() => {
 })
 
 const schedule = async () => {
-    window.open('https://wa.link/lw2t0b','_blank');
+    window.open('https://wa.link/lw2t0b', '_blank');
 };
 
 const scheduleDr = async (dr) => {
-    window.open('https://api.whatsapp.com/send?phone=584165017110&text=Quisiera agendar una cita con '+ dr,'_blank');
+    window.open('https://api.whatsapp.com/send?phone=584165017110&text=Quisiera agendar una cita con ' + dr, '_blank');
 };
 
 </script>
@@ -100,7 +100,7 @@ const scheduleDr = async (dr) => {
                         <img :src="`../../public/${currentItem.image}`" alt="Doctor"
                             style="position:absolute; bottom: 0; max-height: 100%;" />
                         <div class="directory-link">
-                            
+
                             <a href="#" v-on:click="scheduleDr(`${currentItem.name}`)">{{ currentItem.name }}</a>
                             <!-- <Button severity="success" class="hidden md:block" v-on:click="schedule">Whatsapp</Button> -->
 
@@ -110,7 +110,7 @@ const scheduleDr = async (dr) => {
             </div>
         </div>
         <div class="slogan ml-10">
-            <span>
+            <span class="hidden md:block">
                 Somos Tu Aliado en Salud!
             </span>
             <div class="semi-rombo"></div>

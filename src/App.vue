@@ -48,6 +48,8 @@ onAuthStateChanged(auth, (user) => {
   <Footer v-if="!userStore.isLoggedIn" />
 
   <ConfirmDialog></ConfirmDialog>
+  <Toast />
+
 
 </template>
 

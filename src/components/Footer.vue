@@ -59,7 +59,8 @@
         </div>
       </div>
   </div>
-  <div class="flex flex-col bg-vitality w-full">
+
+    <div class="flex flex-col bg-vitality w-full">
     <div class="flex justify-center">
       <img src="../assets/logo-large.svg" alt="Logo" class="w-1/4">
     </div>
