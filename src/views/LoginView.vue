@@ -2,15 +2,41 @@
 import { ref } from 'vue';
 import { useUserStore } from '../stores/user';
 import { auth } from '../firebase/init'
+import { useConfirm } from "primevue/useconfirm";
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 const email = ref('');
 const password = ref('');
+const loading = ref(false);
 
 const userStore = useUserStore();
 
-const login = () => {
-  userStore.login(email.value, password.value);
-}
+const logIn = ref('')
+
+const login = async () => {
+    loading.value = true;
+    
+    try {
+      setTimeout(() => {
+          loading.value = false;
+      }, 3000);
+
+      logIn.value = await userStore.login(email.value, password.value)
+      
+      if(logIn.value == ''){
+        toast.add({ severity: 'error', summary: 'Error al iniciar sesión', detail: 'Email y/o contraseña invalidos.!', life: 3000 });
+      }
+
+    } catch (error) {
+        //error.value = err.message
+        loading.value = false
+
+    } finally {
+        loading.value = false
+    }
+};
+
 
 </script>
 
@@ -36,13 +62,12 @@ const login = () => {
             <span class="ml-2">Recordar Usuario</span>
           </div>
           <div class="flex gap-3 mb-2">
-            <Button label="Iniciar Sesion" class="w-full" type="submit" />
+            <Button label="Iniciar Sesion" class="w-full" type="submit" :loading="loading"/>
           </div>
         </form>
         <div class="flex justify-content-center mt-3">
           <a href="#">¿Olvidó su contraseña?</a>
         </div>
-        <!-- <p class="text-red-500">gg {{ errorMsg }} </p> -->
         {{ userStore.user }}
       </div>
     </div>
