@@ -3,13 +3,16 @@ import { ref, reactive, onMounted } from 'vue'
 import { FilterMatchMode } from '@primevue/core/api'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { z } from 'zod'
-import { getSpecialities, getAllDoctors, findByDoctorId, saveDoctor, updateDoctor } from '/src/firebase/doctors'
+import { getSpecialities, getAllDoctors, findByDoctorId, saveDoctor, updateDoctor, getDocument } from '/src/firebase/doctors'
 import { useConfirm } from "primevue/useconfirm";
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 var doctorFind = ref([])
 var specialities = ref([])
 var doctors = ref([])
-const error = ref(null);
+var document = ref()
+const error = ref(null)
 const idInput = ref('')
 const nationalityType = ref()
 const status = ref()
@@ -35,6 +38,7 @@ const hideDialog = () => {
     blockInputs.value = true
     blockVerify.value = false
     identification.value = ''
+    idInput.value = ''
 }   
 
 const activeDoctor = (value) => {
@@ -58,7 +62,8 @@ const onRowSelect = (event) => {
     console.log('***', event)
     editDoctor = event.data
     visibleEdit.value = true
-    console.log('Selected doctor:', editDoctor.name) //Eliminar para produccion
+    getDocumentDoctor()
+
 }
 
 const initialValues = reactive({
@@ -133,7 +138,7 @@ const selectValue = ref(null)
 // ** Reglas de validacion para el formulario de nuevo medico ** //
 const resolver = zodResolver(
     z.object({
-        
+
         nationalityType: z.string().length(1, { message: "Debe ser exactamente un caracter" }),
         identification: z.string().min(8, { message: 'La cedula es requerida' }),
         name: z.string().min(1, { message: 'El nombre es requerido' }),
@@ -157,7 +162,6 @@ const resolver = zodResolver(
         birthday: z.string(),
         gender: z.string().min(1, { message: "Seleccione una género" }),
         courtesy: z.string(),
-
         status: z.literal('Pendiente').optional(),
         directory: z.string(),
         verify: z.string(),
@@ -167,28 +171,28 @@ const resolver = zodResolver(
 // Desactivar inputs al iniciar el formulario
 let blockInputs = ref(true)
 let blockVerify = ref(false)
+
 // Desbloquear inputs al verificar la cedula
 const checkDoctor = async () => {
     var nationality = nationalityType.value ? nationalityType.value : 'V'
-        if(idInput.value.length >= 8){
+        // if(idInput.value.length >= 7){
             try {
                 doctorFind.value = await findByDoctorId(nationality, idInput.value)
                 console.log('-->',doctorFind.value.length)
-                if (doctorFind.value != false) {
+                if (doctorFind.value == false) {
                     blockInputs.value = false
                     blockVerify.value = true
                 }
                 if (doctorFind.value.length == 1){
                     editDoctor = doctorFind.value[0]
                     
-                    console.log('-->', doctorFind.value[0].value)
-                    console.log('-->>', editDoctor)
+                    getDocumentDoctor()
                     msgConfirm()
                 }
             } catch (err) {
                 error.value = err.message;
             } 
-        }
+        // }
 }
 
 
@@ -200,7 +204,14 @@ const onFormSubmit = async ({ valid, values }) => {
         visible.value = false
         blockInputs.value = true
         console.log("guardar")
-        saveDoctor(values);
+        try{
+            var sv = await saveDoctor(values);
+            if(sv){
+                toast.add({ severity: 'success', summary: '', detail: 'Guardado con éxito.!', life: 3000 });
+            }
+        }catch(e){
+            toast.add({ severity: 'error', summary: 'Error al iniciar sesión', detail: 'Ha ocurrido un error.!', life: 3000 });
+        }
         doctors.value = await getAllDoctors();
         blockVerify.value = false
         idInput.value = ''
@@ -214,10 +225,17 @@ const onFormSubmitUp = async ({ valid, values }) => {
     if (valid) {
         console.log('Form submitted with values:', values)
         // Aquí puedes manejar el envío del formulario, como hacer una solicitud a la API
-        visible.value = false
+        visibleEdit.value = false
         blockInputs.value = true
         console.log("actualizar")
-        updateDoctor(values);
+        try{
+            var up = await updateDoctor(values,document);
+            if(up){
+                toast.add({ severity: 'success', summary: '', detail: 'Actualizado con éxito.!', life: 3000 });
+            }
+        }catch(e){
+            toast.add({ severity: 'error', summary: 'Error al iniciar sesión', detail: 'Ha ocurrido un error.!', life: 3000 });
+        }
         doctors.value = await getAllDoctors();
         blockVerify.value = false
         idInput.value = ''
@@ -232,6 +250,11 @@ onMounted(async () => {
     doctors.value = await getAllDoctors()
 
 })
+
+const getDocumentDoctor = async () => {
+    document = await getDocument(editDoctor.nationalityType, editDoctor.identification)
+
+}
 
 const confirm = useConfirm();
 
@@ -309,7 +332,7 @@ const msgConfirm = () => {
             </Column>
             <Column field="record" header="Record" sortable>
                 <template #body="{ data }">
-                    <Badge :value="data.experience ? data.experience : 0" size="large" class="bg-vitality" />
+                    <Badge :value="data.record ? data.record : 0" size="large" class="bg-vitality" />
                 </template>
             </Column>
             <Column field="directory" header="Directorio" sortable>
@@ -325,6 +348,7 @@ const msgConfirm = () => {
                     <Badge :value="data.status" size="large" class="w-full" :class="activeDoctor(data.status)" />
                 </template>
             </Column>
+            <template #empty> No hay resultados para mostrar.</template>
         </DataTable>
     </div>
 
@@ -533,8 +557,8 @@ const msgConfirm = () => {
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="birthday" initialValue="">
                     <FloatLabel>
-                        <label for="birthInput">Fecha de Nacimiento</label>
-                        <DatePicker id="birthInput" name="birthInput" fluid :disabled="blockInputs" />
+                        <label for="birthday">Fecha de Nacimiento</label>
+                        <DatePicker  name="birthday" fluid :disabled="blockInputs" dateFormat="dd/mm/yy"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -617,9 +641,9 @@ const msgConfirm = () => {
                         {{ $field.error.message }}
                     </Message>
                 </FormField>
-                <FormField v-slot="$field" name="identification" initialValue="">
+                <FormField v-slot="$field" name="identification">
                     <FloatLabel>
-                        <InputText id="identification" placeholder="Cédula del Médico" type="text" v-model="editDoctor.idInput"/>
+                        <InputText id="identification" placeholder="Cédula del Médico" type="text" v-model="editDoctor.identification"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
                             {{ $field.error.message }}
                         </Message>
@@ -632,7 +656,7 @@ const msgConfirm = () => {
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="name">
                     <FloatLabel>
                         <label for="nameInput">Nombre del Medico</label>
                         <InputText id="nameInput" type="text" class="w-full" v-model="editDoctor.name"/>
@@ -641,16 +665,16 @@ const msgConfirm = () => {
                     </FloatLabel>
                 </FormField>
 
-                <FormField class="flex-1" v-slot="$field" name="lastname" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="lastname">
                     <FloatLabel>
                         <label for="lastnameInput">Apellido del Medico</label>
-                        <InputText id="lastnameInput" type="text" class="w-full"  />
+                        <InputText id="lastnameInput" type="text" class="w-full" v-model="editDoctor.lastname"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
 
-                <FormField class="flex-1" v-slot="$field" name="speciality" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="speciality">
                     <FloatLabel>
                         <label for="specialtyInput">Especialidad</label>
                         <Select id="specialtyInput" :options="specialities" optionLabel="name" optionValue="name" placeholder="Especialidad" class="w-full"  />
@@ -661,7 +685,7 @@ const msgConfirm = () => {
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="cmv" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="cmv">
                     <FloatLabel>
                         <label for="cmvInput">CMV</label>
                         <InputText id="cmvInput" type="text" class="w-full"  />
@@ -669,7 +693,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="mpps" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="mpps">
                     <FloatLabel>
                         <label for="mppsInput">MPPS</label>
                         <InputText id="mppsInput" type="text" class="w-full"  />
@@ -677,7 +701,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="experience" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="experience">
                     <FloatLabel>
                         <label for="experience">Años de Experiencia</label>
                         <InputText id="experience" type="text" class="w-full"  />
@@ -688,7 +712,7 @@ const msgConfirm = () => {
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="phone01" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="phone01">
                     <FloatLabel>
                         <label for="phone01Input">Teléfono 1</label>
                         <InputText id="phone01Input" type="text" class="w-full"  />
@@ -696,7 +720,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="phone02" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="phone02">
                     <FloatLabel>
                         <label for="phone02Input">Teléfono 2</label>
                         <InputText id="phone02Input" type="text" class="w-full"  />
@@ -704,7 +728,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="record" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="record">
                     <FloatLabel>
                         <label for="record">Record</label>
                         <InputText id="record" type="text" class="w-full"  />
@@ -716,7 +740,7 @@ const msgConfirm = () => {
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="address" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="address">
                     <FloatLabel>
                         <label for="addressInput">Dirección</label>
                         <InputText id="addressInput" type="text" class="w-full"  />
@@ -727,7 +751,7 @@ const msgConfirm = () => {
             </div>
             
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="email" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="email">
                     <FloatLabel>
                         <label for="emailInput">Email</label>
                         <InputText id="emailInput" type="text" class="w-full"  />
@@ -735,7 +759,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="instagram" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="instagram">
                     <FloatLabel>
                         <label for="instagramInput">Instagram</label>
                         <InputText id="instagramInput" type="text" class="w-full"  />
@@ -743,7 +767,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="otherRRSS" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="otherRRSS">
                     <FloatLabel>
                         <label for="rrssInput">Otras Redes Sociales</label>
                         <InputText id="rrssInput" type="text" class="w-full"  />
@@ -753,7 +777,7 @@ const msgConfirm = () => {
                 </FormField>
             </div>
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="profilePhoto" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="profilePhoto">
                     <FloatLabel>
                         <label for="perfilInput">Foto de Perfil</label>
                         <InputText id="perfilInput" type="text" class="w-full"  />
@@ -761,7 +785,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="introduceVideo" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="introduceVideo">
                     <FloatLabel>
                         <label for="videoInput">Video de Presentación</label>
                         <InputText id="videoInput" type="text" class="w-full"  />
@@ -772,7 +796,7 @@ const msgConfirm = () => {
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="bank" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="bank">
                     <FloatLabel>
                         <label for="bankInput">Banco</label>
                         <InputText id="bancoInput" type="text" class="w-full"  />
@@ -780,7 +804,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="bankAcount" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="bankAcount">
                     <FloatLabel>
                         <label for="acountInput">Número de Cuenta</label>
                         <InputText id="acountInput" type="text" class="w-full"  />
@@ -788,7 +812,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="bankpm" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="bankpm">
                     <FloatLabel>
                         <label for="pmInput">Pago Movil</label>
                         <InputText id="pmInput" type="text" class="w-full"  />
@@ -799,15 +823,15 @@ const msgConfirm = () => {
             </div>
 
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="birthday" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="birthday">
                     <FloatLabel>
-                        <label for="birthInput">Fecha de Nacimiento</label>
-                        <DatePicker id="birthInput" name="birthInput" fluid  />
+                        <label for="birthday">Fecha de Nacimiento</label>
+                        <DatePicker id="birthday" name="birthday" fluid  />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="gender" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="gender">
                     <FloatLabel>
                         <label for="genderInput">Género</label>
                         <Select :options="genderOptions" optionLabel="letter" optionValue="letter" placeholder="Género" class="w-full" />
@@ -815,7 +839,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="courtesy" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="courtesy">
                     <FloatLabel>
                         <label for="courtesyInput">Cortesia</label>
                         <InputText id="courtesyInput" type="text" class="w-full"  />

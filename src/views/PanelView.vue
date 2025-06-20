@@ -18,7 +18,7 @@ const items = reactive([
         icon: 'fa-solid fa-user-nurse',
         label: 'Enfermeras',
         active: false,
-        to: ''
+        to: 'panel'
     },
 
 ])

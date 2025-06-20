@@ -169,7 +169,7 @@ const goTo = (route) => {
 
           <div class="h-80 m-10 relative">
             <div class="h-80 w-full bg-hope rounded-3xl outline-2 outline-offset-2 outline-stone-200"></div>
-            <div class="flex flex-col h-60 justify-around p-6 text-white absolute top-15">
+            <div class="flex flex-col h-60 justify-around p-6 text-white absolute top-15 testimonial-scll">
               <!-- <font-awesome-icon icon="face-smile-beam" size="2xl" /> -->
               <span class="text-center">Testimonio</span>
               <span class="text-center">"{{ slotProps.data.text }}" </span>
@@ -245,34 +245,4 @@ const goTo = (route) => {
     </div>
   </div>
 
-
-  <!-- <div class="grid">
-      <div class="col-12 text-center somos">
-        <img src="../assets/nurse_1.png" alt="" class="w-3">
-        <h2>Nuestro Equipo de Medicos Residentes Está Listo para Atenderte</h2>
-        <h2>
-          <RouterLink to="/directory" class="text-white no-underline">Conocelos Aqui...</RouterLink>
-        </h2>
-      </div>
-    </div> -->
-
-  <!-- <div class="grid">
-      <div class="col-12 md:col-6 lg:col-6">
-        <div class="p-0 text-center">
-          <img src="../assets/nurse_1.png" alt="" class="w-6">
-        </div>
-      </div>
-      <div class="col-12 md:col-6 lg:col-6">
-        <div class="p-6 somos">
-          <h1>Enfermería</h1>
-          <h2>Contamos con un selecto equipo </h2>
-          <h2>de enfermería, siempre dispuesto </h2>
-          <h2>a atenderte con la atención que</h2>
-          <h2>siempre nos ha caracterizado.</h2>
-          <br>
-          <h2>¿Quieres ser parte del equipo? </h2>
-          <h2><a href="">Conoce como, click aqui</a></h2>
-        </div>
-      </div>
-    </div> -->
 </template>

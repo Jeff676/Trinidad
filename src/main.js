@@ -41,6 +41,8 @@ import Carousel from 'primevue/carousel'
 import FileUpload from 'primevue/fileupload';
 import ConfirmDialog from 'primevue/confirmdialog';
 import ConfirmationService from 'primevue/confirmationservice';
+import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
 
 import App from './App.vue'
 import router from './router'
@@ -96,6 +98,8 @@ app.component('Carousel', Carousel)
 app.component('FileUpload', FileUpload)
 app.component('ConfirmDialog', ConfirmDialog)
 app.component('ConfirmationService', ConfirmationService);
+app.component('Toast', Toast);
+app.component('ToastService', ToastService);
 
 // ** PrimeVue Config **//
 // ** Customized Preset **//
@@ -187,5 +191,6 @@ app.component('fa ', FontAwesomeIcon)
 app.use(pinia)
 app.use(router)
 app.use(ConfirmationService);
+app.use(ToastService);
 
 app.mount('#app')
