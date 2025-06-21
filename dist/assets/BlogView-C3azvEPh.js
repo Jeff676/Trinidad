@@ -1,0 +1,1 @@
+import{_ as o}from"./PageUnderConstruction-B4-7JCWL.js";import{m as t,h as e}from"./index-RYX5vtnr.js";import"./logo-large-blue-DkzQQlVw.js";const p={__name:"BlogView",setup(r){return(_,a)=>(e(),t(o,{title:"Blog"}))}};export{p as default};
