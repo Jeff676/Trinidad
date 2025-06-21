@@ -6,29 +6,36 @@ const doctorsBanner = [
         id: 1,
         name: 'Dra. Yelitza Rondon',
         specialty: 'Medicina General',
-        image: 'Dra-Yelitza-Rondon.png',
+        image: 'Dra-Yelitza-Rondon-min.png',
         socialMedia: '@DraYelitzaRondon'
     },
     {
         id: 2,
         name: 'Dra. Efigenia Farias',
         specialty: 'Otorrinolaringología',
-        image: 'Dra-Efigenia-Farias.png',
+        image: 'Dra-Efigenia-Farias-min.png',
         socialMedia: '@DraEfigeniaFarias'
     },
     {
         id: 3,
         name: 'Dra. Genesis Rivero',
         specialty: 'Medicina General',
-        image: 'Dra-Genesis-Rivero.png',
+        image: 'Dra-Genesis-Rivero-min.png',
         socialMedia: '@DraGenesisRivero'
     },
     {
         id: 4,
         name: 'Dra. Marielbys Guerra',
         specialty: 'Medicina General',
-        image: 'Dra-Marielbys-Guerra.png',
+        image: 'Dra-Marielbys-Guerra-min.png',
         socialMedia: '@DraMarielbysGuerra'
+    },
+    {
+        id: 5,
+        name: 'Dra. Angelica Henriquez',
+        specialty: 'Medicina General',
+        image: 'Dra-Angelica-henriquez-min.png',
+        socialMedia: '@DraAngelicaHenriquez'
     },
 ]
 
@@ -207,7 +214,7 @@ const scheduleDr = async (dr) => {
 }
 
 @media only screen and (max-width: 600px) {
-  .la-trinidad-content {
+    .la-trinidad-content {
         position: relative;
         z-index: 1;
         border-radius: 15px;
