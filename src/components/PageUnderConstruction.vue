@@ -1,6 +1,11 @@
 <script setup>
 // define pros
 const props = defineProps(['title'])
+
+const schedule = async () => {
+    window.open('https://wa.link/zqzhuo', '_blank');
+};
+
 </script>
 <template>
     <div class="w-full p-5 text-center text-lg/8 md:text-2xl pt-20 relative overflow-hidden mt-5">
@@ -12,7 +17,9 @@ const props = defineProps(['title'])
             <div class="text-white bg-vitality rounded w-1/4 m-auto my-2 title-const">Muy PRONTO</div>
             tendremos nuevos servicios para UD.<Br /><Br />
             <span>Contáctenos </span>
-            <Button severity="success">Whatsapp</Button>
+            <Button severity="success" v-on:click="schedule">Whatsapp</Button>
+
+
         </div>
         <div class="w-1/5 h-40 bg-vitality rounded-4xl absolute"
             style="top: 5vh; left:-10%; transform: rotate(-60deg);">
