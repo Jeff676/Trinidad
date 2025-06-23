@@ -298,5 +298,9 @@ h2{
   .testimonial-scll{
     overflow: auto;
   }
+  
+  .title-const{
+    width: 190px !important;
+  }
 }
 

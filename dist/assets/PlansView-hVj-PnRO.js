@@ -1,1 +1,0 @@
-import{_ as e}from"./PageUnderConstruction-B4-7JCWL.js";import{m as t,h as a}from"./index-RYX5vtnr.js";import"./logo-large-blue-DkzQQlVw.js";const n={__name:"PlansView",setup(r){return(o,s)=>(a(),t(e,{title:"Planes"}))}};export{n as default};

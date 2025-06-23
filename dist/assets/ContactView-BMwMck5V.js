@@ -1,1 +1,0 @@
-import{_ as t}from"./PageUnderConstruction-B4-7JCWL.js";import{m as o,h as a}from"./index-RYX5vtnr.js";import"./logo-large-blue-DkzQQlVw.js";const n={__name:"ContactView",setup(e){return(r,c)=>(a(),o(t,{title:"Contactos"}))}};export{n as default};

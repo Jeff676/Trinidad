@@ -6,35 +6,35 @@ const doctorsBanner = [
         id: 1,
         name: 'Dra. Yelitza Rondon',
         specialty: 'Medicina General',
-        image: 'Dra-Yelitza-Rondon-min.png',
+        image: 'https://firebasestorage.googleapis.com/v0/b/trinidad-e0aae.firebasestorage.app/o/Dra-Yelitza-Rondon-min.png?alt=media&token=295d3195-23a7-415e-9169-3809ee89cc54',
         socialMedia: '@DraYelitzaRondon'
     },
     {
         id: 2,
         name: 'Dra. Efigenia Farias',
         specialty: 'Otorrinolaringología',
-        image: 'Dra-Efigenia-Farias-min.png',
+        image: 'https://firebasestorage.googleapis.com/v0/b/trinidad-e0aae.firebasestorage.app/o/Dra-Efigenia-Farias-min.png?alt=media&token=b91a4c4a-ac37-42bb-8c79-57d0bcae3de0',
         socialMedia: '@DraEfigeniaFarias'
     },
     {
         id: 3,
         name: 'Dra. Genesis Rivero',
         specialty: 'Medicina General',
-        image: 'Dra-Genesis-Rivero-min.png',
+        image: 'https://firebasestorage.googleapis.com/v0/b/trinidad-e0aae.firebasestorage.app/o/Dra-Genesis-Rivero-min.png?alt=media&token=97226751-e225-4007-a9d0-48bbc8a14fb6',
         socialMedia: '@DraGenesisRivero'
     },
     {
         id: 4,
         name: 'Dra. Marielbys Guerra',
         specialty: 'Medicina General',
-        image: 'Dra-Marielbys-Guerra-min.png',
+        image: 'https://firebasestorage.googleapis.com/v0/b/trinidad-e0aae.firebasestorage.app/o/Dra-Marielbys-Guerra-min.png?alt=media&token=2f976344-9a0f-42ea-a46e-44f2849690d5',
         socialMedia: '@DraMarielbysGuerra'
     },
     {
         id: 5,
         name: 'Dra. Angelica Henriquez',
         specialty: 'Medicina General',
-        image: 'Dra-Angelica-henriquez-min.png',
+        image: 'https://firebasestorage.googleapis.com/v0/b/trinidad-e0aae.firebasestorage.app/o/Dra-Angelica-Henriquez-min.png?alt=media&token=d1edc7d1-b359-46c1-91be-40f8c54380f8',
         socialMedia: '@DraAngelicaHenriquez'
     },
 ]
@@ -104,7 +104,7 @@ const scheduleDr = async (dr) => {
                 <div class="p-0" style="min-height: 500px;">
                     <div class="doctor-image fadeinright animation-duration-1000 flex flex-column justify-center"
                         v-if="show">
-                        <img :src="`../../public/${currentItem.image}`" alt="Doctor"
+                        <img :src="`${currentItem.image}`" alt="Doctor"
                             style="position:absolute; bottom: 0; max-height: 100%;" />
                         <div class="directory-link">
 

@@ -9,7 +9,9 @@ lerna-debug.log*
 
 node_modules
 .DS_Store
-# dist
+dist
+.dist
+public
 dist-ssr
 coverage
 *.local
@@ -28,3 +30,8 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+#firebase host
+firebase/
+.firebaserc
+firebase.json
