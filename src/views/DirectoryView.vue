@@ -191,7 +191,7 @@ const allDoctorsParamMovil = async (event) => {
                     <div style="position: absolute;">
                         <h2> {{ auxDoctor(doctor.gender) + doctor.name.toUpperCase() }}</h2>
                         <h2>{{ doctor.lastname.toUpperCase() }}</h2>
-                        <p>{{ doctor.speciality }}</p>
+                        <p v-for="(speciality, index) in doctor.speciality"> {{ speciality.name }}</p>
                         <p class="experiencia">
                             <font-awesome-icon :icon="['fas', 'clock']" style="width: 30px;"/>{{ doctor.experience ?  doctor.experience : 1}} años+
                         </p>

@@ -33,6 +33,9 @@ const showDialog = () => {
     blockInputs.value = true
 }
 const hideDialog = () => {
+    specialityDoc = ref([])
+    specialitySelected = ref([])
+    
     visible.value = false
     visibleEdit.value = false
     blockInputs.value = true
@@ -55,13 +58,24 @@ const activeDoctor = (value) => {
 }
 
 const selectedDoctor = ref()
+const specialitySelected = ref([])
+const specialityDoc = ref([])
+
 var editDoctor = reactive([])
 const visibleEdit = ref(false)
 
 const onRowSelect = (event) => {
     console.log('***', event)
+    specialityDoc = ref([])
+    specialitySelected = ref([])
+    
     editDoctor = event.data
     visibleEdit.value = true
+    specialitySelected.value = editDoctor.speciality
+    
+    specialitySelected.value.forEach(item => {
+        specialityDoc.value.push(item.name);
+    });
     getDocumentDoctor()
 
 }
@@ -74,7 +88,7 @@ const initialValues = reactive({
     lastName: '',
     cmv: '',
     mpps: '',
-    speciality: '',
+    speciality: [],
     phone01: '',
     phone02: '',
     address: '',
@@ -143,7 +157,14 @@ const resolver = zodResolver(
         identification: z.string().min(8, { message: 'La cedula es requerida' }),
         name: z.string().min(1, { message: 'El nombre es requerido' }),
         lastname: z.string().min(1, { message: 'El apellido es requerido' }),
-        speciality: z.string().min(1, { message: "Seleccione una especialidad" }),
+        // speciality: z.string().min(1, { message: "Seleccione una especialidad" }),
+        speciality: z
+            .array(
+                z.object({
+                    name: z.string().min(1, 'City is required.')
+                })
+            )
+            .min(1, 'City is required.'),
         cmv: z.string(),
         mpps: z.string(),
         experience: z.string(),
@@ -181,7 +202,7 @@ const checkDoctor = async () => {
                 console.log('-->',doctorFind.value.length)
                 if (doctorFind.value == false) {
                     blockInputs.value = false
-                    blockVerify.value = true
+                    //blockVerify.value = true
                 }
                 if (doctorFind.value.length == 1){
                     editDoctor = doctorFind.value[0]
@@ -317,7 +338,13 @@ const msgConfirm = () => {
             </template>
             <Column field="name" header="Nombre" sortable></Column>
             <Column field="lastname" header="Apellido" sortable></Column>
-            <Column field="speciality" header="Especialidad" sortable></Column>
+            <Column field="speciality" header="Especialidad" sortable>
+                <template #body="{ data }">
+                    <Label v-for="(speciality, index) in data.speciality" :key="index" size="large" >
+                        {{speciality.name + ' '}}
+                    </Label>
+                </template>
+            </Column>
             <Column field="phone01" header="Teléfono"></Column>
             <Column field="email" header="Email" sortable></Column>
             <Column field="verify" header="Verificado" sortable>
@@ -409,7 +436,8 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="speciality" initialValue="">
                     <FloatLabel>
                         <label for="specialtyInput">Especialidad</label>
-                        <Select id="specialtyInput" :options="specialities" optionLabel="name" optionValue="name" placeholder="Especialidad" class="w-full" :disabled="blockInputs" />
+                        <!-- <Select id="specialtyInput" :options="specialities" optionLabel="name" optionValue="name" placeholder="Especialidad" class="w-full" :disabled="blockInputs" /> -->
+                        <MultiSelect id="specialtyInput" :options="specialities" optionLabel="name" placeholder="Especialidades" :maxSelectedLabels="2" class="w-full" :disabled="blockInputs"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -677,7 +705,8 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="speciality">
                     <FloatLabel>
                         <label for="specialtyInput">Especialidad</label>
-                        <Select id="specialtyInput" :options="specialities" optionLabel="name" optionValue="name" placeholder="Especialidad" class="w-full"  />
+                        <!-- <Select id="specialtyInput" :options="specialities" optionLabel="name" optionValue="name" placeholder="Especialidad" class="w-full"  /> -->
+                        <MultiSelect display="chip" :options="specialities" optionLabel="name" optionValue="name" placeholder="Especialidades" :maxSelectedLabels="2" class="w-full" v-model="specialityDoc"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
