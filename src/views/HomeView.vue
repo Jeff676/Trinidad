@@ -168,8 +168,8 @@ const goTo = (route) => {
         <template #item="slotProps">
 
           <div class="h-80 m-10 relative">
-            <div class="h-80 w-full bg-hope rounded-3xl outline-2 outline-offset-2 outline-stone-200"></div>
-            <div class="flex flex-col h-60 justify-around p-6 text-white absolute top-15 testimonial-scll">
+            <div class="h-80 w-full bg-life rounded-3xl outline-2 outline-offset-2 outline-stone-200"></div>
+            <div class="flex flex-col h-60 justify-around p-6 text-white absolute top-15 card-testimonials testimonial-scll">
               <!-- <font-awesome-icon icon="face-smile-beam" size="2xl" /> -->
               <span class="text-center">Testimonio</span>
               <span class="text-center">"{{ slotProps.data.text }}" </span>

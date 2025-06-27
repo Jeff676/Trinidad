@@ -283,6 +283,11 @@ h2{
   }
 }
 
+.card-testimonials{
+  color: #004a87;
+  font-weight: bolder;
+}
+
 @media only screen and (max-width: 600px) {
   .search-directory {
     display: none;
@@ -298,6 +303,7 @@ h2{
   .testimonial-scll{
     overflow: auto;
   }
+
   
   .title-const{
     width: 190px !important;
