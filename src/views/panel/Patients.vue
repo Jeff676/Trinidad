@@ -14,12 +14,29 @@ const error = ref(null);
 var document = ref()
 const idInput = ref('')
 const nationalityType = ref()
+const nameInput = ref('')
+const birthdayInput = ref('')
+const sizeInput = ref(1.6)
+const genderInput = ref('')
+const weigthInput = ref(1)
+const addressInput = ref('')
+const countryInput = ref('')
+const stateInput = ref('')
+const cityInput = ref('')
+const phoneInput = ref('')
+const phone2Input = ref('')
+const emailInput = ref('')
+const profesionInput = ref('')
+const statusInput = ref('En Espera')
+
+const load = ref(false);
+
 const initialValues = reactive({
     nationality: { letter: 'V' },
     identification: '',
     name: '',
     nationalityType: 'V',
-    birthday: '',
+    birthday: null,
     size: 1.6,
     gender: '',
     weigth: 1,
@@ -101,8 +118,66 @@ const onFormSubmit = async ({ valid, values }) => {
     }
 }
 
+const edad = (birthdayDate) => {
+
+    if (!birthdayDate) {
+    return ''; // Si no hay fecha, no hay edad
+    }
+
+    const hoy = new Date()
+    const fechaNac = convertDdMmYyToDate(birthdayDate)
+
+    let edadCalculada = hoy.getFullYear() - fechaNac.getFullYear();
+    const mes = hoy.getMonth() - fechaNac.getMonth();
+
+    // Si el mes actual es menor que el mes de nacimiento, o si es el mismo mes pero
+    // el día actual es menor que el día de nacimiento, entonces la persona aún no
+    // ha cumplido años este año.
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+    edadCalculada--;
+    }
+
+    return edadCalculada;
+};
+
+const convertDdMmYyToDate = (dateString) => {
+  // Asegúrate de que el año tenga 4 dígitos (yy -> yyyy)
+  // Por ejemplo, si es "23" se asume "2023", si es "99" se asume "1999"
+  const parts = dateString.split('/');
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // Meses en JavaScript son de 0 a 11
+  let year = parseInt(parts[2], 10);
+
+  // Ajuste para años de 2 dígitos (ej. "24" -> "2024", "98" -> "1998")
+  if (year < 100) {
+    year += 2000; // Asume el siglo 21
+    if (year > new Date().getFullYear() + 10) { // Si el año ajustado es muy lejano en el futuro, asume siglo 20
+        year -= 100;
+    }
+  }
+
+  return new Date(year, month, day);
+};
+
+// Computada para formatear la fecha a dd/mm/yyyy
+const dateFormatDDMMYYYY = () => {
+
+  if (birthdayInput.value) {
+    console.log('birthdayInput', birthdayInput.value)
+    const dia = String(birthdayInput.value.getDate()).padStart(2, '0');
+    const mes = String(birthdayInput.value.getMonth() + 1).padStart(2, '0'); // Meses son de 0-11
+    const año = birthdayInput.value.getFullYear();
+    console.log(`${dia}/${mes}/${año}`)
+    return `${dia}/${mes}/${año}`;
+  }
+  return '';
+};
+
 const onFormSubmitUp = async ({ valid, values }) => {
     console.log(values)
+    console.log(dateFormatDDMMYYYY())
+    values.birthday = dateFormatDDMMYYYY()
+    console.log('birthday', values.birthday)
     if (valid) {
         console.log('Form submitted with values:', values)
         // Aquí puedes manejar el envío del formulario, como hacer una solicitud a la API
@@ -143,9 +218,23 @@ const statusOptions = ref([
 ])
 
 onMounted(async () => {
-    patients.value = await getAllPatients()
+    getPatiens()
 
 });
+
+const getPatiens = async () => {
+    load.value = true;
+    try {
+    patients.value = await getAllPatients()
+    if (!patients.ok) {
+        throw new Error('Network response was not ok');
+    }
+    } catch (err) {
+        error.value = err.message;
+    } finally {
+        load.value = false;
+    }
+};
 
 const getSeverity = (status) => {
     switch (status) {
@@ -163,6 +252,8 @@ const getSeverity = (status) => {
 const visible = ref(false);
 const showDialog = () => {
     visible.value = true;
+    blockInputs.value = true
+    clearForm()
 }
 const hideDialog = () => {
     visible.value = false;
@@ -182,9 +273,7 @@ const checkPatient = async () => {
       }, 3000);
     // Esta funcion se encarga de verificar si el paciente ya existe en la base de datos
     var nationality = nationalityType.value ? nationalityType.value : 'V'
-        console.log('--->',idInput.value)
         if(idInput.value != ''){
-            console.log('--->',nationality+idInput.value)
 
             patientFind.value = await findByPatientId(nationality, idInput.value)
             console.log('--->',patientFind.value)
@@ -196,6 +285,7 @@ const checkPatient = async () => {
                 editPatient = patientFind.value[0]
                 getDocumentPatient()
                 msgConfirm()
+                birthdayInput.value = editPatient.birthday
             }
             
         }
@@ -241,6 +331,23 @@ const msgConfirm = () => {
         }
     });
 };
+
+const clearForm = () =>{
+    idInput.value = ''
+    nameInput.value = ''
+    birthdayInput.value = ''
+    sizeInput.value = 1.6
+    genderInput.value = ''
+    weigthInput.value = 1
+    addressInput.value = ''
+    countryInput.value = ''
+    stateInput.value = ''
+    cityInput.value = ''
+    phoneInput.value = ''
+    phone2Input.value = ''
+    emailInput.value = ''
+    profesionInput.value = ''
+}
 
 </script>
 
@@ -300,7 +407,7 @@ const msgConfirm = () => {
                 :showFilterMatchModes="false" :filterMenuStyle="{ width: '14rem' }" style="width: 10%">
                 <template #body="{ data }">
                     <div class="flex items-center gap-2">
-                        <span>{{ data.age }}</span>
+                        <span>{{ edad(data.birthday) }}</span>
                     </div>
                 </template>
             </Column>
@@ -309,7 +416,12 @@ const msgConfirm = () => {
                     <Tag :value="data.status" :class="getSeverity(data.status)" class="w-full" />
                 </template>
             </Column>
-            <template #empty> No hay resultados para mostrar.</template>
+            <template #empty>
+                <div class="text-center">
+                    <ProgressSpinner v-if="load"/>
+                </div>
+                 <!-- No hay resultados para mostrar. -->
+            </template>
         </DataTable>
     </div>
 
@@ -351,7 +463,7 @@ const msgConfirm = () => {
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="name" initialValue="">
                     <FloatLabel>
-                        <InputText id="nameInput" name="name" type="text" class="w-full" :disabled="blockInputs" />
+                        <InputText id="nameInput" name="name" type="text" class="w-full" v-model="nameInput" :disabled="blockInputs" />
                         <label for="nameInput">Nombre del Paciente</label>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
@@ -362,7 +474,7 @@ const msgConfirm = () => {
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="phone" initialValue="">
                     <FloatLabel>
-                        <InputText name="phone" type="text" inputId="phoneInput" class="w-full"
+                        <InputText name="phone" type="text" inputId="phoneInput" class="w-full" v-model="phoneInput"
                             :disabled="blockInputs" />
                         <label for="phoneInput">Telefono Principal</label>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
@@ -372,7 +484,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone2" initialValue="">
                     <FloatLabel>
                         <label for="phone2Input">Telefono Secundario</label>
-                        <InputText name="phone2" type="text" class="w-full" :disabled="blockInputs" />
+                        <InputText name="phone2" type="text" class="w-full" :disabled="blockInputs" v-model="phone2Input"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -380,7 +492,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="email" initialValue="">
                     <FloatLabel>
                         <label for="emailInput">Correo Electronico</label>
-                        <InputText name="email" type="text" class="w-full" inputId="emailInput"
+                        <InputText name="email" type="text" class="w-full" inputId="emailInput" v-model="emailInput"
                             :disabled="blockInputs" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
@@ -392,9 +504,9 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="address" initialValue="">
                     <FloatLabel>
                         <label for="addressInput">Direccion</label>
-                        <InputText name="address" type="text" inputId="addressInput" fluid :disabled="blockInputs" />
-                        <Message v-if="$form.address?.invalid" severity="error" size="small" variant="simple">
-                            {{ $form.address.error?.message }}</Message>
+                        <InputText name="address" type="text" inputId="addressInput" fluid v-model="addressInput" :disabled="blockInputs" />
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
+                            {{ $form.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
             </div>
@@ -402,7 +514,7 @@ const msgConfirm = () => {
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="city" initialValue="">
                     <FloatLabel>
-                        <InputText name="city" type="text" inputId="cityInput" class="w-full" :disabled="blockInputs" />
+                        <InputText name="city" type="text" inputId="cityInput" class="w-full" v-model="cityInput" :disabled="blockInputs" />
                         <label for="cityInput">Ciudad</label>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
@@ -411,7 +523,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="state" initialValue="">
                     <FloatLabel>
                         <label for="stateInput">Estado</label>
-                        <InputText name="state" type="text" class="w-full" :disabled="blockInputs" />
+                        <InputText name="state" type="text" class="w-full" :disabled="blockInputs" v-model="stateInput"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -419,7 +531,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="country" initialValue="">
                     <FloatLabel>
                         <label for="countryInput">Pais</label>
-                        <InputText name="country" type="text" class="w-full" inputId="countryInput"
+                        <InputText name="country" type="text" class="w-full" inputId="countryInput" v-model="countryInput"
                             :disabled="blockInputs" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
@@ -428,22 +540,20 @@ const msgConfirm = () => {
             </div>
 
             <div class="flex gap-2 mt-5">
-                
                 <FormField class="flex-1" v-slot="$field" name="birthday" initialValue="">
                     <FloatLabel>
                         <label for="birthday" class="block">Fecha de Nacimiento</label>
-                        <DatePicker id="birthday" name="birthday" fluid class="w-full" :disabled="blockInputs" />
-                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                        <DatePicker id="birthday" name="birthday" fluid class="w-full" v-model="birthdayInput" dateFormat="dd/mm/yy" :disabled="blockInputs"/>
+                        <Message v-if="$form?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
-                </FormField>
-                
+                </FormField>               
 
                 <FormField class="flex-1" v-slot="$field" name="size" initialValue="">
                     <FloatLabel>
                         <label for="sizeInput" class="block"> Estatura </label>
                         <InputNumber name="size" inputId="sizeInput" mode="decimal" showButtons :min="0.4" :max="2.5"
-                            :step="0.1" class="w-full" :disabled="blockInputs" />
+                            :step="0.1" class="w-full" v-model="sizeInput" :disabled="blockInputs" />
                     </FloatLabel>
                 </FormField>
 
@@ -451,23 +561,14 @@ const msgConfirm = () => {
                     <FloatLabel>
                         <label for="weigthInput" class="block"> Peso </label>
                         <InputNumber name="weigth" inputId="weigthInput" mode="decimal" showButtons :min="1" :max="400"
-                            :step="1" class="w-full" :disabled="blockInputs" />
+                            :step="1" class="w-full" v-model="weigthInput" :disabled="blockInputs" />
                     </FloatLabel>
                 </FormField>
 
-                <!-- <FormField class="flex-1" v-slot="$field" name="gender" initialValue="">
-                    <label for="genderInput" class="block mb-1"> Genero </label>
-                    <SelectButton name="gender" :options="genderOptions" optionLabel="value" dataKey="value"
-                        inputId="genderInput" :disabled="blockInputs">
-                        <template #option="slotProps">
-                            <font-awesome-icon :icon="slotProps.option.icon" />
-                        </template>
-                    </SelectButton>
-                </FormField> -->
                 <FormField class="flex-1" v-slot="$field" name="gender" initialValue="">
                     <FloatLabel>
                         <label for="genderInput">Género</label>
-                        <Select :options="genderOptions" optionLabel="value" optionValue="value" placeholder="Género" class="w-full" :disabled="blockInputs"/>
+                        <Select :options="genderOptions" optionLabel="value" optionValue="value" placeholder="Género" class="w-full" v-model="genderInput" :disabled="blockInputs"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -478,7 +579,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="profesion" initialValue="">
                     <FloatLabel>
                         <label for="profesionInput">Profesion</label>
-                        <InputText name="profesion" type="text" inputId="profesionInput" fluid :disabled="blockInputs" />
+                        <InputText name="profesion" type="text" inputId="profesionInput" fluid v-model="profesionInput" :disabled="blockInputs" />
                         <Message v-if="$form.profesion?.invalid" severity="error" size="small" variant="simple">
                             {{ $form.profesion.error?.message }}</Message>
                     </FloatLabel>
@@ -488,7 +589,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="status">
                     <FloatLabel>
                         <label for="estatusInput">Estatus</label>
-                        <Select :options="statusOptions" optionLabel="letter" optionValue="letter" value="En espera" placeholder="" class="w-full" :disabled="blockInputs"/>
+                        <Select :options="statusOptions" optionLabel="letter" optionValue="letter" value="En espera" placeholder="" class="w-full" v-model="statusInput" :disabled="blockInputs"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -625,7 +726,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="birthday">
                     <FloatLabel>
                         <label for="birthday" class="block">Fecha de Nacimiento</label>
-                        <DatePicker id="birthday" name="birthday" fluid class="w-full" v-model="editPatient.birthday" />
+                        <DatePicker id="birthday" name="birthday" fluid class="w-full" v-model="birthdayInput" dateFormat="dd/mm/yy"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>

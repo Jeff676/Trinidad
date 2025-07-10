@@ -226,7 +226,7 @@ const goTo = (route) => {
         monitoreo y soporte de pacientes críticos. Contamos con un equipo de enfermería altamente especializado y
         médicos
         especialistas en medicina crítica.
-        Todo bajo el liderazgo del Dr. Eugenio Desaya, un referente con más de 30 años de experiencia en medicina
+        Todo bajo el liderazgo del Dr. Eugenio De Zayas, un referente con más de 30 años de experiencia en medicina
         crítica,
         garantizando la mejor atención para cada paciente.</div>
     </div>

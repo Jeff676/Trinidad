@@ -35,7 +35,7 @@ export const getSpecialities = async () => {
 // Find by specialities
 export const getDoctorsFind = async (speciality) => {
   const q = query(collection(db, "doctors"),and(
-            where("speciality", "==", speciality),
+            where('speciality', 'array-contains', speciality),
             where("status", "==", "Activo"),
             where("directory", "==", "Publicado")
           )
