@@ -2,10 +2,16 @@
 import { reactive } from 'vue';
 
 const items = reactive([
+    // {
+    //     icon: 'fa-solid fa-chart-column',
+    //     label: 'Panel',
+    //     active: true,
+    //     to: 'panel'
+    // },
     {
         icon: 'fa-solid fa-user-injured',
         label: 'Pacientes',
-        active: true,
+        active: false,
         to: 'patients'
     },
     {
@@ -17,6 +23,12 @@ const items = reactive([
     {
         icon: 'fa-solid fa-user-nurse',
         label: 'Enfermeras',
+        active: false,
+        to: 'panel'
+    },
+    {
+        icon: 'fa-solid fa-user',
+        label: 'Usuarios',
         active: false,
         to: 'panel'
     },

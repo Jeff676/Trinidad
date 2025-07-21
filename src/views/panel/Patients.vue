@@ -27,7 +27,7 @@ const phoneInput = ref('')
 const phone2Input = ref('')
 const emailInput = ref('')
 const profesionInput = ref('')
-const statusInput = ref('En Espera')
+const statusInput = ref('')
 
 const load = ref(false);
 
@@ -50,11 +50,13 @@ const initialValues = reactive({
     profesion: '',
     waitForAdmitt: false,
     admitted: false,
-    status: 'En Espera'
+    status: ''
 })
 
 const blockInputs = ref(true)
+let blockInputsEdit = ref(true)
 let blockVerify = ref(false)
+let btnEdit = ref(true)
 
 // TODO: Define validations
 const resolver = zodResolver(
@@ -74,7 +76,7 @@ const resolver = zodResolver(
         weigth: z.string(),
         gender: z.string(), 
         profesion: z.string(),
-        status: z.literal('En Espera').optional(),
+        status: z.string().min(1, { message: 'El estatus es requerido' }),
     })
 )
 
@@ -254,15 +256,22 @@ const showDialog = () => {
     visible.value = true;
     blockInputs.value = true
     clearForm()
+    blockInputsEdit.value = true
 }
 const hideDialog = () => {
     visible.value = false;
     visible.value = false
     visibleEdit.value = false
     blockInputs.value = true
+    blockInputsEdit.value = true
     blockVerify.value = false
     identification.value = ''
     idInput.value = ''
+    blockInputsEdit.value = true
+}  
+
+const editBtn = () => {
+    blockInputsEdit.value = false
 }
 
 const checkPatient = async () => {
@@ -297,6 +306,8 @@ const visibleEdit = ref(false)
 const onRowSelect = (event) => {
     editPatient = event.data
     visibleEdit.value = true
+    blockInputsEdit.value = true
+    btnEdit.value = true
     getDocumentPatient()
 
 }
@@ -324,6 +335,8 @@ const msgConfirm = () => {
         accept: () => {
             visibleEdit.value = true
             visible.value = false
+            blockInputsEdit.value = false
+            btnEdit.value = false
 
         },
         reject: () => {
@@ -380,7 +393,7 @@ const clearForm = () =>{
                     </div>
                 </div>
             </template>
-            <Column header="Cedula de Identidad" sortable style="width: 25%">
+            <Column header="Cedula de Identidad" sortField="name" filterField="name" filterMatchMode="contains"sortable style="width: 25%">
                 <template #body="{ data }">
                     <div class="flex items-center gap-2">
                         <span>{{ data.nationalityType + data.identification }}</span>
@@ -403,7 +416,7 @@ const clearForm = () =>{
                     </div>
                 </template>
             </Column>
-            <Column header="Edad" sortable sortField="age" filterField="age"
+            <Column header="Edad" sortable sortField="age" filterField="age" filterMatchMode="contains"
                 :showFilterMatchModes="false" :filterMenuStyle="{ width: '14rem' }" style="width: 10%">
                 <template #body="{ data }">
                     <div class="flex items-center gap-2">
@@ -584,18 +597,15 @@ const clearForm = () =>{
                             {{ $form.profesion.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-            </div>
-            <div class="flex gap-2 mt-5" style="display:none;">
                 <FormField class="flex-1" v-slot="$field" name="status">
                     <FloatLabel>
                         <label for="estatusInput">Estatus</label>
-                        <Select :options="statusOptions" optionLabel="letter" optionValue="letter" value="En espera" placeholder="" class="w-full" v-model="statusInput" :disabled="blockInputs"/>
+                        <Select :options="statusOptions" optionLabel="letter" optionValue="letter" placeholder="Estatus" class="w-full" v-model="statusInput" :disabled="blockInputs"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
             </div>
-                
 
              <div class="flex justify-content-end gap-2 mt-5">
                 <Button type="submit" label="Guardar" :disabled="blockInputs" class="w-full"/>
@@ -612,9 +622,10 @@ const clearForm = () =>{
     <Dialog v-model:visible="visibleEdit" modal style="width: 70%" maximizable>
         <template #header>
             <div class="inline-flex align-items-center justify-content-center gap-2">
-                <Button rounded variant="outlined" disabled>
+                <div
+                    class="bg-vitality text-white border-circle w-4rem h-4rem flex align-items-center justify-content-center">
                     <font-awesome-icon icon="user-injured" size="2xl" />
-                </Button>
+                </div>
                 <span class="font-bold whitespace-nowrap text-2xl">Editar Paciente</span>
             </div>
         </template>
@@ -626,14 +637,14 @@ const clearForm = () =>{
     
             <div class="flex gap-2 align-items-center">
                 <FormField v-slot="$field" name="nationalityType" >
-                    <Select :options="nationalityOptions" optionLabel="letter" optionValue="letter" v-model="editPatient.nationalityType"/>
+                    <Select :options="nationalityOptions" optionLabel="letter" optionValue="letter" v-model="editPatient.nationalityType" :disabled="blockInputsEdit"/>
                     <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
                         {{ $field.error.message }}
                     </Message>
                 </FormField>
 
                 <FormField v-slot="$field" name="identification" >
-                    <InputText placeholder="Cedula del Paciente" type="text" v-model="editPatient.identification"/>
+                    <InputText placeholder="Cedula del Paciente" type="text" v-model="editPatient.identification" :disabled="blockInputsEdit"/>
                     <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
                         {{ $field.error.message }}
                     </Message>
@@ -648,7 +659,7 @@ const clearForm = () =>{
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="name" >
                     <FloatLabel>
-                        <InputText id="nameInput" name="name" type="text" class="w-full" v-model="editPatient.name"/>
+                        <InputText id="nameInput" name="name" type="text" class="w-full" v-model="editPatient.name" :disabled="blockInputsEdit"/>
                         <label for="nameInput">Nombre del Paciente</label>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
@@ -659,7 +670,7 @@ const clearForm = () =>{
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="phone">
                     <FloatLabel>
-                        <InputText name="phone" type="text" inputId="phoneInput" class="w-full" v-model="editPatient.phone" />
+                        <InputText name="phone" type="text" inputId="phoneInput" class="w-full" v-model="editPatient.phone" :disabled="blockInputsEdit"/>
                         <label for="phoneInput">Telefono Principal</label>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
@@ -668,7 +679,7 @@ const clearForm = () =>{
                 <FormField class="flex-1" v-slot="$field" name="phone2">
                     <FloatLabel>
                         <label for="phone2Input">Telefono Secundario</label>
-                        <InputText name="phone2" type="text" class="w-full"  v-model="editPatient.phone2"/>
+                        <InputText name="phone2" type="text" class="w-full"  v-model="editPatient.phone2" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -676,7 +687,7 @@ const clearForm = () =>{
                 <FormField class="flex-1" v-slot="$field" name="email">
                     <FloatLabel>
                         <label for="emailInput">Correo Electronico</label>
-                        <InputText name="email" type="text" class="w-full" inputId="emailInput" v-model="editPatient.email"/>
+                        <InputText name="email" type="text" class="w-full" inputId="emailInput" v-model="editPatient.email" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -687,7 +698,7 @@ const clearForm = () =>{
                 <FormField class="flex-1" v-slot="$field" name="address">
                     <FloatLabel>
                         <label for="addressInput">Direccion</label>
-                        <InputText name="address" type="text" inputId="addressInput" fluid v-model="editPatient.address"/>
+                        <InputText name="address" type="text" inputId="addressInput" fluid v-model="editPatient.address" :disabled="blockInputsEdit"/>
                         <Message v-if="$form.address?.invalid" severity="error" size="small" variant="simple">
                             {{ $form.address.error?.message }}</Message>
                     </FloatLabel>
@@ -697,7 +708,7 @@ const clearForm = () =>{
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="city">
                     <FloatLabel>
-                        <InputText name="city" type="text" inputId="cityInput" class="w-full" v-model="editPatient.city"/>
+                        <InputText name="city" type="text" inputId="cityInput" class="w-full" v-model="editPatient.city" :disabled="blockInputsEdit"/>
                         <label for="cityInput">Ciudad</label>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
@@ -706,7 +717,7 @@ const clearForm = () =>{
                 <FormField class="flex-1" v-slot="$field" name="state">
                     <FloatLabel>
                         <label for="stateInput">Estado</label>
-                        <InputText name="state" type="text" class="w-full" v-model="editPatient.state"/>
+                        <InputText name="state" type="text" class="w-full" v-model="editPatient.state" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -714,7 +725,7 @@ const clearForm = () =>{
                 <FormField class="flex-1" v-slot="$field" name="country">
                     <FloatLabel>
                         <label for="countryInput">Pais</label>
-                        <InputText name="country" type="text" class="w-full" inputId="countryInput" v-model="editPatient.country" />
+                        <InputText name="country" type="text" class="w-full" inputId="countryInput" v-model="editPatient.country" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -726,7 +737,7 @@ const clearForm = () =>{
                 <FormField class="flex-1" v-slot="$field" name="birthday">
                     <FloatLabel>
                         <label for="birthday" class="block">Fecha de Nacimiento</label>
-                        <DatePicker id="birthday" name="birthday" fluid class="w-full" v-model="birthdayInput" dateFormat="dd/mm/yy"/>
+                        <DatePicker id="birthday" name="birthday" fluid class="w-full" v-model="birthdayInput" dateFormat="dd/mm/yy" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -736,23 +747,23 @@ const clearForm = () =>{
                 <FormField class="flex-1" v-slot="$field" name="size" >
                     <FloatLabel>
                         <label for="sizeInput" class="block"> Estatura </label>
-                        <InputNumber name="size" inputId="sizeInput" mode="decimal" showButtons :min="0.4" :max="2.5"
-                            :step="0.1" class="w-full" v-model="editPatient.size" />
+                        <InputNumber name="size" inputId="sizeInput" mode="decimal" showButtons :min="0.4" :max="2.5" placeholder="Estatura"
+                            :step="0.1" class="w-full" v-model="editPatient.size" :disabled="blockInputsEdit"/>
                     </FloatLabel>
                 </FormField>
 
                 <FormField class="flex-1" v-slot="$field" name="weigth" >
                     <FloatLabel>
                         <label for="weigthInput" class="block"> Peso </label>
-                        <InputNumber name="weigth" inputId="weigthInput" mode="decimal" showButtons :min="1" :max="400"
-                            :step="1" class="w-full" v-model="editPatient.weigth" />
+                        <InputNumber name="weigth" inputId="weigthInput" mode="decimal" showButtons :min="1" :max="400" placeholder="Peso"
+                            :step="1" class="w-full" v-model="editPatient.weigth" :disabled="blockInputsEdit"/>
                     </FloatLabel>
                 </FormField>
 
                 <FormField class="flex-1" v-slot="$field" name="gender">
                     <FloatLabel>
                         <label for="genderInput">Género</label>
-                        <Select :options="genderOptions" optionLabel="value" optionValue="value" placeholder="Género" class="w-full" />
+                        <Select :options="genderOptions" optionLabel="value" optionValue="value" placeholder="Género" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -763,26 +774,30 @@ const clearForm = () =>{
                 <FormField class="flex-1" v-slot="$field" name="profesion">
                     <FloatLabel>
                         <label for="profesionInput">Profesion</label>
-                        <InputText name="profesion" type="text" inputId="profesionInput" fluid />
+                        <InputText name="profesion" type="text" inputId="profesionInput" fluid :disabled="blockInputsEdit"/>
                         <Message v-if="$form.profesion?.invalid" severity="error" size="small" variant="simple">
                             {{ $form.profesion.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-            </div>
-            <div class="flex gap-2 mt-5">
+
                 <FormField class="flex-1" v-slot="$field" name="status">
                     <FloatLabel>
                         <label for="estatusInput">Estatus</label>
-                        <Select :options="statusOptions" optionLabel="letter" optionValue="letter"  placeholder="Estatus" class="w-full"/>
+                        <Select :options="statusOptions" optionLabel="letter" optionValue="letter"  placeholder="Estatus" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
             </div>
+            
             <div class="flex justify-content-end gap-2 mt-5">
-                <Button type="submit" label="Actualizar"  class="w-full"/>
+                <Button type="submit" label="Actualizar" class="w-full" :disabled="blockInputsEdit"/>
             </div>
         </Form>
+        <template #footer>
+            <Button @click="editBtn" label="Editar" v-show="btnEdit"/>
+            <Button @click="hideDialog" label="Cancelar" severity="secondary" />
+        </template>
     </Dialog>
 
 </template>

@@ -34,7 +34,7 @@ const bankAcountInput = ref('')
 const bankpmInput = ref('')
 const birthdayInput = ref('')
 const genderInput = ref('')
-const recordInput = ref('')
+const recordInput = ref('1')
 const courtesyInput = ref('')
 const statusInput = ref('Pendiente')
 const directoryInput = ref('No publicado')
@@ -54,6 +54,7 @@ const filters = ref({
     speciality: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     phone01: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     email: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    record: { value: null, matchMode: FilterMatchMode.CONTAINS },
 })
 
 const visible = ref(false)
@@ -74,8 +75,12 @@ const hideDialog = () => {
     visibleEdit.value = false
     blockInputs.value = true
     blockVerify.value = false
-   
-}   
+    blockInputsEdit.value = true
+}  
+
+const editBtn = () => {
+    blockInputsEdit.value = false
+}
 
 const activeDoctor = (value) => {
     switch (value) {
@@ -109,6 +114,8 @@ const onRowSelect = (event) => {
     specialitySelected.value.forEach(item => {
         specialityDoc.value.push(item.name);
     });
+    blockInputsEdit.value = true
+    btnEdit.value = true
     getDocumentDoctor()
 
 }
@@ -136,6 +143,7 @@ const initialValues = reactive({
     birthday: null,
     gender: '',
     courtesy: '',
+    record: '1',
     status: 'Pendiente',
     details: '',
     directory: 'No publicado',
@@ -228,7 +236,9 @@ const resolver = zodResolver(
 
 // Desactivar inputs al iniciar el formulario
 let blockInputs = ref(true)
+let blockInputsEdit = ref(true)
 let blockVerify = ref(false)
+let btnEdit = ref(true)
 
 // Desbloquear inputs al verificar la cedula
 const checkDoctor = async () => {
@@ -411,6 +421,8 @@ const msgConfirm = () => {
         accept: () => {
             visibleEdit.value = true
             visible.value = false
+            blockInputsEdit.value = false
+            btnEdit.value = false
 
         },
         reject: () => {
@@ -463,7 +475,7 @@ const msgConfirm = () => {
             </Column>
             <Column field="phone01" header="Teléfono"></Column>
             <Column field="email" header="Email" sortable></Column>
-            <Column field="verify" header="Verificado" sortable>
+            <Column field="verify" header="Verificado">
                 <template #body="{ data }">
                     <Badge v-if="data.verify == 'Verificado'" size="large" class="bg-vitality" >
                         <i class="pi pi-check-circle"></i>
@@ -596,7 +608,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone01" initialValue="">
                     <FloatLabel>
                         <label for="phone01Input">Teléfono 1</label>
-                        <InputText id="phone01Input" type="text" class="w-full" v-model="phone01Input" :disabled="blockInputs" />
+                        <InputText id="phone01Input" type="text" class="w-full" v-model="phone01Input" v-mask="'(####) ###-##-##'" :disabled="blockInputs" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -604,7 +616,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone02" initialValue="">
                     <FloatLabel>
                         <label for="phone02Input">Teléfono 2</label>
-                        <InputText id="phone02Input" type="text" class="w-full" v-model="phone02Input" :disabled="blockInputs" />
+                        <InputText id="phone02Input" type="text" class="w-full" v-model="phone02Input" v-mask="'(####) ###-##-##'" :disabled="blockInputs" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -647,6 +659,8 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
+            </div>
+            <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="otherRRSS" initialValue="">
                     <FloatLabel>
                         <label for="rrssInput">Otras Redes Sociales</label>
@@ -655,8 +669,7 @@ const msgConfirm = () => {
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-            </div>
-            <div class="flex gap-2 mt-5">
+
                 <FormField class="flex-1" v-slot="$field" name="profilePhoto" initialValue="">
                     <FloatLabel>
                         <label for="perfilInput">Foto de Perfil</label>
@@ -764,7 +777,7 @@ const msgConfirm = () => {
         </Form>
 
         <template #footer>
-            <Button @click="hideDialog" label="Cancelar" :disabled="blockInputs" severity="secondary" />
+            <Button @click="hideDialog" label="Cancelar" severity="secondary" />
         </template>
     </Dialog>
 
@@ -784,30 +797,28 @@ const msgConfirm = () => {
 
             <div class="flex gap-2 align-items-center">            
                 <FormField v-slot="$field" name="nationalityType">
-                    <Select :options="nationalityOptions" optionLabel="letter" optionValue="letter" v-model="editDoctor.nationalityType"/>
+                    <Select :options="nationalityOptions" optionLabel="letter" optionValue="letter" v-model="editDoctor.nationalityType" :disabled="blockInputsEdit"/>
                     <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
-                        {{ $field.error.message }}
+                        {{ $field.error.message }} 
                     </Message>
                 </FormField>
                 <FormField v-slot="$field" name="identification">
                     <FloatLabel>
-                        <InputText id="identification" placeholder="Cédula del Médico" type="text" v-model="editDoctor.identification"/>
+                        <InputText id="identification" placeholder="Cédula del Médico" type="text" v-model="editDoctor.identification" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
                             {{ $field.error.message }}
                         </Message>
                     </FloatLabel>
                     
                 </FormField>
-                <!-- TODO: -->
-                <!-- * Validar que la cedula no exista en la base de datos antes de crear un nuevo paciente -->
-                <!-- <Button label="Verificar" @click="checkDoctor" :disabled="blockVerify"/> -->
+               
             </div>
 
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="name">
                     <FloatLabel>
                         <label for="nameInput">Nombre del Medico</label>
-                        <InputText id="nameInput" type="text" class="w-full" v-model="editDoctor.name"/>
+                        <InputText id="nameInput" type="text" class="w-full" v-model="editDoctor.name" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error.message }}</Message>
                     </FloatLabel>
@@ -816,7 +827,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="lastname">
                     <FloatLabel>
                         <label for="lastnameInput">Apellido del Medico</label>
-                        <InputText id="lastnameInput" type="text" class="w-full" v-model="editDoctor.lastname"/>
+                        <InputText id="lastnameInput" type="text" class="w-full" v-model="editDoctor.lastname" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -826,7 +837,7 @@ const msgConfirm = () => {
                     <FloatLabel>
                         <label for="specialtyInput">Especialidad</label>
                         <!-- <Select id="specialtyInput" :options="specialities" optionLabel="name" optionValue="name" placeholder="Especialidad" class="w-full"  /> -->
-                        <MultiSelect display="chip" :options="specialities" optionLabel="name" optionValue="name" placeholder="Especialidades" :maxSelectedLabels="2" class="w-full" v-model="specialityInput"/>
+                        <MultiSelect display="chip" :options="specialities" optionLabel="name" optionValue="name" placeholder="Especialidades" :maxSelectedLabels="2" class="w-full" v-model="specialityInput" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -837,7 +848,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="cmv">
                     <FloatLabel>
                         <label for="cmvInput">CMV</label>
-                        <InputText id="cmvInput" type="text" class="w-full"  />
+                        <InputText id="cmvInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -845,7 +856,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="mpps">
                     <FloatLabel>
                         <label for="mppsInput">MPPS</label>
-                        <InputText id="mppsInput" type="text" class="w-full"  />
+                        <InputText id="mppsInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -853,7 +864,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="experience">
                     <FloatLabel>
                         <label for="experience">Años de Experiencia</label>
-                        <InputText id="experience" type="text" class="w-full"  />
+                        <InputText id="experience" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -864,7 +875,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone01">
                     <FloatLabel>
                         <label for="phone01Input">Teléfono 1</label>
-                        <InputText id="phone01Input" type="text" class="w-full"  />
+                        <InputText id="phone01Input" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -872,7 +883,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone02">
                     <FloatLabel>
                         <label for="phone02Input">Teléfono 2</label>
-                        <InputText id="phone02Input" type="text" class="w-full"  />
+                        <InputText id="phone02Input" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -880,7 +891,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="record">
                     <FloatLabel>
                         <label for="record">Record</label>
-                        <InputText id="record" type="text" class="w-full"  />
+                        <InputText id="record" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -892,7 +903,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="address">
                     <FloatLabel>
                         <label for="addressInput">Dirección</label>
-                        <InputText id="addressInput" type="text" class="w-full"  />
+                        <InputText id="addressInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -903,7 +914,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="email">
                     <FloatLabel>
                         <label for="emailInput">Email</label>
-                        <InputText id="emailInput" type="text" class="w-full"  />
+                        <InputText id="emailInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -911,25 +922,27 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="instagram">
                     <FloatLabel>
                         <label for="instagramInput">Instagram</label>
-                        <InputText id="instagramInput" type="text" class="w-full"  />
+                        <InputText id="instagramInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
+                
+            </div>
+            <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="otherRRSS">
                     <FloatLabel>
                         <label for="rrssInput">Otras Redes Sociales</label>
-                        <InputText id="rrssInput" type="text" class="w-full"  />
+                        <InputText id="rrssInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-            </div>
-            <div class="flex gap-2 mt-5">
+
                 <FormField class="flex-1" v-slot="$field" name="profilePhoto">
                     <FloatLabel>
                         <label for="perfilInput">Foto de Perfil</label>
-                        <InputText id="perfilInput" type="text" class="w-full"  />
+                        <InputText id="perfilInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -937,7 +950,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="introduceVideo">
                     <FloatLabel>
                         <label for="videoInput">Video de Presentación</label>
-                        <InputText id="videoInput" type="text" class="w-full"  />
+                        <InputText id="videoInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -948,7 +961,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="bank">
                     <FloatLabel>
                         <label for="bankInput">Banco</label>
-                        <InputText id="bancoInput" type="text" class="w-full"  />
+                        <InputText id="bancoInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -956,7 +969,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="bankAcount">
                     <FloatLabel>
                         <label for="acountInput">Número de Cuenta</label>
-                        <InputText id="acountInput" type="text" class="w-full"  />
+                        <InputText id="acountInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -964,7 +977,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="bankpm">
                     <FloatLabel>
                         <label for="pmInput">Pago Movil</label>
-                        <InputText id="pmInput" type="text" class="w-full"  />
+                        <InputText id="pmInput" type="text" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -975,7 +988,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="birthday">
                     <FloatLabel>
                         <label for="birthday">Fecha de Nacimiento</label>
-                        <DatePicker id="birthday" name="birthday" fluid  v-model="birthdayInput" dateFormat="dd/mm/yy"/>
+                        <DatePicker id="birthday" name="birthday" fluid  v-model="birthdayInput" dateFormat="dd/mm/yy" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -983,7 +996,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="gender">
                     <FloatLabel>
                         <label for="genderInput">Género</label>
-                        <Select :options="genderOptions" optionLabel="letter" optionValue="letter" placeholder="Género" class="w-full" />
+                        <Select :options="genderOptions" optionLabel="letter" optionValue="letter" placeholder="Género" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -991,7 +1004,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="courtesy">
                     <FloatLabel>
                         <label for="courtesyInput">Cortesia</label>
-                        <Select :options="courtesyOptions" optionLabel="letter" optionValue="letter" value="Activo" placeholder="" class="w-full" />
+                        <Select :options="courtesyOptions" optionLabel="letter" optionValue="letter" value="Activo" placeholder="" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -1003,7 +1016,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="status">
                     <FloatLabel>
                         <label for="estatusInput">Estatus</label>
-                        <Select :options="statusOptions" optionLabel="letter" optionValue="letter" value="Pendiente" placeholder="" class="w-full"/>
+                        <Select :options="statusOptions" optionLabel="letter" optionValue="letter" value="Pendiente" placeholder="" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -1011,7 +1024,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="directory">
                     <FloatLabel>
                         <label for="genderInput">Directorio</label>
-                        <Select :options="publicOptions" optionLabel="letter" optionValue="letter" placeholder="Directorio" class="w-full"/>
+                        <Select :options="publicOptions" optionLabel="letter" optionValue="letter" placeholder="Directorio" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -1019,7 +1032,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="verify" >
                     <FloatLabel>
                         <label for="verify">Verificación</label>
-                        <Select :options="verificatedOptions" optionLabel="letter" optionValue="letter" placeholder="Verificado" class="w-full" />
+                        <Select :options="verificatedOptions" optionLabel="letter" optionValue="letter" placeholder="Verificado" class="w-full" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -1028,11 +1041,12 @@ const msgConfirm = () => {
             </div>
 
             <div class="flex justify-content-end gap-2 mt-5">
-                <Button type="submit" label="Actualizar"  class="w-full"/>
+                <Button type="submit" label="Actualizar" class="w-full" :disabled="blockInputsEdit"/>
             </div>
         </Form>
 
         <template #footer>
+            <Button @click="editBtn" label="Editar" v-show="btnEdit"/>
             <Button @click="hideDialog" label="Cancelar" severity="secondary" />
         </template>
     </Dialog>

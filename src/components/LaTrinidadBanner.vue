@@ -95,7 +95,7 @@ const scheduleDr = async (dr) => {
                     <div class="flex flex-col mt-4 pl-10 w-full justify-start text-white">
                         <div class="text-2xl">AGENDA TU CONSULTA CON NUESTROS ESPECIALISTAS</div>
                         <div>EN NUESTRA UNIDAD DE APS</div>
-                        <div>Escribenos a traves de Whatsapp y Recibe la mejor atencion!</div>
+                        <div>¡Escríbenos a través de WhatsApp y recibe la mejor atención!</div>
                     </div>
                     <div class="flex justify-start my-4 pl-10">
                         <Button severity="success" class="hidden md:block" v-on:click="schedule">Whatsapp</Button>
@@ -107,10 +107,8 @@ const scheduleDr = async (dr) => {
                         <img :src="`${currentItem.image}`" alt="Doctor"
                             style="position:absolute; bottom: 0; max-height: 100%;" />
                         <div class="directory-link">
-
                             <a href="#" v-on:click="scheduleDr(`${currentItem.name}`)">{{ currentItem.name }}</a>
                             <!-- <Button severity="success" class="hidden md:block" v-on:click="schedule">Whatsapp</Button> -->
-
                         </div>
                     </div>
                 </div>
@@ -118,7 +116,7 @@ const scheduleDr = async (dr) => {
         </div>
         <div class="slogan ml-10">
             <span class="hidden md:block">
-                Somos Tu Aliado en Salud!
+                ¡Somos tu aliado en salud!
             </span>
             <div class="semi-rombo"></div>
         </div>

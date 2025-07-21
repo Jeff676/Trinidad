@@ -7,25 +7,25 @@ import Router from '@/router'
 const cards = [
   {
     icon: 'comment-dollar',
-    content: 'Conoce Nuestros planes de financiamiento y adquiere tu servicio de salud pagando en cuotas y sin interes',
+    content: 'Conoce nuestros planes de financiamiento y adquiere tu servicio de salud pagando en cuotas y sin intereses',
     buttonLabel: 'Planes',
     to: 'plans',
   },
   {
     icon: 'book-medical',
-    content: 'Explora nuestro directorio de medicos Especialistas y selecciona la consulta que se adapte a tu necesidad',
+    content: 'Explora nuestro directorio de médicos especialistas y selecciona la consulta que se adapte a tu necesidad',
     buttonLabel: 'Directorio',
     to: 'directory',
   },
   {
     icon: 'calendar-days',
-    content: 'Reserva una cita con solo hacer click en el boton, paga tu consulta en linea y evita largas esperas',
+    content: 'Reserva una cita con solo hacer click en el botón, paga tu consulta en línea y evita largas esperas',
     buttonLabel: 'Reservas',
     to: 'services',
   },
   {
     icon: 'heart-pulse',
-    content: 'Nueva Unidad de Cardiologia, Consulta cardiologica especializada, mapa, holter, eco cardiograma',
+    content: 'Nueva Unidad de Cardiología, Consulta cardiológica especializada, mapa, holter y ecocardiograma',
     buttonLabel: 'Cardiologia',
     to: 'services',
   },
@@ -57,12 +57,12 @@ const responsiveOptions = ref([
 
 const testimonials = [
   {
-    text: 'Buenas tardes Super espectacular y muy agradecida por su atencion, 100% recomendada...',
+    text: 'Buenas tardes Super espectacular y muy agradecida por su atención, 100% recomendada...',
     patient: 'Jennire',
     icon: 'face-smile-beam',
   },
   {
-    text: 'Quiero expresar mis mas sincero agradecimiento por el paoyo excepcional que nos brindó su clinica. Realmente Apreciamos la capacidad de respuesta y la voluntad de su equipo de trabajo pa ir mas alla de su labor...',
+    text: 'Quiero expresar mis más sincero agradecimiento por el apoyo excepcional que nos brindó su clinica. Realmente apreciamos la capacidad de respuesta y la voluntad de su equipo de trabajo para ir mas allá de su labor...',
     patient: 'Valeria Accettura',
     icon: 'face-smile-beam',
   },
@@ -72,19 +72,19 @@ const testimonials = [
     icon: 'face-smile-beam',
   },
   {
-    text: 'Mi cesarea tambien fue en la trinidad y todo fue excelente. La Dra Anahil un 1000/10 y el trato de la enfermeras es una maravilla, todos son muy amables y serviciales',
+    text: 'Mi cesárea también fue en la trinidad y todo fue excelente. La Dra Anahil un 1000/10 y el trato de la enfermeras es una maravilla, todos son muy amables y serviciales',
     patient: 'mrosales97',
   },
   {
-    text: 'Muchas Gracias por todo, los medicos y las enfermeras super profesionales y atentos muy buen servicio, agradecida',
+    text: 'Muchas Gracias por todo, los médicos y las enfermeras super profesionales y atentos muy buen servicio, agradecida',
     patient: ''
   },
   {
-    text: 'La seguridad la sentí desde que entré a la clínica.. el personal en todos los ámbitos son seres maravillosos que hacen la estadía del paciente como si estuviera en casa.. realmente mil bendiciones a todos y agradecida por la oportunidad de dedicarme esa cirugía tal laboriosa y los más grande mí exitosa..🙌🙌',
+    text: 'La seguridad la sentí desde que entré a la clínica... el personal en todos los ámbitos son seres maravillosos que hacen la estadía del paciente como si estuviera en casa... realmente mil bendiciones a todos y agradecida por la oportunidad de dedicarme esa cirugía tan laboriosa y los más grandes exitos..🙌🙌',
     patient: 'Amarilis Mujica'
   },
   {
-    text: 'Su Servicio fue exepcional y merece reconocimiento para todo el equipo medico, administrativo y obrero. Trasnmita mi gratitudpor su arduo trabajo. Saludos Cordiales',
+    text: 'Su servicio fue exepcional y merece reconocimiento para todo el equipo médico, administrativo y obrero. Trasnmita mi gratitud por su arduo trabajo. Saludos Cordiales',
     patient: 'Valeria Accettura',
     icon: 'face-smile-beam',
   },
@@ -109,7 +109,7 @@ const goTo = (route) => {
       <Card class="w-full">
         <template #content>
           <div class="flex w-full text-3xl text-vitality justify-center mb-3">
-            Cirugias Realizadas
+            Cirugías Realizadas
           </div>
           <div class="w-full h-2 mb-5 bg-hope"></div>
           <!-- ! hltml odometer -->
@@ -122,7 +122,7 @@ const goTo = (route) => {
       <Card class="">
         <template #content>
           <div class="flex w-full text-3xl text-vitality justify-center mb-3">
-            Medicos de Cortesia
+            Médicos de Cortesia
           </div>
           <div class="w-full h-2 mb-5 bg-hope"></div>
           <!-- ! hltml odometer -->
@@ -204,7 +204,7 @@ const goTo = (route) => {
   </div>
   <div class="grid grid-cols-6 gap-5">
     <div class="md:col-start-2 col-span-3 md:col-span-2 rounded-xl flex flex-col p-10 shadow-lg shadow-indigo-500/50">
-      <div class="text-vitality text-2xl">Moderna Area Quirugica</div>
+      <div class="text-vitality text-2xl">Moderna Área Quirúrgica</div>
       <div class="w-20 h-2 mb-5 bg-hope"></div>
       <div class="hidden md:block">Nuestra área quirúrgica posee dos pabellones de 30 m² cada uno, equipados con
         tecnología de vanguardia para procedimientos seguros y eficientes.
