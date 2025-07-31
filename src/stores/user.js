@@ -1,9 +1,9 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { auth } from '../firebase/init'
-
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { endAt } from 'firebase/firestore';
+import { getUser } from '/src/firebase/users'
+
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -17,21 +17,37 @@ export const useUserStore = defineStore('user', {
 
     async login(email, password){
       try{
-        await signInWithEmailAndPassword(auth, email, password)
-      }catch(error){
+        var status = ''
+        var userlogin = await getUser(email, password)
+        status = userlogin[0].status
+        localStorage.name = userlogin[0].name
+        localStorage.lastname = userlogin[0].lastname
+        localStorage.type = userlogin[0].type
 
-        return '';
+        console.log('userlogin[0]', userlogin[0])
+
+        if(status == 'Activo'){
+          await signInWithEmailAndPassword(auth, email, password)
+          
+          //useUserStore.user = userlogin[0].name + ' ' + userlogin[0].lastname
+          this.$router.push('/patients')
+          useUserStore.user = email
+        } 
+        
+        return status;
+
+      }catch(error){
+        return 'INVALID';
       }
-      this.$router.push('/patients')
-      useUserStore.user = email
-      return email;
+      
     },
 
     logout() {
       signOut(auth)
         .then(() => {
           useUserStore.isLoggedIn = false;
-          this.$router.push('/')
+          localStorage.clear()
+          this.$router.push('/login')
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -39,6 +55,15 @@ export const useUserStore = defineStore('user', {
           alert(this.errorMessage);
         });
     },
+
+    async createUser(email, password){
+      try{
+        await createUserWithEmailAndPassword(auth, email, password)
+      }catch(error){
+        return '';
+      }
+
+    }
 
   },
 });

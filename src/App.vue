@@ -1,4 +1,5 @@
 <script setup>
+import { ref, reactive, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { useUserStore } from './stores/user';
 import { onAuthStateChanged } from "firebase/auth"
@@ -7,7 +8,6 @@ import FloatingElement from './components/FloatingElement.vue'
 import Footer from './components/Footer.vue'
 import NavMenu from './components/NavMenu.vue'
 import "tailwindcss";
-import { useConfirm } from "primevue/useconfirm";
 
 const userStore = useUserStore();
 
@@ -17,14 +17,15 @@ function toggleDarkMode() {
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    const uid = user.uid;
-    userStore.isLoggedIn = true;
+    const uid = user.uid
+    userStore.isLoggedIn = true
     // console.log('verdadero')
   } else {
     userStore.isLoggedIn = false;
     // console.log('falso')
   }
 })
+
 
 </script>
 

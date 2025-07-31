@@ -336,12 +336,12 @@ const onFormSubmitUp = async ({ valid, values }) => {
         try{
             var up = await updateDoctor(values,document);
             if(up){
-                toast.add({ severity: 'success', summary: '', detail: 'Actualizado con éxito.!', life: 3000 });
+                toast.add({ severity: 'success', summary: '', detail: '¡Actualizado con éxito.!', life: 3000 });
             }
         }catch(e){
             toast.add({ severity: 'error', summary: 'Error al actualizar', detail: 'Ha ocurrido un error.!', life: 3000 });
         }
-        doctors.value = await getAllDoctors();
+        doctors.value = await getAllDoctors()
         blockVerify.value = false
         idInput.value = ''
 
@@ -608,7 +608,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone01" initialValue="">
                     <FloatLabel>
                         <label for="phone01Input">Teléfono 1</label>
-                        <InputText id="phone01Input" type="text" class="w-full" v-model="phone01Input" v-mask="'(####) ###-##-##'" :disabled="blockInputs" />
+                        <InputText id="phone01Input" type="text" class="w-full" v-model="phone01Input" :disabled="blockInputs" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -616,7 +616,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone02" initialValue="">
                     <FloatLabel>
                         <label for="phone02Input">Teléfono 2</label>
-                        <InputText id="phone02Input" type="text" class="w-full" v-model="phone02Input" v-mask="'(####) ###-##-##'" :disabled="blockInputs" />
+                        <InputText id="phone02Input" type="text" class="w-full" v-model="phone02Input" :disabled="blockInputs" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -1040,7 +1040,7 @@ const msgConfirm = () => {
                 
             </div>
 
-            <div class="flex justify-content-end gap-2 mt-5">
+            <div class="flex gap-2 mt-5">
                 <Button type="submit" label="Actualizar" class="w-full" :disabled="blockInputsEdit"/>
             </div>
         </Form>

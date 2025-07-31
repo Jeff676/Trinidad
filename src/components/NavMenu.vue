@@ -1,11 +1,17 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useUserStore } from '../stores/user';
 import { useConfirm } from "primevue/useconfirm";
+import { auth } from '../firebase/init'
+import { onAuthStateChanged } from "firebase/auth"
+import { getUser} from '/src/firebase/users'
 
 const userStore = useUserStore();
+var currentUser = ref([])
+const nameUser = ref('')
+var userLog = ref('')
 
-const items = ref([
+const items= ref([
     {
         label: 'Inicio',
         route: '/'
@@ -33,6 +39,7 @@ const items = ref([
 ])
 
 const confirmSesion = useConfirm();
+
 const logOut = () => {
     confirmSesion.require({
         message: '¿Desea cerrar la sesión?',
@@ -49,12 +56,19 @@ const logOut = () => {
         accept: () => {
             console.log('logout')
             userStore.logout()
+            localStorage.clear()
         },
         reject: () => {
         }
     });
 
 }
+
+onMounted(async () => {
+    nameUser.value = localStorage.name + ' ' + localStorage.lastname
+
+})
+
 </script>
 
 <template>
@@ -78,7 +92,10 @@ const logOut = () => {
 
     <Menubar v-if="userStore.isLoggedIn" class="flex-1">
         <template #end>
-            <RouterLink to="#" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">
+            <RouterLink to="" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">
+                <span>{{ nameUser }}</span>
+            </RouterLink>
+            <RouterLink to="" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">
                 <span @click="logOut">Salir</span>
             </RouterLink>
         </template>

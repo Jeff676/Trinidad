@@ -1,7 +1,16 @@
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive } from 'vue';
+import { onAuthStateChanged } from "firebase/auth"
+import { getUser} from '/src/firebase/users'
+import { auth } from '../firebase/init'
 
-const items = reactive([
+var currentUser = ref([])
+const nameUser = ref('')
+var userLog = ref('')
+const menu = reactive([])
+var items = reactive([])
+
+const itemsAdm = reactive([
     // {
     //     icon: 'fa-solid fa-chart-column',
     //     label: 'Panel',
@@ -30,6 +39,23 @@ const items = reactive([
         icon: 'fa-solid fa-user',
         label: 'Usuarios',
         active: false,
+        to: 'users'
+    },
+
+])
+
+const itemsMed = reactive([
+    {
+        icon: 'fa-solid fa-user-injured',
+        label: 'Pacientes',
+        active: false,
+        to: 'patients'
+    },
+    
+    {
+        icon: 'fa-solid fa-user-nurse',
+        label: 'Citas',
+        active: false,
         to: 'panel'
     },
 
@@ -39,6 +65,14 @@ const setActive = (index) => {
     items.forEach((item, i) => {
         item.active = i === index;
     });
+}
+
+if(localStorage.type == 'Administrativo'){
+    items = itemsAdm
+}else if(localStorage.type == 'Medico'){
+    items = itemsMed
+}else{
+    items = itemsMed
 }
 
 
