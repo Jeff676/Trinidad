@@ -597,7 +597,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="experience" initialValue="">
                     <FloatLabel>
                         <label for="experience">Años de Experiencia</label>
-                        <InputText id="experience" type="text" class="w-full" v-model="experiencieInput" :disabled="blockInputs" />
+                        <InputText id="experience" type="text" class="w-full" v-model="experiencieInput" :maxlength="2" :disabled="blockInputs" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -608,7 +608,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone01" initialValue="">
                     <FloatLabel>
                         <label for="phone01Input">Teléfono 1</label>
-                        <InputText id="phone01Input" type="text" class="w-full" v-model="phone01Input" v-mask="'(####) ###-##-##'" :disabled="blockInputs" />
+                        <InputText id="phone01Input" type="text" class="w-full" v-model="phone01Input" v-phone-mask :maxlength="15":disabled="blockInputs" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -616,7 +616,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone02" initialValue="">
                     <FloatLabel>
                         <label for="phone02Input">Teléfono 2</label>
-                        <InputText id="phone02Input" type="text" class="w-full" v-model="phone02Input" v-mask="'(####) ###-##-##'" :disabled="blockInputs" />
+                        <InputText id="phone02Input" type="text" class="w-full" v-model="phone02Input" v-phone-mask :maxlength="15" :disabled="blockInputs" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -624,7 +624,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="record" initialValue="">
                     <FloatLabel>
                         <label for="record">Record</label>
-                        <InputText id="record" type="text" class="w-full" v-model="recordInput" :disabled="blockInputs" />
+                        <InputText id="record" type="text" class="w-full" v-model="recordInput" :maxlength="2" :disabled="blockInputs" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -864,7 +864,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="experience">
                     <FloatLabel>
                         <label for="experience">Años de Experiencia</label>
-                        <InputText id="experience" type="text" class="w-full" :disabled="blockInputsEdit"/>
+                        <InputText id="experience" type="text" class="w-full" :maxlength="2" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -875,7 +875,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone01">
                     <FloatLabel>
                         <label for="phone01Input">Teléfono 1</label>
-                        <InputText id="phone01Input" type="text" class="w-full" :disabled="blockInputsEdit"/>
+                        <InputText id="phone01Input" type="text" class="w-full" :maxlength="15" v-phone-mask :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -883,7 +883,7 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="phone02">
                     <FloatLabel>
                         <label for="phone02Input">Teléfono 2</label>
-                        <InputText id="phone02Input" type="text" class="w-full" :disabled="blockInputsEdit"/>
+                        <InputText id="phone02Input" type="text" class="w-full" :maxlength="15" v-phone-mask :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -891,12 +891,11 @@ const msgConfirm = () => {
                 <FormField class="flex-1" v-slot="$field" name="record">
                     <FloatLabel>
                         <label for="record">Record</label>
-                        <InputText id="record" type="text" class="w-full" :disabled="blockInputsEdit"/>
+                        <InputText id="record" type="text" class="w-full" :maxlength="2" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                
             </div>
 
             <div class="flex gap-2 mt-5">

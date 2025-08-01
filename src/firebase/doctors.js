@@ -19,7 +19,7 @@ export const getAllDoctors = async () => {
   const q = query(collection(db, "doctors")); // Devuelve un Objeto Firebase , dentro estan todos los documentos
   const querySnapshot = await getDocs(q);
   const doctors = querySnapshot.docs.map((doc) => doc.data()) // Devuelve un array con los documentos
-
+  console.log(doctors)
   return doctors
 }
 

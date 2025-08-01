@@ -64,6 +64,18 @@ pinia.use(({ store }) => {
   store.$router = markRaw(router)
 })
 
+app.directive('phone-mask', {
+  mounted(el) {
+    el.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 0) {
+        value = value.replace(/^(\d{4})(\d{3})(\d{4})$/, '($1) $2-$3');
+      }
+      e.target.value = value;
+    });
+  }
+});
+
 // ** PrimeVue Components **//
 app.component('Button', Button)
 app.component('Avatar', Avatar)
