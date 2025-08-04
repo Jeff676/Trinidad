@@ -50,6 +50,14 @@ const router = createRouter({
       component: () => import('../views/PanelView.vue'),
       children: [
         {
+          path: '/schedule',
+          name: 'schedule',
+          component: () => import('../views/panel/Schedule.vue'),
+          meta: {
+            requiresAuth: true,
+          },
+        },
+        {
           path: '/patients',
           name: 'patients',
           component: () => import('../views/panel/Patients.vue'),
@@ -61,9 +69,9 @@ const router = createRouter({
           path: '/doctors',
           name: 'doctors',
           component: () => import('../views/panel/Doctors.vue'),
-            meta: {
-          requiresAuth: true,
-        },
+          meta: {
+            requiresAuth: true,
+          },
         },
       ],
       meta: {
@@ -72,12 +80,12 @@ const router = createRouter({
     },
   ],
   scrollBehavior(to, from, savedPosition) {
-      if (savedPosition) {
-        return savedPosition;
-      } else {
-        return { top: 0 };
-      }
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
     }
+  },
 })
 
 const getCurrentUser = () => {

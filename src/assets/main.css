@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @import 'primeicons/primeicons.css';
 
 * {
@@ -211,6 +211,34 @@
   color: var(--welfare);
 }
 
+.border-color-vitality {
+  border-color: var(--vitality);
+}
+
+.border-color-welfare {
+  border-color: var(--welfare);
+}
+
+.border-color-hope {
+  border-color: var(--hope);
+}
+
+.border-color-helth {
+  border-color: var(--health);
+}
+
+.border-color-life {
+  border-color: var(--life);
+}
+
+.border-color-shadow {
+  border-color: var(--shadow);
+}
+
+.border-color-danger {
+  border-color: var(--danger);
+}
+
 :root {
   --vitality: #0a2e4c; /* Primary color higthligth*/
   --welfare: #004a87; /* Secondary color for texts */
@@ -229,61 +257,60 @@
   --card-bg: var(--vitality);
 }
 
-h1{
+h1 {
   font-size: 30px;
   font-weight: bold;
 }
 
-h2{
+h2 {
   font-size: 20px;
   font-weight: bold;
 }
 
-.border-circle{
-    border-radius: 50%;
-    width: 3rem;
-    height: 3rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.border-circle {
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.border-round-lg{
+.border-round-lg {
   border-radius: 5%;
 }
 
-.surface-100-shadow{
-  
+.surface-100-shadow {
 }
 
-.justify-content-between{
+.justify-content-between {
   justify-content: space-between;
 }
 
-.justify-content-end{
+.justify-content-end {
   justify-content: end;
 }
 
-.justify-content-center{
+.justify-content-center {
   justify-content: center;
 }
 
 .search-directory {
   display: block;
 }
-.search-movil{
+.search-movil {
   display: none;
 }
 
-.img-doctor{
-  img{
+.img-doctor {
+  img {
     width: 75%;
     height: 100%;
     float: right;
   }
 }
 
-.card-testimonials{
+.card-testimonials {
   color: #004a87;
   font-weight: bolder;
 }
@@ -292,21 +319,19 @@ h2{
   .search-directory {
     display: none;
   }
-  .search-movil{
+  .search-movil {
     display: block;
   }
-  .img-doctor{
-    img{
+  .img-doctor {
+    img {
       width: 60%;
     }
   }
-  .testimonial-scll{
+  .testimonial-scll {
     overflow: auto;
   }
 
-  
-  .title-const{
+  .title-const {
     width: 190px !important;
   }
 }
-
