@@ -86,17 +86,17 @@ const allDoctorsParam = async (speciality) => {
 };
 
 const searchFilter = async () => {
-    loadDoctors.value = true;
     if (!search.value) {
         doctors.value = await getDoctors()
+        
     }
     const lowerCaseSearchTerm = search.value.toLowerCase();
+    doctors.value = await getDoctors()
     doctors.value = doctors.value.filter(item =>
         item.name.toLowerCase().includes(lowerCaseSearchTerm) 
         ||  item.lastname.toLowerCase().includes(lowerCaseSearchTerm)
         || item.speciality.some(speciality => speciality.toLowerCase().includes(lowerCaseSearchTerm))
     );
-    loadDoctors.value = false;
 };
 
 const allDoctorsParamMovil = async (event) => {
