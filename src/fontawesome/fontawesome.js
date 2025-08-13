@@ -25,6 +25,7 @@ import {
   faMicrophone,
   faEllipsis,
   faMagnifyingGlass,
+  faCalendarDays,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { faCircleUser, faBell, faClock } from '@fortawesome/free-regular-svg-icons'
@@ -60,4 +61,5 @@ library.add(
   faBell,
   faClock,
   faWhatsapp,
+  faCalendarDays,
 )

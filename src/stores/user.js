@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { auth } from '../firebase/init'
 
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { endAt } from 'firebase/firestore';
+import { endAt } from 'firebase/firestore'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -14,35 +14,31 @@ export const useUserStore = defineStore('user', {
   },
 
   actions: {
-
-    async login(email, password){
-      try{
+    async login(email, password) {
+      try {
         await signInWithEmailAndPassword(auth, email, password)
-      }catch(error){
-
-        return '';
+      } catch (error) {
+        return ''
       }
-      this.$router.push('/patients')
+      this.$router.push('/schedule')
       useUserStore.user = email
-      return email;
+      return email
     },
 
     logout() {
       signOut(auth)
         .then(() => {
-          useUserStore.isLoggedIn = false;
+          useUserStore.isLoggedIn = false
           this.$router.push('/')
         })
         .catch((error) => {
-          const errorCode = error.code;
-          this.errorMessage = error.message;
-          alert(this.errorMessage);
-        });
+          const errorCode = error.code
+          this.errorMessage = error.message
+          alert(this.errorMessage)
+        })
     },
-
   },
-});
-
+})
 
 export const useCounterStore = defineStore('counter', () => {
   const count = ref(0)
@@ -52,5 +48,4 @@ export const useCounterStore = defineStore('counter', () => {
   }
 
   return { count, doubleCount, increment }
-
 })
