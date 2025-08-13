@@ -3,7 +3,6 @@ import { onMounted, reactive, ref } from 'vue'
 import { getDoctors, getSpecialities, getDoctorsFind, searchDirectory } from '../firebase/doctors'
 import PageUnderConstruction from '@/components/PageUnderConstruction.vue'
 
-
 var doctors = ref([])
 var specialities = ref([])
 const search = ref(null);
@@ -44,8 +43,7 @@ const all = async () => {
 const schedule = async (gender, name, lastname, speciality) => {
     var gen = genDoctor(gender)
 
-    window.open('https://api.whatsapp.com/send?phone=584165017110&text=Hola.! Quisiera agendar una cita de  '
-                + speciality.charAt(0).toUpperCase() + speciality.slice(1) +' con ' 
+    window.open('https://api.whatsapp.com/send?phone=584165017110&text=Hola.! Quisiera agendar una cita con ' 
                 + gen  + ' ' 
                 + name.charAt(0).toUpperCase() + name.slice(1) + ' ' 
                 + lastname.charAt(0).toUpperCase() + lastname.slice(1)
@@ -88,21 +86,17 @@ const allDoctorsParam = async (speciality) => {
 };
 
 const searchFilter = async () => {
-    loadDoctors.value = true;
-    try {
-        if(search.value == ''){
-            doctors.value = await getDoctors()
-        }else{
-            doctors.value = await searchDirectory(search.value.toLowerCase())
-        }
-        if (!doctors.ok) {
-            throw new Error('Network response was not ok');
-        }
-    } catch (err) {
-        error.value = err.message;
-    } finally {
-        loadDoctors.value = false;
+    if (!search.value) {
+        doctors.value = await getDoctors()
+        
     }
+    const lowerCaseSearchTerm = search.value.toLowerCase();
+    doctors.value = await getDoctors()
+    doctors.value = doctors.value.filter(item =>
+        item.name.toLowerCase().includes(lowerCaseSearchTerm) 
+        ||  item.lastname.toLowerCase().includes(lowerCaseSearchTerm)
+        || item.speciality.some(speciality => speciality.toLowerCase().includes(lowerCaseSearchTerm))
+    );
 };
 
 const allDoctorsParamMovil = async (event) => {
