@@ -1,8 +1,10 @@
 <script setup>
-import { ref, reactive } from 'vue';
-import { onAuthStateChanged } from "firebase/auth"
-import { getUser} from '/src/firebase/users'
-import { auth } from '../firebase/init'
+import { ref, reactive, onMounted } from 'vue';
+import { useUserStore } from '../stores/user';
+import { useConfirm } from "primevue/useconfirm";
+
+const userStore = useUserStore();
+
 
 var currentUser = ref([])
 const nameUser = ref('')
@@ -17,6 +19,12 @@ const itemsAdm = reactive([
     //     active: true,
     //     to: 'panel'
     // },
+    {
+        icon: 'fa-solid fa-calendar-days',
+        label: 'Citas',
+        active: false,
+        to: 'schedule'
+    },
     {
         icon: 'fa-solid fa-user-injured',
         label: 'Pacientes',
@@ -61,6 +69,31 @@ const itemsMed = reactive([
 
 ])
 
+const confirmSesion = useConfirm()
+
+const logOut = () => {
+    confirmSesion.require({
+        message: '¿Desea cerrar la sesión?',
+        header: 'Salir',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'No',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Sí'
+        },
+        accept: () => {
+            console.log('logout')
+            userStore.logout()
+        },
+        reject: () => {
+        }
+    });
+
+}
+
 const setActive = (index) => {
     items.forEach((item, i) => {
         item.active = i === index;
@@ -75,6 +108,12 @@ if(localStorage.type == 'Administrativo'){
     items = itemsMed
 }
 
+onMounted(() => {
+    // Set the first item as active by default
+    if (items.length > 0) {
+        items[0].active = true;
+    }
+})
 
 </script>
 
@@ -84,11 +123,16 @@ if(localStorage.type == 'Administrativo'){
             <div class="bg-vitality h-full">
                 <div v-for="(item, index) in items" :key="index" @click="setActive(index)"
                     :class="{ 'active-menu-item': item.active }" class="cursor-pointer">
-                    <RouterLink :to="`/${item.to}`"
-                        class="flex flex-column align-items-center justify-content-start p-3 text-white ">
-                        <font-awesome-icon :icon="item.icon" size="2xl"/>
-                        <span>{{ item.label }}</span>
+                    <RouterLink :to="`/${item.to}`" class="grid justify-content-start p-3 text-white ">
+                        <div>
+                            <font-awesome-icon :icon="item.icon" size="2xl" class="mr-3" />
+                            <span>{{ item.label }}</span>
+                        </div>
                     </RouterLink>
+                </div>
+                <div class="text-white p-3 cursor-pointer" @click="logOut">
+                    <font-awesome-icon icon="fa-solid fa-person-walking-arrow-right" size="2xl" class="mr-3" />
+                    <span>Salir</span>
                 </div>
             </div>
         </div>
@@ -96,9 +140,9 @@ if(localStorage.type == 'Administrativo'){
             <div class="bg-life shadow-5 h-full">
                 <RouterView />
             </div>
-        </div>       
+        </div>
     </div>
-    
+
 </template>
 
 <style>

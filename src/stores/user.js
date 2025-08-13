@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { auth } from '../firebase/init'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { getUser } from '/src/firebase/users'
-
+import { endAt } from 'firebase/firestore'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -30,7 +30,7 @@ export const useUserStore = defineStore('user', {
           await signInWithEmailAndPassword(auth, email, password)
           
           //useUserStore.user = userlogin[0].name + ' ' + userlogin[0].lastname
-          this.$router.push('/patients')
+          this.$router.push('/schedule')
           useUserStore.user = email
         } 
         
@@ -45,15 +45,15 @@ export const useUserStore = defineStore('user', {
     logout() {
       signOut(auth)
         .then(() => {
-          useUserStore.isLoggedIn = false;
           localStorage.clear()
-          this.$router.push('/login')
+          useUserStore.isLoggedIn = false
+          this.$router.push('/')
         })
         .catch((error) => {
-          const errorCode = error.code;
-          this.errorMessage = error.message;
-          alert(this.errorMessage);
-        });
+          const errorCode = error.code
+          this.errorMessage = error.message
+          alert(this.errorMessage)
+        })
     },
 
     async createUser(email, password){
@@ -66,8 +66,7 @@ export const useUserStore = defineStore('user', {
     }
 
   },
-});
-
+})
 
 export const useCounterStore = defineStore('counter', () => {
   const count = ref(0)
@@ -77,5 +76,4 @@ export const useCounterStore = defineStore('counter', () => {
   }
 
   return { count, doubleCount, increment }
-
 })
