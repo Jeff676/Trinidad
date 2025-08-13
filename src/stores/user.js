@@ -1,8 +1,8 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { auth } from '../firebase/init'
-
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { getUser } from '/src/firebase/users'
 import { endAt } from 'firebase/firestore'
 
 export const useUserStore = defineStore('user', {
@@ -14,20 +14,38 @@ export const useUserStore = defineStore('user', {
   },
 
   actions: {
-    async login(email, password) {
-      try {
-        await signInWithEmailAndPassword(auth, email, password)
-      } catch (error) {
-        return ''
+
+    async login(email, password){
+      try{
+        var status = ''
+        var userlogin = await getUser(email, password)
+        status = userlogin[0].status
+        localStorage.name = userlogin[0].name
+        localStorage.lastname = userlogin[0].lastname
+        localStorage.type = userlogin[0].type
+
+        console.log('userlogin[0]', userlogin[0])
+
+        if(status == 'Activo'){
+          await signInWithEmailAndPassword(auth, email, password)
+          
+          //useUserStore.user = userlogin[0].name + ' ' + userlogin[0].lastname
+          this.$router.push('/schedule')
+          useUserStore.user = email
+        } 
+        
+        return status;
+
+      }catch(error){
+        return 'INVALID';
       }
-      this.$router.push('/schedule')
-      useUserStore.user = email
-      return email
+      
     },
 
     logout() {
       signOut(auth)
         .then(() => {
+          localStorage.clear()
           useUserStore.isLoggedIn = false
           this.$router.push('/')
         })
@@ -37,6 +55,16 @@ export const useUserStore = defineStore('user', {
           alert(this.errorMessage)
         })
     },
+
+    async createUser(email, password){
+      try{
+        await createUserWithEmailAndPassword(auth, email, password)
+      }catch(error){
+        return '';
+      }
+
+    }
+
   },
 })
 

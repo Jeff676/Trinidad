@@ -336,12 +336,12 @@ const onFormSubmitUp = async ({ valid, values }) => {
         try{
             var up = await updateDoctor(values,document);
             if(up){
-                toast.add({ severity: 'success', summary: '', detail: 'Actualizado con éxito.!', life: 3000 });
+                toast.add({ severity: 'success', summary: '', detail: '¡Actualizado con éxito.!', life: 3000 });
             }
         }catch(e){
             toast.add({ severity: 'error', summary: 'Error al actualizar', detail: 'Ha ocurrido un error.!', life: 3000 });
         }
-        doctors.value = await getAllDoctors();
+        doctors.value = await getAllDoctors()
         blockVerify.value = false
         idInput.value = ''
 
@@ -1039,7 +1039,7 @@ const msgConfirm = () => {
                 
             </div>
 
-            <div class="flex justify-content-end gap-2 mt-5">
+            <div class="flex gap-2 mt-5">
                 <Button type="submit" label="Actualizar" class="w-full" :disabled="blockInputsEdit"/>
             </div>
         </Form>

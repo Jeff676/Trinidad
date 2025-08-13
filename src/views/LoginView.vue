@@ -1,9 +1,8 @@
 <script setup>
 import { ref } from 'vue';
 import { useUserStore } from '../stores/user';
+import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
-// import { auth } from '../firebase/init'
-// import { useConfirm } from "primevue/useconfirm";
 
 const toast = useToast();
 const email = ref('');
@@ -17,6 +16,23 @@ const logIn = ref('')
 const login = async () => {
   loading.value = true;
 
+  logIn.value = await userStore.login(email.value, password.value)
+  console.log('-----',logIn.value)
+  if(logIn.value == 'Inactivo'){
+    toast.add({ severity: 'warn', summary: 'ALERTA', detail: '¡El usuario está inhabilitado.!', life: 3000 });
+  }
+
+  if(logIn.value == 'Suspendido'){
+    toast.add({ severity: 'warn', summary: 'ALERTA', detail: '¡El usuario está suspendido.!', life: 3000 });
+  }
+
+  if(logIn.value == ''){
+    toast.add({ severity: 'error', summary: 'ALERTA', detail: '¡El usuario no existe.!', life: 3000 });
+  }
+
+  if(logIn.value == 'INVALID'){
+    toast.add({ severity: 'error', summary: 'ALERTA', detail: '¡Email o contraseña incorrectos!', life: 3000 });
+  }
   try {
     setTimeout(() => {
       loading.value = false;

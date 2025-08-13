@@ -1,12 +1,18 @@
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue';
 import { useUserStore } from '../stores/user';
 import { useConfirm } from "primevue/useconfirm";
 
 const userStore = useUserStore();
 
 
-const items = reactive([
+var currentUser = ref([])
+const nameUser = ref('')
+var userLog = ref('')
+const menu = reactive([])
+var items = reactive([])
+
+const itemsAdm = reactive([
     // {
     //     icon: 'fa-solid fa-chart-column',
     //     label: 'Panel',
@@ -40,6 +46,23 @@ const items = reactive([
     {
         icon: 'fa-solid fa-user',
         label: 'Usuarios',
+        active: false,
+        to: 'users'
+    },
+
+])
+
+const itemsMed = reactive([
+    {
+        icon: 'fa-solid fa-user-injured',
+        label: 'Pacientes',
+        active: false,
+        to: 'patients'
+    },
+    
+    {
+        icon: 'fa-solid fa-user-nurse',
+        label: 'Citas',
         active: false,
         to: 'panel'
     },
@@ -76,6 +99,15 @@ const setActive = (index) => {
         item.active = i === index;
     });
 }
+
+if(localStorage.type == 'Administrativo'){
+    items = itemsAdm
+}else if(localStorage.type == 'Medico'){
+    items = itemsMed
+}else{
+    items = itemsMed
+}
+
 onMounted(() => {
     // Set the first item as active by default
     if (items.length > 0) {
