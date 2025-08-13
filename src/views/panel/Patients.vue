@@ -348,7 +348,7 @@ const msgConfirm = () => {
 const clearForm = () =>{
     idInput.value = ''
     nameInput.value = ''
-    birthdayInput.value = ''
+    birthdayInput.value = null,
     sizeInput.value = 1.6
     genderInput.value = ''
     weigthInput.value = 1
@@ -487,7 +487,7 @@ const clearForm = () =>{
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="phone" initialValue="">
                     <FloatLabel>
-                        <InputText name="phone" type="text" inputId="phoneInput" class="w-full" v-model="phoneInput"
+                        <InputText name="phone" type="text" inputId="phoneInput" class="w-full" v-phone-mask :maxlength="15" v-model="phoneInput"
                             :disabled="blockInputs" />
                         <label for="phoneInput">Telefono Principal</label>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
@@ -497,7 +497,7 @@ const clearForm = () =>{
                 <FormField class="flex-1" v-slot="$field" name="phone2" initialValue="">
                     <FloatLabel>
                         <label for="phone2Input">Telefono Secundario</label>
-                        <InputText name="phone2" type="text" class="w-full" :disabled="blockInputs" v-model="phone2Input"/>
+                        <InputText name="phone2" type="text" class="w-full" :disabled="blockInputs" v-model="phone2Input" v-phone-mask :maxlength="15"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
@@ -670,7 +670,7 @@ const clearForm = () =>{
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="phone">
                     <FloatLabel>
-                        <InputText name="phone" type="text" inputId="phoneInput" class="w-full" v-model="editPatient.phone" :disabled="blockInputsEdit"/>
+                        <InputText name="phone" type="text" inputId="phoneInput" class="w-full" v-model="editPatient.phone" v-phone-mask :maxlength="15" :disabled="blockInputsEdit"/>
                         <label for="phoneInput">Telefono Principal</label>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
@@ -679,7 +679,7 @@ const clearForm = () =>{
                 <FormField class="flex-1" v-slot="$field" name="phone2">
                     <FloatLabel>
                         <label for="phone2Input">Telefono Secundario</label>
-                        <InputText name="phone2" type="text" class="w-full"  v-model="editPatient.phone2" :disabled="blockInputsEdit"/>
+                        <InputText name="phone2" type="text" class="w-full"  v-model="editPatient.phone2" v-phone-mask :maxlength="15" :disabled="blockInputsEdit"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>

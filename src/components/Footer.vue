@@ -16,29 +16,6 @@
       </div>
     </div>
 
-    <!-- <div class="flex bg-vitality w-full text-white">
-     <div class=""> 
-        <div class="p-3">
-          <h2>Servicios</h2> -->
-
-    <!-- <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-2 bg-vitality mt-4">
-      <div class="flex bg-vitality w-full text-white">
-        <div class="p-3 flex flex-col">
-          <h2>Conócenos</h2>
-          <!-- >>>>>>> 42f694b9484f95853a2375175a795a466424a591 
-          <div class="w-20 h-2 mb-5 bg-hope"></div>
-          <p>Directorio Medico</p>
-          <p>Medicos Residentes</p>
-          <p>Enfermería</p>
-          <p>Atencion al paciente</p>
-          <p>Trabaja con nosotros</p>
-          <p>Conoce a nuestro personal</p>
-          <p>Lee nuestro Blog</p>
-          <p>Unete al Directorio Medico</p>
-        </div>
-      </div>
-    </div> -->
-
     <div class="flex bg-vitality w-full text-white">
       <div class="">
         <div class="p-3">
