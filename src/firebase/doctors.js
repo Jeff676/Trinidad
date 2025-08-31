@@ -1,5 +1,5 @@
 import { firebaseApp } from './init'
-import { getFirestore, getDocs, collection, query, where, or, and, doc, addDoc, updateDoc } from 'firebase/firestore'
+import { getFirestore, getDocs, collection, query, where, or, and, doc, addDoc, updateDoc, orderBy, limit } from 'firebase/firestore'
 
 const db = getFirestore(firebaseApp)
 
@@ -16,7 +16,9 @@ export const getDoctors = async () => {
 }
 
 export const getAllDoctors = async () => {
-  const q = query(collection(db, "doctors")); // Devuelve un Objeto Firebase , dentro estan todos los documentos
+  const q = query(collection(db, "doctors"),
+            orderBy("status", "asc")        
+      ); 
   const querySnapshot = await getDocs(q);
   const doctors = querySnapshot.docs.map((doc) => doc.data()) // Devuelve un array con los documentos
   console.log(doctors)
@@ -25,7 +27,9 @@ export const getAllDoctors = async () => {
 
 // Get all specialities
 export const getSpecialities = async () => {
-  const q = query(collection(db, "specialities"), where("status", "==", "ACTIVE"));
+  const q = query(collection(db, "specialities"), 
+            where("status", "==", "ACTIVE")
+          );
   const querySnapshot = await getDocs(q);
   const specialities = querySnapshot.docs.map((doc) => doc.data())
 

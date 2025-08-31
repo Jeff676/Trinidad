@@ -43,6 +43,8 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import ConfirmationService from 'primevue/confirmationservice';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
+import Panel from 'primevue/panel';
+import Textarea from 'primevue/textarea';
 
 import App from './App.vue'
 import router from './router'
@@ -112,6 +114,8 @@ app.component('ConfirmDialog', ConfirmDialog)
 app.component('ConfirmationService', ConfirmationService);
 app.component('Toast', Toast);
 app.component('ToastService', ToastService);
+app.component('Panel', Panel);
+app.component('Textarea', Textarea);
 
 // ** PrimeVue Config **//
 // ** Customized Preset **//

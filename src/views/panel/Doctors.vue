@@ -111,9 +111,9 @@ const onRowSelect = (event) => {
     visibleEdit.value = true
     specialitySelected.value = editDoctor.speciality
     
-    specialitySelected.value.forEach(item => {
-        specialityDoc.value.push(item.name);
-    });
+    // specialitySelected.value.forEach(item => {
+    //     specialityDoc.value.push(item.name);
+    // });
     blockInputsEdit.value = true
     btnEdit.value = true
     getDocumentDoctor()
@@ -291,10 +291,10 @@ const onFormSubmit = async ({ valid, values }) => {
                 values.profilePhoto = img_male
             }
         }
-        specialityInput.value.forEach(item => {
-            specialityDoc.value.push(item.name);
-        });
-        values.speciality = specialityDoc.value
+        // specialityInput.value.forEach(item => {
+        //     specialityDoc.value.push(item.name);
+        // });
+        // values.speciality = specialityDoc.value
 
         console.log('Form submitted with values:', values)
         // Aquí puedes manejar el envío del formulario, como hacer una solicitud a la API
@@ -431,6 +431,10 @@ const msgConfirm = () => {
     });
 };
 
+const viewFile = (url) => {
+    window.open(url ,'_blank');
+}
+
 </script>
 
 <template>
@@ -508,8 +512,7 @@ const msgConfirm = () => {
                     <ProgressSpinner v-if="loadDoctors"/>
                 </div>
                  <!-- No hay resultados para mostrar. -->
-            </template>
-            
+            </template>          
         </DataTable>
     </div>
 
@@ -1010,6 +1013,44 @@ const msgConfirm = () => {
 
                 </FormField>
             </div>
+            
+            <div class="flex gap-2 mt-5" v-if="editDoctor.summary">
+                <FormField class="flex-1" v-slot="$field" name="summary" >
+                    <FloatLabel>
+                        <Textarea name="summary" autoResize rows="5" cols="30" :disabled="blockInputsEdit"/>
+                        <label for="summary">Resumen de perfil</label>
+                    </FloatLabel>
+                </FormField>
+            </div>
+            <!-- DOCUMENTOS-->
+
+            <div class="flex gap-2 mt-5 mb-3">
+                <div class="docs-doctor" v-if="editDoctor.cedulaDoc">
+                    <Button icon="pi pi-file-check" severity="secondary" variant="text" rounded aria-label="Bookmark" @click="viewFile(editDoctor.cedulaDoc)"/>
+                    <label>Cédula </label>
+                    <label>de identidad</label>
+                </div>
+                <div class="docs-doctor" v-if="editDoctor.rifDoc">
+                    <Button icon="pi pi-file-check" severity="secondary" variant="text" rounded aria-label="Bookmark" @click="viewFile(editDoctor.rifDoc)"/>
+                    <label>RIF</label>
+                </div>
+                <div class="docs-doctor" v-if="editDoctor.curriculumDoc">
+                    <Button icon="pi pi-file-check" severity="secondary" variant="text" rounded aria-label="Bookmark" @click="viewFile(editDoctor.curriculumDoc)"/>
+                    <label>Curriculum</label>
+                </div>
+                <div class="docs-doctor" v-if="editDoctor.tituloDoc">
+                    <Button icon="pi pi-file-check" severity="secondary" variant="text" rounded aria-label="Bookmark" @click="viewFile(editDoctor.tituloDoc)"/>
+                    <label>Título</label>
+                </div>
+                <div class="docs-doctor" v-if="editDoctor.photoDoc">
+                    <Button icon="pi pi-file-check" severity="secondary" variant="text" rounded aria-label="Bookmark" @click="viewFile(editDoctor.photoDoc)"/>
+                    <label>Foto</label>
+                </div>
+                <div class="docs-doctor" v-if="editDoctor.otherDoc">
+                    <Button icon="pi pi-file-check" severity="secondary" variant="text" rounded aria-label="Bookmark" @click="viewFile(editDoctor.otherDoc)"/>
+                    <label>Otro documento</label>
+                </div>
+            </div>
 
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="status">
@@ -1075,5 +1116,19 @@ const msgConfirm = () => {
   height: 100vh;          /* Ocupa el alto completo de la ventana para centrado en la página */
   width: 100vw;           /* Ocupa el ancho completo de la ventana */
   /* Si el spinner está dentro de un contenedor más pequeño, ajusta height y width a ese contenedor */
+}
+
+textarea {
+  width: 100%;
+  resize: none;
+
+}
+
+.docs-doctor{
+    display: grid; 
+    place-items: center;
+    margin: 15px;
+    font-size: 12px;
+    
 }
 </style>

@@ -179,7 +179,7 @@ const allDoctorsParamMovil = async (event) => {
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
-        <Card v-for="(doctor, index) in doctors" :key="index" style="overflow: hidden; background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto;">
+        <Card v-for="(doctor, index) in doctors" :key="index" style="overflow: hidden; background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto; width: 100%;">
             <template #content class="">
                 <div class="flex">
                     <div style="position: absolute;">
@@ -198,7 +198,6 @@ const allDoctorsParamMovil = async (event) => {
                     <Button class="p-3" label="Ver más" icon="pi pi-video" severity="secondary" style="margin-right: 10px;" @click="showDialog"></Button>
                     <Button class="p-3" label="Agendar" icon="pi pi-calendar" iconPos="right" severity="success" v-on:click="schedule(doctor.gender,doctor.name,doctor.lastname,doctor.speciality)"></Button>
                 </div>
-                
             </template>
         </Card>
     </div>

@@ -123,7 +123,7 @@ const onFormSubmit = async ({ valid, values }) => {
 const edad = (birthdayDate) => {
 
     if (!birthdayDate) {
-        return ''; // Si no hay fecha, no hay edad
+        return 0; // Si no hay fecha, no hay edad
     }
 
     const hoy = new Date()
@@ -362,6 +362,11 @@ const clearForm = () => {
     profesionInput.value = ''
 }
 
+const schedule = async () => {
+    alert('*****')
+
+   
+};
 </script>
 
 <template>
@@ -393,8 +398,16 @@ const clearForm = () => {
                     </div>
                 </div>
             </template>
+            <Column header="Acciones" sortField="name" filterField="name" filterMatchMode="contains" sortable
+                style="width: 5%">
+                <template #body="{ data }">
+                    <div class="flex items-center gap-2">
+                        <Button icon="pi pi-calendar" aria-label="Agendar" v-on:click="schedule()"/>
+                    </div>
+                </template>
+            </Column>
             <Column header="Cedula de Identidad" sortField="name" filterField="name" filterMatchMode="contains" sortable
-                style="width: 25%">
+                style="width: 20%">
                 <template #body="{ data }">
                     <div class="flex items-center gap-2">
                         <span>{{ data.nationalityType + data.identification }}</span>

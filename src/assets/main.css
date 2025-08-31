@@ -137,8 +137,9 @@ h2 {
 }
 
 .img-doctor {
+  margin-left: 30%;
   img {
-    width: 75%;
+    width: 95%;
     height: 100%;
     float: right;
   }
@@ -158,14 +159,21 @@ h2 {
   }
   .img-doctor {
     img {
-      width: 60%;
+      width: 100%;
     }
   }
   .testimonial-scll {
     overflow: auto;
   }
-
   .title-const {
     width: 190px !important;
+  }
+
+  .docs{
+    border: 1px solid grey;
+    border-radius: 10px;
+  }
+  .fileDoc{
+    margin: 10px;
   }
 }

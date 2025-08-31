@@ -45,6 +45,11 @@ const router = createRouter({
       component: () => import('../views/LoginView.vue'),
     },
     {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/DoctorView.vue'),
+    },
+    {
       path: '/panel',
       name: 'panel',
       component: () => import('../views/PanelView.vue'),
@@ -61,6 +66,14 @@ const router = createRouter({
           path: '/patients',
           name: 'patients',
           component: () => import('../views/panel/Patients.vue'),
+          meta: {
+            requiresAuth: true,
+          },
+        },
+        {
+          path: '/patient',
+          name: 'patient',
+          component: () => import('../views/panel/Patient.vue'),
           meta: {
             requiresAuth: true,
           },

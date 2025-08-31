@@ -95,9 +95,9 @@ onMounted(async () => {
             <RouterLink to="" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">
                 <span>{{ nameUser }}</span>
             </RouterLink>
-            <RouterLink to="" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">
+            <!-- <RouterLink to="" class="hover:underline hover:decoration-emerald-500 p-2 text-white no-underline">
                 <span @click="logOut">Salir</span>
-            </RouterLink>
+            </RouterLink> --> 
         </template>
     </Menubar>    
 
