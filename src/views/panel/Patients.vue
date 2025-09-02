@@ -302,6 +302,7 @@ const checkPatient = async () => {
 
 var editPatient = reactive([])
 const visibleEdit = ref(false)
+const schedule = ref(false)
 
 const onRowSelect = (event) => {
     editPatient = event.data
@@ -362,8 +363,9 @@ const clearForm = () => {
     profesionInput.value = ''
 }
 
-const schedule = async () => {
-    alert('*****')
+const showSchedule = async () => {
+    schedule.value = true
+
 
    
 };
@@ -402,7 +404,7 @@ const schedule = async () => {
                 style="width: 5%">
                 <template #body="{ data }">
                     <div class="flex items-center gap-2">
-                        <Button icon="pi pi-calendar" aria-label="Agendar" v-on:click="schedule()"/>
+                        <Button icon="pi pi-calendar" aria-label="Agendar" v-on:click="showSchedule()"/>
                     </div>
                 </template>
             </Column>
@@ -837,6 +839,21 @@ const schedule = async () => {
             <Button @click="hideDialog" label="Cancelar" severity="secondary" />
         </template>
     </Dialog>
+
+    <Dialog v-model:visible="schedule" modal style="width: 60%">
+        <template #header>
+            <div class="inline-flex align-items-center justify-content-center gap-2">
+                <div
+                    class="bg-vitality text-white border-circle w-4rem h-4rem flex align-items-center justify-content-center">
+                    <font-awesome-icon icon="calendar-days" size="2xl" />
+                </div>
+                <span class="font-bold whitespace-nowrap text-2xl">Agendar cita</span>
+            </div>
+
+        </template>
+
+    </Dialog>
+
 
 </template>
 
