@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
@@ -7,11 +7,18 @@ import { z } from 'zod'
 import { getAllPatients, findByPatientId, savePatient, updatePatient, getDocument } from '/src/firebase/patients'
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
+import { getDoctors } from '/src/firebase/doctors'
 
 const toast = useToast();
 const loading = ref(false);
 const error = ref(null);
 var document = ref()
+var doctors = ref([])
+var speciality = ref([])
+const doctorsArr = ref([])
+var specialityOptions = ref([])
+const specialityArr = ref([])
+
 const idInput = ref('')
 const nationalityType = ref()
 const nameInput = ref('')
@@ -28,6 +35,7 @@ const phone2Input = ref('')
 const emailInput = ref('')
 const profesionInput = ref('')
 const statusInput = ref('')
+
 
 const load = ref(false);
 
@@ -219,6 +227,12 @@ const statusOptions = ref([
     { letter: 'No ingresado' }
 ])
 
+const typeScheduleOptions = ref([
+    { letter: 'Consulta' },
+    { letter: 'Control' },
+    { letter: 'Revisión de exámenes' },
+])
+
 onMounted(async () => {
     getPatiens()
 
@@ -270,6 +284,10 @@ const hideDialog = () => {
     blockInputsEdit.value = true
 }
 
+const hideDialogSchedule = () =>{
+    schedule.value = false
+}
+
 const editBtn = () => {
     blockInputsEdit.value = false
 }
@@ -301,6 +319,8 @@ const checkPatient = async () => {
 }
 
 var editPatient = reactive([])
+var schedulePatient = reactive([])
+
 const visibleEdit = ref(false)
 const schedule = ref(false)
 
@@ -363,12 +383,28 @@ const clearForm = () => {
     profesionInput.value = ''
 }
 
-const showSchedule = async () => {
+const showSchedule = async (data) => {
+    schedulePatient = data
     schedule.value = true
+    doctors.value = await getDoctors()
 
-
-   
+    doctorsArr.value = doctors.value.map(doctor => ({ name: doctor.name +' '+  doctor.lastname}))
+    
 };
+
+const selectedItem = ref(null);
+const selectedIndex = ref(null);
+const specialityDoc = ref([])
+
+const getSelectedIndex = () => {
+  // findIndex() busca el índice del objeto que coincida con el valor del v-model
+  selectedIndex.value = doctorsArr.value.findIndex(item => item.name === selectedItem.value.name)  
+  specialityArr.value = doctors.value[selectedIndex.value].speciality
+  //specialityOptions.value = doctors.speciality
+  specialityDoc.value = specialityArr.value.map(item => ({ name: item }));
+
+}
+
 </script>
 
 <template>
@@ -404,7 +440,7 @@ const showSchedule = async () => {
                 style="width: 5%">
                 <template #body="{ data }">
                     <div class="flex items-center gap-2">
-                        <Button icon="pi pi-calendar" aria-label="Agendar" v-on:click="showSchedule()"/>
+                        <Button icon="pi pi-calendar" aria-label="Agendar" v-on:click="showSchedule(data)"/>
                     </div>
                 </template>
             </Column>
@@ -849,7 +885,95 @@ const showSchedule = async () => {
                 </div>
                 <span class="font-bold whitespace-nowrap text-2xl">Agendar cita</span>
             </div>
+        </template>
+            
+            <h2>Paciente</h2>
+            <br>
+            <hr>
+            <br>
 
+        <Form v-slot="$form" :initialValues="schedulePatient" :resolver @submit="onFormSubmitSchedule">
+            <div class="flex gap-2 mt-5">
+                <FormField class="flex-1" v-slot="$field" name="typeSchedule" initialValue="">
+                    <FloatLabel>
+                        <label for="genderInput">Cédula</label>
+                        <InputText name="identification" type="text" fluid class="w-full" :disabled="true" v-model="schedulePatient.identification"/>
+                    </FloatLabel>
+                </FormField>
+                <FormField class="flex-1" v-slot="$field" name="">
+                    <FloatLabel>
+                        <label for="birthday" class="block">Fecha de la cita</label>
+                        <InputText name="name" type="text" fluid class="w-full" :disabled="true" v-model="schedulePatient.name" />
+                        
+                    </FloatLabel>
+                </FormField>
+            </div>
+            <div class="flex gap-2 mt-5">
+                <FormField class="flex-1" v-slot="$field" name="typeSchedule" initialValue="">
+                    <FloatLabel>
+                        <label for="genderInput">Teléfono</label>
+                        <InputText name="identification" type="text" fluid class="w-full" :disabled="true" v-model="schedulePatient.phone"/>
+                    </FloatLabel>
+                </FormField>
+                <!-- <FormField class="flex-1" v-slot="$field" name="">
+                    <FloatLabel>
+                        <label for="birthday" class="block">Edad</label>
+                        <InputText name="name" type="text" fluid class="w-full" :disabled="true" v-model="edad(schedulePatient.birthday).toString()" />
+                    </FloatLabel>
+                </FormField> -->
+                <FormField class="flex-1" v-slot="$field" name="">
+                    <FloatLabel>
+                        <label for="birthday" class="block">Estatus</label>
+                        <InputText name="name" type="text" fluid class="w-full" :disabled="true" v-model="schedulePatient.status" />
+                    </FloatLabel>
+                </FormField>
+            </div>
+            <div class="flex gap-2 mt-5">
+                <FormField class="flex-1" v-slot="$field" name="typeSchedule" initialValue="">
+                    <FloatLabel>
+                        <label for="genderInput">Tipo de cita</label>
+                        <Select :options="typeScheduleOptions" optionLabel="letter" optionValue="letter" placeholder="Tipo de cita"
+                            class="w-full" />
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
+                    </FloatLabel>
+                </FormField>
+                <FormField class="flex-1" v-slot="$field" name="">
+                    <FloatLabel>
+                        <label for="birthday" class="block">Fecha de la cita</label>
+                        <DatePicker id="birthday" name="birthday" fluid class="w-full" v-model="birthdayInput"
+                            dateFormat="dd/mm/yy" />
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
+                    </FloatLabel>
+                </FormField>
+            </div>
+            <div class="flex gap-2 mt-5">
+                <FormField class="flex-1" v-slot="$field" name="typeSchedule" initialValue="">
+                    <FloatLabel>
+                        <label for="genderInput">Doctor</label>
+                        <Select v-model="selectedItem" :options="doctorsArr" optionLabel="name" 
+                            placeholder="Doctor" class="w-full"  @change="getSelectedIndex"/>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
+                    </FloatLabel>
+                </FormField>
+                <FormField class="flex-1" v-slot="$field" name="">
+                    <FloatLabel>
+                        <label for="genderInput">Especialidad</label>
+                        <MultiSelect :options="specialityDoc" optionLabel="name" optionValue="name" placeholder="Especialidad"
+                            class="w-full" :maxSelectedLabels="2"/>
+                        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
+                    </FloatLabel>
+                </FormField>
+            </div>
+            <div class="flex justify-content-end gap-2 mt-5">
+                <Button type="submit" label="Agendar" class="w-full" />
+            </div>
+        </Form>
+         <template #footer>
+            <Button @click="hideDialogSchedule" label="Cancelar" severity="secondary" />
         </template>
 
     </Dialog>

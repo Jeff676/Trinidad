@@ -4,7 +4,6 @@ import { useUserStore } from '../stores/user';
 import { useConfirm } from "primevue/useconfirm";
 import { auth } from '../firebase/init'
 import { onAuthStateChanged } from "firebase/auth"
-import { getUser} from '/src/firebase/users'
 
 const userStore = useUserStore();
 var currentUser = ref([])
