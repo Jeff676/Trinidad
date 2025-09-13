@@ -32,6 +32,5 @@ coverage
 *.tsbuildinfo
 
 #firebase host
-firebase/
 .firebaserc
 firebase.json
