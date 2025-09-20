@@ -59,6 +59,16 @@ const filters = ref({
 
 const visible = ref(false)
 
+const linkForm = async () => {
+  try {
+    await navigator.clipboard.writeText('https://uqlatrinidad.com/register')
+    toast.add({ severity: 'success', summary: 'Link formulario de médico de cortesía', detail: 'Link copiado con éxito', life: 4000 });
+    
+  } catch (err) {
+    console.error('Error al copiar el link: ', err);
+  }
+}
+
 const showDialog = () => {
     visible.value = true
     blockInputs.value = true
@@ -225,7 +235,12 @@ const resolver = zodResolver(
         bank: z.string(),
         bankAcount: z.string(),
         bankpm: z.string(),
-        birthday: z.string(),
+        birthday: z.preprocess((val) => {
+            if (val === '' || val === null) {
+                return null;
+            }
+            return new Date(val);
+        }, z.union([z.date(), z.null().refine((val) => val !== null, { message: 'La fecha de nacimiento es requerida.' })])),
         gender: z.string().min(1, { message: "Seleccione un género" }),
         courtesy: z.string(),
         status: z.literal('Pendiente').optional(),
@@ -271,7 +286,8 @@ const dateFormatDDMMYYYY = () => {
     const mes = String(birthdayInput.value.getMonth() + 1).padStart(2, '0'); // Meses son de 0-11
     const año = birthdayInput.value.getFullYear();
     console.log(`${dia}/${mes}/${año}`)
-    return `${dia}/${mes}/${año}`;
+    birthdayInput.value = `${dia}/${mes}/${año}`
+    return `${dia}/${mes}/${año}`
   }
   return '';
 };
@@ -461,6 +477,11 @@ const viewFile = (url) => {
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
                         </IconField>
 
+                        <Button rounded @click="linkForm" class="bg-vitality">
+                            <font-awesome-icon icon="link" size="xl" />
+                            <span>Link Medico de Cortesía</span>
+                        </Button>
+
                         <Button rounded @click="showDialog" class="bg-vitality">
                             <font-awesome-icon icon="plus" size="xl" />
                             <span>Nuevo Medico</span>
@@ -489,11 +510,11 @@ const viewFile = (url) => {
                     </Badge>
                 </template>
             </Column>
-            <Column field="record" header="Record" sortable>
+            <!-- <Column field="record" header="Record" sortable>
                 <template #body="{ data }">
                     <Badge :value="data.record ? data.record : 0" size="large" class="bg-vitality" />
                 </template>
-            </Column>
+            </Column> -->
             <Column field="directory" header="Directorio" sortable>
                 <template #body="{ data }">
                     <div class="card flex justify-center">

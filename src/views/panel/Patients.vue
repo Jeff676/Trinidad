@@ -61,6 +61,20 @@ const initialValues = reactive({
     status: ''
 })
 
+
+const scheduleValues = reactive({
+  identification: '',
+  patient: '',
+  date: null,
+  doctor: '',
+  typeSchedule: '',
+  speciality: [],
+  status: ''
+
+})
+
+
+
 const blockInputs = ref(true)
 let blockInputsEdit = ref(true)
 let blockVerify = ref(false)
@@ -85,6 +99,26 @@ const resolver = zodResolver(
         gender: z.string(),
         profesion: z.string(),
         status: z.string().min(1, { message: 'El estatus es requerido' }),
+    })
+)
+
+const resolverSchedule = zodResolver(
+    z.object({
+      date: z.preprocess((val) => {
+            if (val === '' || val === null) {
+                return null;
+            }
+            return new Date(val);
+        }, z.union([z.date(), z.null().refine((val) => val !== null, { message: 'La fecha de cita es requerida.' })])),
+      doctor: z.string().min(1, { message: "Debe seleccionar un doctor" }),
+      typeSchedule: z.string().min(1, { message: "Debe seleccionar un tipo de agenda" }),
+      speciality: z
+            .array(
+                z.object({
+                    name: z.string().min(1, 'Seleccione una especialidad.')
+                })
+            )
+            .min(1, 'Seleccione una especialidad.'),
     })
 )
 
@@ -397,12 +431,19 @@ const selectedIndex = ref(null);
 const specialityDoc = ref([])
 
 const getSelectedIndex = () => {
+  console.log('selectedItem-->', selectedItem.value.name)
   // findIndex() busca el índice del objeto que coincida con el valor del v-model
   selectedIndex.value = doctorsArr.value.findIndex(item => item.name === selectedItem.value.name)  
   specialityArr.value = doctors.value[selectedIndex.value].speciality
   //specialityOptions.value = doctors.speciality
   specialityDoc.value = specialityArr.value.map(item => ({ name: item }));
+  selectedItem.value = selectedItem.value.name
 
+}
+
+const onFormSubmitSchedule = async ({ valid, values }) => {
+  console.log('valid', valid)
+  console.log('values', values)
 }
 
 </script>
@@ -890,58 +931,41 @@ const getSelectedIndex = () => {
             <h2>Paciente</h2>
             <br>
             <hr>
-            <br>
 
-        <Form v-slot="$form" :initialValues="schedulePatient" :resolver @submit="onFormSubmitSchedule">
+        <Form v-slot="$form" :scheduleValues :resolverSchedule @submit="onFormSubmitSchedule" >
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="typeSchedule" initialValue="">
-                    <FloatLabel>
-                        <label for="genderInput">Cédula</label>
-                        <InputText name="identification" type="text" fluid class="w-full" :disabled="true" v-model="schedulePatient.identification"/>
-                    </FloatLabel>
+                <FormField class="flex-1" v-slot="$field" name="" initialValue="">
+                  <label>Cédula: {{ schedulePatient.nationalityType +' '+ schedulePatient.identification }}</label>
                 </FormField>
                 <FormField class="flex-1" v-slot="$field" name="">
-                    <FloatLabel>
-                        <label for="birthday" class="block">Fecha de la cita</label>
-                        <InputText name="name" type="text" fluid class="w-full" :disabled="true" v-model="schedulePatient.name" />
-                        
-                    </FloatLabel>
+                  <label>Nombre: {{ schedulePatient.name }}</label>
                 </FormField>
             </div>
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="typeSchedule" initialValue="">
-                    <FloatLabel>
-                        <label for="genderInput">Teléfono</label>
-                        <InputText name="identification" type="text" fluid class="w-full" :disabled="true" v-model="schedulePatient.phone"/>
-                    </FloatLabel>
+                <FormField class="flex-1" v-slot="$field" name="" initialValue="">
+                  <label>Teléfono: {{ schedulePatient.phone }}</label>
                 </FormField>
-                <!-- <FormField class="flex-1" v-slot="$field" name="">
-                    <FloatLabel>
-                        <label for="birthday" class="block">Edad</label>
-                        <InputText name="name" type="text" fluid class="w-full" :disabled="true" v-model="edad(schedulePatient.birthday).toString()" />
-                    </FloatLabel>
-                </FormField> -->
                 <FormField class="flex-1" v-slot="$field" name="">
-                    <FloatLabel>
-                        <label for="birthday" class="block">Estatus</label>
-                        <InputText name="name" type="text" fluid class="w-full" :disabled="true" v-model="schedulePatient.status" />
-                    </FloatLabel>
+                  <label>Estatus: {{ schedulePatient.status }}</label>
                 </FormField>
             </div>
+            <br> 
+            <hr>
+            <br>
             <div class="flex gap-2 mt-5">
                 <FormField class="flex-1" v-slot="$field" name="typeSchedule" initialValue="">
                     <FloatLabel>
-                        <label for="genderInput">Tipo de cita</label>
+                        <label>Tipo de cita</label>
                         <Select :options="typeScheduleOptions" optionLabel="letter" optionValue="letter" placeholder="Tipo de cita"
                             class="w-full" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="">
+                <FormField class="flex-1" v-slot="$field" name="date" initialValue="">
                     <FloatLabel>
-                        <label for="birthday" class="block">Fecha de la cita</label>
-                        <DatePicker id="birthday" name="birthday" fluid class="w-full" v-model="birthdayInput"
+                        <label for="date" class="block">Fecha de la cita</label>
+                        <DatePicker id="date" name="date" fluid class="w-full" v-model="birthdayInput"
                             dateFormat="dd/mm/yy" />
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
@@ -949,18 +973,18 @@ const getSelectedIndex = () => {
                 </FormField>
             </div>
             <div class="flex gap-2 mt-5">
-                <FormField class="flex-1" v-slot="$field" name="typeSchedule" initialValue="">
+                <FormField class="flex-1" v-slot="$field" name="doctor" initialValue="">
                     <FloatLabel>
-                        <label for="genderInput">Doctor</label>
-                        <Select v-model="selectedItem" :options="doctorsArr" optionLabel="name" 
-                            placeholder="Doctor" class="w-full"  @change="getSelectedIndex"/>
+                        <label for="doctor">Doctor</label>
+                        <Select :options="doctorsArr" optionLabel="name"
+                            placeholder="Doctor" class="w-full" v-model="selectedItem" @change="getSelectedIndex"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                             $field.error?.message }}</Message>
                     </FloatLabel>
                 </FormField>
-                <FormField class="flex-1" v-slot="$field" name="">
+                <FormField class="flex-1" v-slot="$field" name="speciality" initialValue="">
                     <FloatLabel>
-                        <label for="genderInput">Especialidad</label>
+                        <label for="">Especialidad</label>
                         <MultiSelect :options="specialityDoc" optionLabel="name" optionValue="name" placeholder="Especialidad"
                             class="w-full" :maxSelectedLabels="2"/>
                         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
