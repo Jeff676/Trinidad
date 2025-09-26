@@ -38,13 +38,20 @@ import Dialog from 'primevue/dialog'
 import Message from 'primevue/message'
 import Badge from 'primevue/badge'
 import Carousel from 'primevue/carousel'
-import FileUpload from 'primevue/fileupload';
-import ConfirmDialog from 'primevue/confirmdialog';
-import ConfirmationService from 'primevue/confirmationservice';
-import Toast from 'primevue/toast';
-import ToastService from 'primevue/toastservice';
-import Panel from 'primevue/panel';
-import Textarea from 'primevue/textarea';
+import FileUpload from 'primevue/fileupload'
+import ConfirmDialog from 'primevue/confirmdialog'
+import ConfirmationService from 'primevue/confirmationservice'
+import Toast from 'primevue/toast'
+import ToastService from 'primevue/toastservice'
+import Panel from 'primevue/panel'
+import Textarea from 'primevue/textarea'
+
+import Stepper from 'primevue/stepper'
+import StepList from 'primevue/steplist'
+import StepPanels from 'primevue/steppanels'
+import StepItem from 'primevue/stepitem'
+import Step from 'primevue/step'
+import StepPanel from 'primevue/steppanel'
 
 import App from './App.vue'
 import router from './router'
@@ -69,14 +76,14 @@ pinia.use(({ store }) => {
 app.directive('phone-mask', {
   mounted(el) {
     el.addEventListener('input', (e) => {
-      let value = e.target.value.replace(/\D/g, '');
+      let value = e.target.value.replace(/\D/g, '')
       if (value.length > 0) {
-        value = value.replace(/^(\d{4})(\d{3})(\d{4})$/, '($1) $2-$3');
+        value = value.replace(/^(\d{4})(\d{3})(\d{4})$/, '($1) $2-$3')
       }
-      e.target.value = value;
-    });
-  }
-});
+      e.target.value = value
+    })
+  },
+})
 
 // ** PrimeVue Components **//
 app.component('Button', Button)
@@ -111,11 +118,17 @@ app.component('Badge', Badge)
 app.component('Carousel', Carousel)
 app.component('FileUpload', FileUpload)
 app.component('ConfirmDialog', ConfirmDialog)
-app.component('ConfirmationService', ConfirmationService);
-app.component('Toast', Toast);
-app.component('ToastService', ToastService);
-app.component('Panel', Panel);
-app.component('Textarea', Textarea);
+app.component('ConfirmationService', ConfirmationService)
+app.component('Toast', Toast)
+app.component('ToastService', ToastService)
+app.component('Panel', Panel)
+app.component('Textarea', Textarea)
+app.component('Stepper', Stepper)
+app.component('StepList', StepList)
+app.component('StepPanels', StepPanels)
+app.component('StepItem', StepItem)
+app.component('Step', Step)
+app.component('StepPanel', StepPanel)
 
 // ** PrimeVue Config **//
 // ** Customized Preset **//
@@ -206,7 +219,7 @@ app.component('fa ', FontAwesomeIcon)
 
 app.use(pinia)
 app.use(router)
-app.use(ConfirmationService);
-app.use(ToastService);
+app.use(ConfirmationService)
+app.use(ToastService)
 
 app.mount('#app')
