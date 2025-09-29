@@ -45,6 +45,7 @@ export const getDoctorsFind = async (speciality) => {
   const querySnapshot = await getDocs(q);
   const doctors = querySnapshot.docs.map((doc) => doc.data())
 
+  console.log('--->',doctors)
   return doctors
 }
 
