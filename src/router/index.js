@@ -47,7 +47,7 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      component: () => import('../views/DoctorView.vue'),
+      component: () => import('../views/DoctorsRegisterView.vue'),
     },
     {
       path: '/panel',
