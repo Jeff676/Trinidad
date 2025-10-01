@@ -78,6 +78,17 @@ export const findByDoctorId = async (nationalityType, identification) =>{
   return doctors.length > 0 ? doctors : false
 }
 
+export const findByIdDoctor = async (identification) =>{
+  const q = query(collection(db, "doctors"), 
+            where("identification", "==", identification),
+          );
+  const querySnapshot = await getDocs(q);
+  const doctors = querySnapshot.docs.map((doc) => doc.data())
+  
+  return doctors.length > 0 ? true : false
+
+}
+
 // Save doctors
 export const saveDoctor = async (data) =>{
   var save = false;
@@ -88,7 +99,7 @@ export const saveDoctor = async (data) =>{
      } catch (e) {
        console.error("Error agregando documento: ", e);
      }
-    
+  console.log(save)
   return save;
 }
 
