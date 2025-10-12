@@ -241,9 +241,9 @@ onMounted(async () => {
                     border border-white/50 /* Borde sutil para efecto 'cristal' */
                 ">
                     <h2 class="text-gray-900 font-extrabold text-2xl text-center"> {{ auxDoctor(doctor.gender) +
-                        doctor.name.toUpperCase() }} {{
+                        doctor.name.toUpperCase() }} <br /> {{
                             doctor.lastname.toUpperCase()
-                        }}
+                        }} <font-awesome-icon :icon="['fas', 'circle-check']" class="text-blue-500" />
                     </h2>
                 </div>
 
