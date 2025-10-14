@@ -4,12 +4,14 @@ import { getSpecialities, findByDoctorId, saveDoctor, findByIdDoctor } from '/sr
 import { listBanks } from '/src/stores/list'
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import { z } from 'zod';
+import { toTypedSchema } from '@vee-validate/zod';
 
 const toast = useToast();
 const confirm = useConfirm();
 
 
-// import { z } from 'zod';
 
 // Objeto reactivo para almacenar todos los datos del doctor
 // const doctorData = ref({
@@ -23,6 +25,7 @@ var specialities = ref([])
 var banks = ref([])
 
 let blockInputs = ref(true)
+let formValid = ref(true)
 const error = ref(null)
 const activeStep = ref(0); 
 
@@ -63,6 +66,11 @@ const doctorData = reactive({
     verify: 'No verificado',
 })
 
+const doctorForm = z.object({
+  name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
+  
+})
+
 const disabled = ref(true)
 
 const onSubmit = async () => {
@@ -83,22 +91,22 @@ onMounted(async () => {
 })
 
 const checkDoctor = async () => {
-        if(idIdentification.value.length >= 8){
-            try {
-                doctorFind.value = await findByIdDoctor(idIdentification.value)
-                console.log('--->',doctorFind.value)
-                if (doctorFind.value == false){
-                    blockInputs.value = false
-                    toast.add({ severity: 'info', summary: '¡VERIFICACIÓN!', detail: 'Cédula verificada con exito.', life: 4000 });
-                    
-                }else{
-                    toast.add({ severity: 'error', summary: '¡ALERTA!', detail: 'La cédula ingresada ya existe para un medico.', life: 4000 });
+    if(idIdentification.value.length >= 8){
+        try {
+            doctorFind.value = await findByIdDoctor(idIdentification.value)
+            console.log('--->',doctorFind.value)
+            if (doctorFind.value == false){
+                blockInputs.value = false
+                toast.add({ severity: 'info', summary: '¡VERIFICACIÓN!', detail: 'Cédula verificada con exito.', life: 4000 });
+                
+            }else{
+                toast.add({ severity: 'error', summary: '¡ALERTA!', detail: 'La cédula ingresada ya existe para un medico.', life: 4000 });
 
-                }
-            } catch (err) {
-                error.value = err.message;
-            } 
-        }
+            }
+        } catch (err) {
+            error.value = err.message;
+        } 
+    }
 }
 
 const onTituloSelected = (event) => {
@@ -126,7 +134,7 @@ const goToStep = (stepIndex) => {
 
 </script>
 <template>
-    <form @submit.prevent="onSubmit" :doctorData>
+    <form @submit.prevent="onSubmit" :doctorData :validation-schema="schema">
         <Stepper value="1" v-model:value="activeStep">
             <StepList>
                 <Step value="1">BIENVENIDA</Step>
@@ -134,7 +142,7 @@ const goToStep = (stepIndex) => {
                 <Step value="3" :disabled="blockInputs">Datos Profesionales</Step>
                 <Step value="4" :disabled="blockInputs">Datos Bancarios</Step>
                 <Step value="5" :disabled="blockInputs">Documentación</Step>
-                <Step value="6" :disabled="true">Fin</Step>
+                <Step value="6" >Fin</Step>
             </StepList>
 
             <StepPanels class="bg-shadow">
@@ -176,6 +184,8 @@ const goToStep = (stepIndex) => {
                             <div class="flex flex-col gap-2 mt-4">
                                 <label for="name">Nombres</label>
                                 <InputText id="name" v-model="doctorData.name" :disabled="blockInputs" />
+                                <ErrorMessage name="name" class="text-red-500 text-sm mt-1" />
+
                             </div>
                             <div class="flex flex-col gap-2 mt-4">
                                 <label for="lastname">Apellidos</label>
@@ -196,7 +206,7 @@ const goToStep = (stepIndex) => {
                                 <Button label="Atrás" severity="secondary" icon="pi pi-arrow-left"
                                     @click="activateCallback('1')" />
                                 <Button label="Siguiente" icon="pi pi-arrow-right" iconPos="right"
-                                    @click="activateCallback('3')" :disabled="blockInputs"/>
+                                    @click="activateCallback('3')" :disabled="formValid"/>
                             </div>
                         </template>
                     </Card>
