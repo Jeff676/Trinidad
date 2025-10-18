@@ -11,10 +11,14 @@ const error = ref(null);
 const visibleShow = ref(false)
 const selectSpeciality = ref('Todas')
 var arrSpeciality = ref([])
+var showDoctor = reactive([])
 
 
-const showDialog = () => {
+
+const showDialog = (objectDr) => {
     visibleShow.value = true
+    showDoctor.value = objectDr
+
 }
 const all = async () => {
     loadDoctors.value = true;
@@ -272,7 +276,7 @@ onMounted(async () => {
             <template #footer class="relative -top-5">
                 <div class="text-center content-buttons absolute bottom-0">
                     <Button class="p-3" label="Ver más" icon="pi pi-video" severity="secondary"
-                        style="margin-right: 10px;" @click="showDialog"></Button>
+                        style="margin-right: 10px;" @click="showDialog(doctor)"></Button>
                     <Button class="p-3" label="Agendar" icon="pi pi-calendar" iconPos="right" severity="success"
                         v-on:click="schedule(doctor.gender, doctor.name, doctor.lastname, doctor.speciality)"></Button>
                 </div>
@@ -282,10 +286,23 @@ onMounted(async () => {
 
     <Dialog v-model:visible="visibleShow" modal style="width: 80%" maximizable>
         <template #header>
-            <div class=" align-items-center gap-2">
-                <h1 style="display: inline;" class="ml-2">Sección en construccion</h1>
+            <div class="flex align-items-center gap-2">
+                <div
+                    class="bg-vitality text-white border-circle w-4rem h-4rem flex align-items-center justify-content-center">
+                    <font-awesome-icon icon="user-doctor" size="2xl" />
+                </div>
+                <h1 style="display: inline;" class="ml-2">
+                    {{ auxDoctor(showDoctor.value.gender) +' '+ showDoctor.value.name.toUpperCase() +' '+ showDoctor.value.lastname.toUpperCase() }}
+                </h1>
             </div>
         </template>
+        <!-- ESPECIALIDADES -->
+        <p v-for="(speciality, index) in showDoctor.value.speciality"> 
+            <font-awesome-icon :icon="['fas', 'building-columns']" /> {{ speciality }}
+        </p>
+        <!-- RESUMEN -->
+        <p>{{ showDoctor.value.summary }}</p>
+
     </Dialog>
 
 </template>
