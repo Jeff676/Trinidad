@@ -9,7 +9,7 @@ const search = ref(null);
 const loadDoctors = ref(false);
 const error = ref(null);
 const visibleShow = ref(false)
-const selectSpeciality = ref()
+const selectSpeciality = ref('Todas')
 var arrSpeciality = ref([])
 
 
@@ -93,7 +93,7 @@ const allDoctorsParamMovil = async (event) => {
     // selectSpeciality.value = event;
     console.log(selectSpeciality.value)
     loadDoctors.value = true;
-    if (selectSpeciality.value == 'Todas') {
+    if (selectSpeciality.value == 'Todas' || selectSpeciality.value == 'TODAS') {
         all();
     } else {
         allDoctorsParam(selectSpeciality.value)
@@ -185,15 +185,13 @@ onMounted(async () => {
     </div>
 
     <div class="search-movil m-4">
-        <div class="flex somos text-center">
+        <div class="flex somos">
             <FormField v-slot="$field" name="" style="width: 100%;">
+                <label for="">Especialidades</label>
                 <IconField>
-                    <InputIcon>
-                        <font-awesome-icon icon="filter" />
-                    </InputIcon>
                     <Select :options="arrSpeciality" checkmark :highlightOnSelect="false" optionLabel="name"
                         optionValue="name" style="width: 100%;" @change="allDoctorsParamMovil($event)"
-                        v-model="selectSpeciality" />
+                        v-model="selectSpeciality"/>
                 </IconField>
             </FormField>
         </div>
@@ -223,7 +221,7 @@ onMounted(async () => {
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
         <Card v-for="(doctor, index) in doctors" :key="index"
             style="background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto; width: 100%; position: relative; overflow: hidden;">
 
@@ -243,7 +241,7 @@ onMounted(async () => {
                     <h2 class="text-gray-900 font-extrabold text-2xl text-center"> {{ auxDoctor(doctor.gender) +
                         doctor.name.toUpperCase() }} <br /> {{
                             doctor.lastname.toUpperCase()
-                        }} <font-awesome-icon :icon="['fas', 'circle-check']" class="text-blue-500" />
+                        }} <font-awesome-icon :icon="['fas', 'circle-check']" v-if="doctor.verify == 'Verificado'" class="text-blue-500" />
                     </h2>
                 </div>
 
@@ -253,20 +251,21 @@ onMounted(async () => {
             <template #content>
 
                 <div class="relative -top-5 flex flex-col gap-2">
-                    <p v-for="(speciality, index) in doctor.speciality"> <font-awesome-icon
-                            :icon="['fas', 'building-columns']" /> {{ speciality }}</p>
+                    <p v-for="(speciality, index) in doctor.speciality"> 
+                        <font-awesome-icon :icon="['fas', 'building-columns']" /> {{ speciality }}</p>
 
-                    <p><font-awesome-icon :icon="['fas', 'calendar-days']" />
+                    <p v-if="doctor.work_schedule" ><font-awesome-icon :icon="['fas', 'calendar-days']" />
                         <!-- REEMPLAAR POR EL HORARIO REAL -->
                         Lunes 8am - 5pm</p>
 
-                    <p><font-awesome-icon :icon="['fas', 'location-dot']" />
+                    <p v-if="doctor.address"><font-awesome-icon :icon="['fas', 'location-dot']" />
                         <!-- REEMPLAAR POR INFORMACION REAL REAL -->
                         Unidad Quirurgica La Trinidad Consultorio 15
                     </p>
 
-                    <p class=" experiencia"><font-awesome-icon :icon="['fas', 'clock']" style="width: 30px;" />{{
-                        doctor.experience ? doctor.experience : 1 }} años+</p>
+                    <p><font-awesome-icon :icon="['fas', 'clock']" />{{
+                        doctor.experience ? doctor.experience : 1 }} años+
+                    </p>
                 </div>
             </template>
 
@@ -281,36 +280,10 @@ onMounted(async () => {
         </Card>
     </div>
 
-    <!-- <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
-        <Card v-for="(doctor, index) in doctors" :key="index" style="overflow: hidden; background: rgba(0, 74, 135, 0.3); border-radius: 24px; margin: 0 auto; width: 100%;">
-            <template #content class="">
-                <div class="flex">
-                    <div style="position: absolute;">
-                        <h2> {{ auxDoctor(doctor.gender) + doctor.name.toUpperCase() }}</h2>
-                        <h2>{{ doctor.lastname.toUpperCase() }}</h2>
-                        <p v-for="(speciality, index) in doctor.speciality"> {{ speciality }}</p>
-                        <p class="experiencia">
-                            <font-awesome-icon :icon="['fas', 'clock']" style="width: 30px;"/>{{ doctor.experience ?  doctor.experience : 1}} años+
-                        </p>
-                    </div>
-                    <div class="img-doctor">
-                        <img :src="`${doctor.profilePhoto}`" alt="Doctor">
-                    </div>
-                </div>
-                <div class="text-center content-buttons">
-                    <Button class="p-3" label="Ver más" icon="pi pi-video" severity="secondary" style="margin-right: 10px;" @click="showDialog"></Button>
-                    <Button class="p-3" label="Agendar" icon="pi pi-calendar" iconPos="right" severity="success" v-on:click="schedule(doctor.gender,doctor.name,doctor.lastname,doctor.speciality)"></Button>
-                </div>
-            </template>
-</Card>
-</div> -->
-
-    <Dialog v-model:visible="visibleShow" modal style="width: 70%" maximizable>
+    <Dialog v-model:visible="visibleShow" modal style="width: 80%" maximizable>
         <template #header>
             <div class=" align-items-center gap-2">
-                <img src="../assets/logo-large-blue.svg" alt="La Trinidad Logo" class="mx-auto w-3/5 md:w-1/5 mb-1" />
                 <h1 style="display: inline;" class="ml-2">Sección en construccion</h1>
-
             </div>
         </template>
     </Dialog>
@@ -335,8 +308,4 @@ onMounted(async () => {
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
-.experiencia {
-    display: flex;
-    align-items: center;
-}
 </style>

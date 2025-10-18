@@ -17,15 +17,15 @@ const items= ref([
     },
     {
         label: 'Servicio',
-        route: '/services'
+        route: '/servicios'
     },
     {
         label: 'Planes',
-        route: '/plans'
+        route: '/planes'
     },
     {
         label: 'Directorio',
-        route: '/directory'
+        route: '/directorio'
     },
     {
         label: 'Blog',
@@ -33,7 +33,7 @@ const items= ref([
     },
     {
         label: 'Contacto',
-        route: '/contact'
+        route: '/contacto'
     }
 ])
 

@@ -10,18 +10,18 @@ const router = createRouter({
       component: () => import('../views/HomeView.vue'),
     },
     {
-      path: '/services',
-      name: 'services',
+      path: '/servicios',
+      name: 'servicios',
       component: () => import('../views/ServicesView.vue'),
     },
     {
-      path: '/plans',
-      name: 'plans',
+      path: '/planes',
+      name: 'planes',
       component: () => import('../views/PlansView.vue'),
     },
     {
-      path: '/directory',
-      name: 'directory',
+      path: '/directorio',
+      name: 'directorio',
       component: () => import('../views/DirectoryView.vue'),
     },
     {
@@ -30,13 +30,13 @@ const router = createRouter({
       component: () => import('../views/BlogView.vue'),
     },
     {
-      path: '/contact',
-      name: 'contact',
+      path: '/contacto',
+      name: 'contacto',
       component: () => import('../views/ContactView.vue'),
     },
     {
-      path: '/about',
-      name: 'about',
+      path: '/acerca',
+      name: 'acerca',
       component: () => import('../views/AboutView.vue'),
     },
     {
