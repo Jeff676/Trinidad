@@ -154,7 +154,7 @@
           <div class="mb-1">
             <FormField class="flex-1" v-slot="$field" name="birthday" initialValue="">
               <FloatLabel>
-                <DatePicker name="birthday" fluid dateFormat="dd/mm/yy" v-model="birthdayInput"/>
+                <DatePicker name="birthday" fluid v-model="birthdayInput"/>
                 <label for="birthday">Fecha de nacimiento</label>
                 <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                     $field.error?.message }}</Message>
@@ -341,42 +341,42 @@
         <div style="border: 1px solid grey; border-radius: 5px;" class="lg:col-span-3">
           <div class="mb-1" style="margin: 10px; display: grid;">
               <label>Cédula de identidad</label>
-              <input type="file" @change="onCedulaSelected" />
+              <input type="file" @change="onCedulaSelected" accept="image/*, application/pdf"/>
               <!-- <FileUpload ref="cedulaDoc" mode="basic" name="cedulaDoc[]" chooseLabel="Seleccione documento" @change="onCedulaSelected"/> -->
           </div>
         </div>
         <div style="border: 1px solid grey; border-radius: 5px;" class="lg:col-span-3">
           <div class="mb-1" style="margin: 10px; display: grid;">
               <label>Rif</label>
-              <input type="file" @change="onRifSelected" />
+              <input type="file" @change="onRifSelected" accept="image/*, application/pdf"/>
               <!-- <FileUpload ref="rifDoc" mode="basic" name="rifDoc[]" url="/api/upload" :maxFileSize="1000000" @upload="onUpload" chooseLabel="Seleccione documento" @change="onRifSelected"/> -->
           </div>
         </div>
         <div style="border: 1px solid grey; border-radius: 5px;" class="lg:col-span-3">
           <div class="mb-1" style="margin: 10px; display: grid;">
               <label>Curriculum</label>
-              <input type="file" @change="onCurriculumSelected" />
+              <input type="file" @change="onCurriculumSelected" accept="image/*, application/pdf"/>
               <!-- <FileUpload ref="curriculumDoc" mode="basic" name="curriculumDoc[]" url="/api/upload" accept="image/*" :maxFileSize="1000000" @upload="onUpload" chooseLabel="Seleccione documento" @change="onCurriculumSelected"/> -->
           </div>
         </div>
         <div style="border: 1px solid grey; border-radius: 5px;" class="lg:col-span-3">
           <div class="mb-1" style="margin: 10px; display: grid;">
               <label>Título (carta de culminación de estudios si fuese el caso)</label>
-              <input type="file" @change="onTituloSelected" />
+              <input type="file" @change="onTituloSelected" accept="image/*, application/pdf"/>
               <!-- <FileUpload ref="tituloDoc" mode="basic" name="tituloDoc[]" url="/api/upload" accept="image/*" :maxFileSize="1000000" @upload="onUpload" chooseLabel="Seleccione documento" @change="onTituloSelected"/> -->
           </div>
         </div>
         <div style="border: 1px solid grey; border-radius: 5px;" class="lg:col-span-3">
           <div class="mb-1" style="margin: 10px; display: grid;">
               <label>Foto (se utilizará para su perfil en el directorio)</label>
-              <input type="file" @change="onPhotoSelected" />
+              <input type="file" @change="onPhotoSelected" accept="image/*, application/pdf"/>
               <!-- <FileUpload ref="photoDoc" mode="basic" name="photoDoc[]" url="/api/upload" accept="image/*" :maxFileSize="1000000" @upload="onUpload" chooseLabel="Seleccione documento" @change="onPhotoSelected"/> -->
           </div>
         </div>
         <div style="border: 1px solid grey; border-radius: 5px;" class="lg:col-span-3">
           <div class="mb-1" style="margin: 10px; display: grid;">
               <label>Otro documento</label>
-              <input type="file" @change="onOtherSelected" />
+              <input type="file" @change="onOtherSelected" accept="image/*, application/pdf"/>
               <!-- <FileUpload ref="otherDoc" mode="basic" name="otherDoc[]" url="/api/upload" accept="image/*" :maxFileSize="1000000" @upload="onUpload" chooseLabel="Seleccione documento" @change="onOtherSelected"/> -->
           </div>
         </div>
@@ -384,6 +384,7 @@
 
       <div class="mt-8 text-center">
         <button
+          :disabled="blockButton"
           :loading="loading"
           type="submit"
           class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">
@@ -414,8 +415,9 @@ import { z } from 'zod'
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from "primevue/useconfirm"
 import { storage, ref as storageRef, uploadBytes, getDownloadURL } from '../firebase/init.js';
+import { useRouter } from 'vue-router';
 
-
+const router = useRouter();
 const toast = useToast();
 const confirm = useConfirm();
 const loading = ref(false);
@@ -424,6 +426,7 @@ var specialities = ref([])
 const specialityInput = ref([])
 const specialityDoc = ref([])
 const visible = ref(false);
+const blockButton = ref(false);
 
 const birthdayInput = ref('')
 
@@ -463,7 +466,12 @@ const resolver = zodResolver(
                 z.string().min(1, 'Seleccione una especialidad.')
             )
             .min(1, 'Seleccione una especialidad.'),
-      birthday: z.string(),
+      birthday: z.preprocess((val) => {
+            if (val === '' || val === null) {
+                return null;
+            }
+            return new Date(val);
+        }, z.union([z.date(), z.null().refine((val) => val !== null, { message: 'La fecha de nacimiento es requerida.' })])),
       instagram: z.string(),
       otherRRSS: z.string(),
       addressConsultation: z.string(),
@@ -537,7 +545,7 @@ const todayFormatDDMMYYYY = () => {
 const submitForm = async ({ valid, values }) => {
 
   if(valid){
-    loading,value = true
+    loading.value = true
     values.status = 'Pendiente'
     values.directory = 'No publicado'
     values.verify = 'No verificado'
@@ -622,7 +630,12 @@ const submitForm = async ({ valid, values }) => {
         var sv = await saveDoctor(values);
         if(sv){
           visible.value = true
-          loading.value = false     
+          loading.value = false  
+          blockButton.value = true  
+          
+          setTimeout(() => {
+            router.push('/');
+          }, 4000); 
         }
     }catch(e){
         loading.value = false
