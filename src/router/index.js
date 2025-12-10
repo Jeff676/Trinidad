@@ -6,22 +6,22 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'inicio',
       component: () => import('../views/HomeView.vue'),
     },
     {
-      path: '/services',
-      name: 'services',
+      path: '/servicios',
+      name: 'servicios',
       component: () => import('../views/ServicesView.vue'),
     },
     {
-      path: '/plans',
-      name: 'plans',
+      path: '/planes',
+      name: 'planes',
       component: () => import('../views/PlansView.vue'),
     },
     {
-      path: '/directory',
-      name: 'directory',
+      path: '/directorio',
+      name: 'directorio',
       component: () => import('../views/DirectoryView.vue'),
     },
     {
@@ -30,13 +30,13 @@ const router = createRouter({
       component: () => import('../views/BlogView.vue'),
     },
     {
-      path: '/contact',
-      name: 'contact',
+      path: '/contacto',
+      name: 'contacto',
       component: () => import('../views/ContactView.vue'),
     },
     {
-      path: '/about',
-      name: 'about',
+      path: '/acerca',
+      name: 'acerca',
       component: () => import('../views/AboutView.vue'),
     },
     {
@@ -45,8 +45,8 @@ const router = createRouter({
       component: () => import('../views/LoginView.vue'),
     },
     {
-      path: '/register',
-      name: 'register',
+      path: '/formulario',
+      name: 'formulario',
       component: () => import('../views/DoctorsRegisterView.vue'),
     },
     {
@@ -55,40 +55,40 @@ const router = createRouter({
       component: () => import('../views/PanelView.vue'),
       children: [
         {
-          path: '/schedule',
-          name: 'schedule',
+          path: '/agenda',
+          name: 'agenda',
           component: () => import('../views/panel/Schedule.vue'),
           meta: {
             requiresAuth: true,
           },
         },
         {
-          path: '/patients',
-          name: 'patients',
+          path: '/pacientes',
+          name: 'pacientes',
           component: () => import('../views/panel/Patients.vue'),
           meta: {
             requiresAuth: true,
           },
         },
         {
-          path: '/patient',
-          name: 'patient',
+          path: '/paciente',
+          name: 'paciente',
           component: () => import('../views/panel/Patient.vue'),
           meta: {
             requiresAuth: true,
           },
         },
         {
-          path: '/doctors',
-          name: 'doctors',
+          path: '/doctores',
+          name: 'doctores',
           component: () => import('../views/panel/Doctors.vue'),
           meta: {
             requiresAuth: true,
           },
         },
         {
-          path: '/users',
-          name: 'users',
+          path: '/usuarios',
+          name: 'usuarios',
           component: () => import('../views/panel/Users.vue'),
           meta: {
             requiresAuth: true,

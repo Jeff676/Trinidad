@@ -26,6 +26,9 @@ import {
   faEllipsis,
   faMagnifyingGlass,
   faCalendarDays,
+  faBuildingColumns,
+  faLocationDot,
+  faCircleCheck,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { faCircleUser, faBell, faClock } from '@fortawesome/free-regular-svg-icons'
@@ -62,4 +65,7 @@ library.add(
   faClock,
   faWhatsapp,
   faCalendarDays,
+  faBuildingColumns,
+  faLocationDot,
+  faCircleCheck,
 )

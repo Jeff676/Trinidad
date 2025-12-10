@@ -4,22 +4,12 @@ import { getSpecialities, findByDoctorId, saveDoctor, findByIdDoctor } from '/sr
 import { listBanks } from '/src/stores/list'
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
-import { Form, Field, ErrorMessage } from 'vee-validate';
-import { z } from 'zod';
-import { toTypedSchema } from '@vee-validate/zod';
+
+import { zodResolver } from '@primevue/forms/resolvers/zod'
+import { z } from 'zod'
 
 const toast = useToast();
 const confirm = useConfirm();
-
-
-
-// Objeto reactivo para almacenar todos los datos del doctor
-// const doctorData = ref({
-//     informacionBasica: { nombreCompleto: '' },
-//     datosProfesionales: { especialidad: '' },
-//     datosBancarios: { numeroDeCuenta: '' },
-//     documentacion: { cedulaProfesional: '' }
-// });
 
 var specialities = ref([])
 var banks = ref([])
@@ -32,12 +22,14 @@ const activeStep = ref(0);
 var doctorFind = ref(null)
 
 const idIdentification = ref('')
+const nameInput = ref('')
+const lastnameInput = ref('')
+
 const tituloDoc = ref(null);
 const tituloPostDoc = ref(null);
 const otherDoc = ref(null);
 
 const doctorData = reactive({
-    id: '',
     identification: '',
     nationalityType: 'V',
     name: '',
@@ -66,22 +58,52 @@ const doctorData = reactive({
     verify: 'No verificado',
 })
 
-const doctorForm = z.object({
-  name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
-  
+const resolver = zodResolver(
+    z.object({
+        identification: z.string().min(8, { message: 'La cedula es requerida' }),
+        name: z.string().min(3, { message: 'El nombre es requerido' }),
+        lastname: z.string().min(3, { message: 'El apellido es requerido' }),
+
+    })
+)
+
+const initialValues = reactive({
+    nationality: { letter: 'V' },
+    identification: '',
+    name: '',
+    nationalityType: 'V',
+    birthday: null,
+    size: 1.6,
+    gender: '',
+    weigth: 1,
+    address: '',
+    country: '',
+    state: '',
+    city: '',
+    phone: '',
+    phone2: '',
+    email: '',
+    profesion: '',
+    waitForAdmitt: false,
+    admitted: false,
+    status: ''
 })
 
 const disabled = ref(true)
 
-const onSubmit = async () => {
-    console.log("Form Works!", doctorData)     
-    var sv = saveDoctor(doctorData);
-    if(sv){
-      blockInputs.value = true
-      goToStep(6)
-      toast.add({ severity: 'success', summary: '', detail: 'Guardado con éxito.!', life: 3000 });
+// const onSubmit = async () => {
+const onSubmit = async ({ valid, values }) => {
+    console.log("valid! ", valid)
+    console.log("values! ", values)  
 
-    }
+    console.log("Form Works!", doctorData)     
+    // var sv = saveDoctor(doctorData);
+    // if(sv){
+    //   blockInputs.value = true
+    //   goToStep(6)
+    //   toast.add({ severity: 'success', summary: '', detail: 'Guardado con éxito.!', life: 3000 });
+
+    // }
 }
 
 onMounted(async () => {
@@ -134,7 +156,8 @@ const goToStep = (stepIndex) => {
 
 </script>
 <template>
-    <form @submit.prevent="onSubmit" :doctorData :validation-schema="schema">
+    <!-- <Form v-slot="$form" :doctorForm @submit="onSubmit" > -->
+    <Form v-slot="$field" :initialValues @submit="onSubmit" :resolver>
         <Stepper value="1" v-model:value="activeStep">
             <StepList>
                 <Step value="1">BIENVENIDA</Step>
@@ -183,21 +206,23 @@ const goToStep = (stepIndex) => {
                             </div>
                             <div class="flex flex-col gap-2 mt-4">
                                 <label for="name">Nombres</label>
-                                <InputText id="name" v-model="doctorData.name" :disabled="blockInputs" />
-                                <ErrorMessage name="name" class="text-red-500 text-sm mt-1" />
+                                <InputText id="name" v-model="nameInput" :disabled="blockInputs" />
+                                <!-- <ErrorMessage name="name" class="text-red-500 text-sm mt-1" /> -->
+                                <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                            $field.error?.message }}</Message>
 
                             </div>
                             <div class="flex flex-col gap-2 mt-4">
                                 <label for="lastname">Apellidos</label>
-                                <InputText id="lastname" v-model="doctorData.lastname" :disabled="blockInputs" />
+                                <InputText id="lastname" v-model="lastnameInput" :disabled="blockInputs" />
                             </div>
                             <div class="flex flex-col gap-2 mt-4">
                                 <label for="address">Direccion Fiscal</label>
-                                <InputText id="address" v-model="doctorData.address" :disabled="blockInputs" />
+                                <InputText id="address" :disabled="blockInputs" />
                             </div>
                             <div class="flex flex-col gap-2 mt-4">
                                 <label for="phone01">Telefono</label>
-                                <InputText id="phone01" v-model="doctorData.phone01" v-phone-mask :maxlength="15" :disabled="blockInputs" />
+                                <InputText id="phone01" v-phone-mask :maxlength="15" :disabled="blockInputs" />
                             </div>
 
                         </template>
@@ -206,7 +231,7 @@ const goToStep = (stepIndex) => {
                                 <Button label="Atrás" severity="secondary" icon="pi pi-arrow-left"
                                     @click="activateCallback('1')" />
                                 <Button label="Siguiente" icon="pi pi-arrow-right" iconPos="right"
-                                    @click="activateCallback('3')" :disabled="formValid"/>
+                                    @click="activateCallback('3')" />
                             </div>
                         </template>
                     </Card>
@@ -357,7 +382,7 @@ const goToStep = (stepIndex) => {
                 </StepPanel>
             </StepPanels>
         </Stepper>
-    </form>
+    </Form>
     
 </template>
 

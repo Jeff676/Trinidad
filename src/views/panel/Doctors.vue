@@ -300,17 +300,17 @@ const onFormSubmit = async ({ valid, values }) => {
     if (valid) {
         values.birthday = dateFormatDDMMYYYY()
 
-        if(values.profilePhoto == ''){
-            if(values.gender == 'Femenino'){
-                values.profilePhoto = img_famale
-            }else{
-                values.profilePhoto = img_male
-            }
-        }
-        // specialityInput.value.forEach(item => {
-        //     specialityDoc.value.push(item.name);
-        // });
-        // values.speciality = specialityDoc.value
+        // if(values.profilePhoto == ''){
+        //     if(values.gender == 'Femenino'){
+        //         values.profilePhoto = img_famale
+        //     }else{
+        //         values.profilePhoto = img_male
+        //     }
+        // }
+        specialityInput.value.forEach(item => {
+            specialityDoc.value.push(item.name);
+        });
+        values.speciality = specialityDoc.value
 
         console.log('Form submitted with values:', values)
         // Aquí puedes manejar el envío del formulario, como hacer una solicitud a la API
@@ -334,18 +334,18 @@ const onFormSubmit = async ({ valid, values }) => {
     }
 }
 
-const onFormSubmitUp = async ({ valid, values }) => {
-    values.birthday = dateFormatDDMMYYYY()    
+const onFormSubmitUp = async ({ valid, values }) => {    
 
     if (valid) {
+        values.birthday = dateFormatDDMMYYYY()
         console.log('Form submitted with values:', values)
-        if(values.profilePhoto == ''){
-            if(values.gender == 'Femenino'){
-                values.profilePhoto = img_famale
-            }else{
-                values.profilePhoto = img_male
-            }
-        }
+        // if(values.profilePhoto == ''){
+        //     if(values.gender == 'Femenino'){
+        //         values.profilePhoto = img_famale
+        //     }else{
+        //         values.profilePhoto = img_male
+        //     }
+        // }
         visibleEdit.value = false
         blockInputs.value = true
         console.log("actualizar")
@@ -493,8 +493,8 @@ const viewFile = (url) => {
             <Column field="lastname" header="Apellido" sortable></Column>
             <Column field="speciality" header="Especialidad" sortable>
                 <template #body="{ data }">
-                    <Label v-for="(speciality, index) in data.speciality" :key="index" size="large" >
-                        {{speciality + ' '}}
+                    <Label  size="large" >
+                        {{data.speciality.join(" / ") }}
                     </Label>
                 </template>
             </Column>

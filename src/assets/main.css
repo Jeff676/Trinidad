@@ -150,19 +150,8 @@ h2 {
   font-weight: bolder;
 }
 
-@media only screen and (max-width: 600px) {
-  .search-directory {
-    display: none;
-  }
-  .search-movil {
-    display: block;
-  }
-  .img-doctor {
-    img {
-      width: 100%;
-    }
-  }
-  .testimonial-scll {
+@media only screen and (max-width: 1200px) {
+   .testimonial-scll {
     overflow: auto;
   }
   .title-const {
@@ -176,4 +165,21 @@ h2 {
   .fileDoc{
     margin: 10px;
   }
+
+}
+
+
+@media only screen and (max-width: 1023px) {
+  .search-directory {
+    display: none;
+  }
+  .search-movil {
+    display: block;
+  }
+  .img-doctor {
+    img {
+      width: 100%;
+    }
+  }
+ 
 }
